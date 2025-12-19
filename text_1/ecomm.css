@@ -1,0 +1,32 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    background-color:rgb(255, 255, 255);
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+}
+.menu{
+    width: 1300px;
+    height: 60px;
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    border-radius: 50px;
+}
+.menu .logo img{
+    width: 120px;
+    height: auto;
+}
+.menu .text p{
+    display: inline-block;
+    margin: 0 15px;
+    font-size: 18px;
+    font-family: Arial, Helvetica, sans-serif;
+    color: rgb(0, 0, 0);
+    cursor: pointer;
+}
