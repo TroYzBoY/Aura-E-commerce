@@ -30,3 +30,42 @@ body{
     color: rgb(0, 0, 0);
     cursor: pointer;
 }
+
+        .search-container {
+            position: relative;
+        }
+
+        .search-input {
+            padding: 10px 50px 10px 15px;
+            border: 1px solid #FF7300;
+            background: #fff;
+            border-radius: 25px;
+            width: 120px;
+            height: 34px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 0px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #FF7300;
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            font-size: 16px;
+            width: 34px;
+            height: 34px;
+            border-radius: 0px 50% 50% 0px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .search-btn:hover {
+            background: #E66300;
+        }
