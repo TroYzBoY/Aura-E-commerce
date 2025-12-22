@@ -59,17 +59,18 @@ function updateQuantity(productId, change) {
 
 // Сагсны агуулгыг шинэчлэх (popup-г дахин нээхгүй)
 function updateCartContent() {
-  const popup = document.querySelector('.cart-popup');
+  const popup = document.querySelector(".cart-popup");
   if (!popup) return;
-  
+
   const totalPrice = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  
+
   let cartHTML = "";
   if (cart.length === 0) {
-    cartHTML = '<p style="text-align: center; color: #86868b; padding: 40px;">Таны сагс хоосон байна</p>';
+    cartHTML =
+      '<p style="text-align: center; color: #86868b; padding: 40px;">Таны сагс хоосон байна</p>';
   } else {
     cartHTML = cart
       .map(
@@ -85,7 +86,9 @@ function updateCartContent() {
           ">
             <div style="font-size: 50px;">${item.image}</div>
             <div style="flex: 1;">
-              <div style="font-weight: 600; margin-bottom: 5px;">${item.name}</div>
+              <div style="font-weight: 600; margin-bottom: 5px;">${
+                item.name
+              }</div>
               <div style="color: #06c; font-weight: 700;">₮${item.price.toLocaleString()}</div>
             </div>
             <div style="display: flex; align-items: center; gap: 10px;">
@@ -99,7 +102,9 @@ function updateCartContent() {
                 font-size: 18px;
                 font-weight: 700;
               ">-</button>
-              <span style="font-weight: 600; min-width: 20px; text-align: center;">${item.quantity}</span>
+              <span style="font-weight: 600; min-width: 20px; text-align: center;">${
+                item.quantity
+              }</span>
               <button onclick="updateQuantity(${item.id}, 1)" style="
                 width: 30px;
                 height: 30px;
@@ -126,7 +131,7 @@ function updateCartContent() {
       )
       .join("");
   }
-  
+
   const contentDiv = popup.querySelector('div[style*="background: white"]');
   if (contentDiv) {
     contentDiv.innerHTML = `
@@ -248,7 +253,8 @@ function showCartPopup() {
 
   let cartHTML = "";
   if (cart.length === 0) {
-    cartHTML = '<p style="text-align: center; color: #86868b; padding: 40px;">Таны сагс хоосон байна</p>';
+    cartHTML =
+      '<p style="text-align: center; color: #86868b; padding: 40px;">Таны сагс хоосон байна</p>';
   } else {
     cartHTML = cart
       .map(
@@ -264,7 +270,9 @@ function showCartPopup() {
           ">
             <div style="font-size: 50px;">${item.image}</div>
             <div style="flex: 1;">
-              <div style="font-weight: 600; margin-bottom: 5px;">${item.name}</div>
+              <div style="font-weight: 600; margin-bottom: 5px;">${
+                item.name
+              }</div>
               <div style="color: #06c; font-weight: 700;">₮${item.price.toLocaleString()}</div>
             </div>
             <div style="display: flex; align-items: center; gap: 10px;">
@@ -278,7 +286,9 @@ function showCartPopup() {
                 font-size: 18px;
                 font-weight: 700;
               ">-</button>
-              <span style="font-weight: 600; min-width: 20px; text-align: center;">${item.quantity}</span>
+              <span style="font-weight: 600; min-width: 20px; text-align: center;">${
+                item.quantity
+              }</span>
               <button onclick="updateQuantity(${item.id}, 1)" style="
                 width: 30px;
                 height: 30px;
@@ -417,21 +427,25 @@ async function fetchProducts(category) {
   try {
     const response = await fetch("product.json");
     if (!response.ok) {
-      throw new Error("Өгөгдөл ачаалахад алдаа гарлаа");
+      console.warn("JSON файл олдсонгүй, mock data ашиглаж байна");
+      return mockData[category] || [];
     }
     const data = await response.json();
     return data[category] || [];
   } catch (error) {
-    console.error("Fetch алдаа:", error);
-    throw error;
+    console.warn(
+      "JSON файл уншихад алдаа гарлаа, mock data ашиглаж байна:",
+      error
+    );
+    return mockData[category] || [];
   }
 }
 
 // Үнийг тооноос string болгох функц
 function parsePrice(priceStr) {
-  if (typeof priceStr === 'number') return priceStr;
+  if (typeof priceStr === "number") return priceStr;
   // "₮8,999,000" -> 8999000
-  return parseInt(priceStr.replace(/[₮,]/g, ''));
+  return parseInt(priceStr.replace(/[₮,]/g, ""));
 }
 
 // Бүтээгдэхүүнүүдийг харуулах функц
@@ -447,15 +461,18 @@ function displayProducts(products, containerId, isInitialLoad = false) {
   products.forEach((product, index) => {
     const card = document.createElement("div");
     card.className = "product-card";
-    const displayPrice = typeof product.price === 'string' ? product.price : `₮${product.price.toLocaleString()}`;
-    
+    const displayPrice =
+      typeof product.price === "string"
+        ? product.price
+        : `₮${product.price.toLocaleString()}`;
+
     // Анхны ачаалтад animation нэмэх
     if (isInitialLoad) {
-      card.style.opacity = '0';
-      card.style.transform = 'translateY(30px)';
+      card.style.opacity = "0";
+      card.style.transform = "translateY(30px)";
       card.style.animation = `fadeInUp 0.6s ease forwards ${index * 0.1}s`;
     }
-    
+
     card.innerHTML = `
       <div style="font-size: 60px; margin-bottom: 15px;">${product.image}</div>
       <div class="product-name">${product.name}</div>
@@ -467,11 +484,11 @@ function displayProducts(products, containerId, isInitialLoad = false) {
 
     container.appendChild(card);
   });
-  
+
   // Animation style нэмэх
-  if (isInitialLoad && !document.getElementById('product-animation-style')) {
-    const style = document.createElement('style');
-    style.id = 'product-animation-style';
+  if (isInitialLoad && !document.getElementById("product-animation-style")) {
+    const style = document.createElement("style");
+    style.id = "product-animation-style";
     style.textContent = `
       @keyframes fadeInUp {
         from {
@@ -492,11 +509,15 @@ function displayProducts(products, containerId, isInitialLoad = false) {
 async function searchProducts(searchTerm) {
   try {
     // Бүх категориос өгөгдөл татах
-    const newProducts = await fetchProducts('newProducts');
-    const recommendedProducts = await fetchProducts('recommendedProducts');
-    const accessories = await fetchProducts('accessories');
-    
-    const allProducts = [...newProducts, ...recommendedProducts, ...accessories];
+    const newProducts = await fetchProducts("newProducts");
+    const recommendedProducts = await fetchProducts("recommendedProducts");
+    const accessories = await fetchProducts("accessories");
+
+    const allProducts = [
+      ...newProducts,
+      ...recommendedProducts,
+      ...accessories,
+    ];
     const filtered = allProducts.filter((product) =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -506,7 +527,7 @@ async function searchProducts(searchTerm) {
       document.getElementById("featured-products").innerHTML = "";
       document.getElementById("accessories").innerHTML = "";
     } else {
-      document.getElementById("new-products").innerHTML = 
+      document.getElementById("new-products").innerHTML =
         '<div style="text-align: center; color: #86868b; padding: 40px;">Хайлтын үр дүн олдсонгүй</div>';
       document.getElementById("featured-products").innerHTML = "";
       document.getElementById("accessories").innerHTML = "";
@@ -552,7 +573,8 @@ async function loadAllProducts() {
   } catch (error) {
     console.error("Алдаа гарлаа:", error);
     document.querySelectorAll(".product-grid").forEach((grid) => {
-      grid.innerHTML = '<div class="error">Өгөгдөл ачаалахад алдаа гарлаа</div>';
+      grid.innerHTML =
+        '<div class="error">Өгөгдөл ачаалахад алдаа гарлаа</div>';
     });
   }
 }
@@ -575,7 +597,10 @@ function showProductPopup(product) {
   `;
 
   const numericPrice = parsePrice(product.price);
-  const displayPrice = typeof product.price === 'string' ? product.price : `₮${product.price.toLocaleString()}`;
+  const displayPrice =
+    typeof product.price === "string"
+      ? product.price
+      : `₮${product.price.toLocaleString()}`;
 
   popup.innerHTML = `
     <div style="
