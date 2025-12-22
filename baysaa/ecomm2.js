@@ -61,12 +61,12 @@ function updateQuantity(productId, change) {
 function updateCartContent() {
   const popup = document.querySelector('.cart-popup');
   if (!popup) return;
-  
+
   const totalPrice = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  
+
   let cartHTML = "";
   if (cart.length === 0) {
     cartHTML = '<p style="text-align: center; color: #86868b; padding: 40px;">Таны сагс хоосон байна</p>';
@@ -126,7 +126,7 @@ function updateCartContent() {
       )
       .join("");
   }
-  
+
   const contentDiv = popup.querySelector('div[style*="background: white"]');
   if (contentDiv) {
     contentDiv.innerHTML = `
@@ -154,9 +154,8 @@ function updateCartContent() {
       
       ${cartHTML}
       
-      ${
-        cart.length > 0
-          ? `
+      ${cart.length > 0
+        ? `
           <div style="
             border-top: 2px solid #e5e5e7;
             padding-top: 20px;
@@ -188,7 +187,7 @@ function updateCartContent() {
             </button>
           </div>
         `
-          : ""
+        : ""
       }
     `;
   }
@@ -342,9 +341,8 @@ function showCartPopup() {
       
       ${cartHTML}
       
-      ${
-        cart.length > 0
-          ? `
+      ${cart.length > 0
+      ? `
           <div style="
             border-top: 2px solid #e5e5e7;
             padding-top: 20px;
@@ -376,8 +374,8 @@ function showCartPopup() {
             </button>
           </div>
         `
-          : ""
-      }
+      : ""
+    }
     </div>
     
     <style>
@@ -448,14 +446,14 @@ function displayProducts(products, containerId, isInitialLoad = false) {
     const card = document.createElement("div");
     card.className = "product-card";
     const displayPrice = typeof product.price === 'string' ? product.price : `₮${product.price.toLocaleString()}`;
-    
+
     // Анхны ачаалтад animation нэмэх
     if (isInitialLoad) {
       card.style.opacity = '0';
       card.style.transform = 'translateY(30px)';
       card.style.animation = `fadeInUp 0.6s ease forwards ${index * 0.1}s`;
     }
-    
+
     card.innerHTML = `
       <div style="font-size: 60px; margin-bottom: 15px;">${product.image}</div>
       <div class="product-name">${product.name}</div>
@@ -467,7 +465,7 @@ function displayProducts(products, containerId, isInitialLoad = false) {
 
     container.appendChild(card);
   });
-  
+
   // Animation style нэмэх
   if (isInitialLoad && !document.getElementById('product-animation-style')) {
     const style = document.createElement('style');
@@ -495,7 +493,7 @@ async function searchProducts(searchTerm) {
     const newProducts = await fetchProducts('newProducts');
     const recommendedProducts = await fetchProducts('recommendedProducts');
     const accessories = await fetchProducts('accessories');
-    
+
     const allProducts = [...newProducts, ...recommendedProducts, ...accessories];
     const filtered = allProducts.filter((product) =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -506,7 +504,7 @@ async function searchProducts(searchTerm) {
       document.getElementById("featured-products").innerHTML = "";
       document.getElementById("accessories").innerHTML = "";
     } else {
-      document.getElementById("new-products").innerHTML = 
+      document.getElementById("new-products").innerHTML =
         '<div style="text-align: center; color: #86868b; padding: 40px;">Хайлтын үр дүн олдсонгүй</div>';
       document.getElementById("featured-products").innerHTML = "";
       document.getElementById("accessories").innerHTML = "";
@@ -517,8 +515,8 @@ async function searchProducts(searchTerm) {
 }
 
 // Хайлтын товч дарахад
-document.querySelector(".search-btn").addEventListener("click", () => {
-  const searchTerm = document.querySelector(".search-input").value;
+document.querySelector(".icon1").addEventListener("click", () => {
+  const searchTerm = document.querySelector(".input-wrapper").value;
   if (searchTerm.trim() !== "") {
     searchProducts(searchTerm);
   } else {
@@ -527,7 +525,7 @@ document.querySelector(".search-btn").addEventListener("click", () => {
 });
 
 // Enter товч дарахад хайх
-document.querySelector(".search-input").addEventListener("keypress", (e) => {
+document.querySelector(".input-wrapper").addEventListener("keypress", (e) => {
   if (e.key === "Enter") {
     const searchTerm = e.target.value;
     if (searchTerm.trim() !== "") {
