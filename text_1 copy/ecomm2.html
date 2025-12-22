@@ -6,10 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-        <link rel="stylesheet" href="ecomm2.css">
     <title>Apple Store</title>
+    <link rel="stylesheet" href="ecomm2.css" />
 </head>
-
 <body>
     <section class="menu">
         <div class="menus">
@@ -27,7 +26,7 @@
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
                 </div>
-                <i class="fa-solid fa-bag-shopping"></i>
+                <i class="fa-solid fa-bag-shopping" id="cart-icon"></i>
                 <i class="fa-solid fa-user"></i>
             </div>
         </div>
@@ -39,38 +38,9 @@
 
     <section class="container">
         <h2 class="section-title">Шинэ бүтээгдэхүүн</h2>
-        <div class="product-grid">
-            <div class="product-card">
-                <img src="IMG/macbook.jpg" alt="macbook" class="product-image">
-                <div class="product-name">Macbook Pro M4</div>
-                <div class="product-price">₮8,999,000</div>
-            </div>
-
-            <div class="product-card">
-                <img src="IMG/iphone.jpg" alt="iphone" class="product-image">
-                <div class="product-name">iPhone 17 Pro Max</div>
-                <div class="product-price">₮5,500,000</div>
-            </div>
-
-            <div class="product-card">
-                <img src="IMG/applewatch.jpg" alt="iwatch" class="product-image">
-                <div class="product-name">Apple Watch</div>
-                <div class="product-price">₮3,999,000</div>
-            </div>
-
-            <div class="product-card">
-                <img src="IMG/airpod.jpg" alt="air pod" class="product-image">
-                <div class="product-name">AirPods Pro Gen3</div>
-                <div class="product-price">₮2,999,000</div>
-            </div>
-
-            <div class="product-card">
-                <img src="IMG/ipad.jpg" alt="ipad" class="product-image">
-                <div class="product-name">iPad Pro</div>
-                <div class="product-price">₮4,999,000</div>
-            </div>
+        <div class="product-grid" id="new-products">
+            <div class="loading">Ачааллаж байна...</div>
         </div>
-
         <div class="see-more-container">
             <button class="more">
                 <p>Дэлгэрэнгүй үзэх</p>
@@ -80,38 +50,9 @@
 
     <section class="container">
         <h2 class="section-title">Санал болгох бүтээгдэхүүн</h2>
-        <div class="product-grid">
-            <div class="product-card">
-                <img src="IMG/macbook.jpg" alt="macbook" class="product-image">
-                <div class="product-name">Macbook Air M2</div>
-                <div class="product-price">₮5,999,000</div>
-            </div>
-
-            <div class="product-card">
-                <img src="IMG/iphone.jpg" alt="iphone" class="product-image">
-                <div class="product-name">iPhone 16 Pro</div>
-                <div class="product-price">₮4,500,000</div>
-            </div>
-
-            <div class="product-card">
-                <img src="IMG/applewatch.jpg" alt="iwatch" class="product-image">
-                <div class="product-name">Apple Watch SE</div>
-                <div class="product-price">₮1,999,000</div>
-            </div>
-
-            <div class="product-card">
-                <img src="IMG/airpod.jpg" alt="air pod" class="product-image">
-                <div class="product-name">AirPods Max</div>
-                <div class="product-price">₮3,499,000</div>
-            </div>
-
-            <div class="product-card">
-                <img src="IMG/ipad.jpg" alt="ipad" class="product-image">
-                <div class="product-name">iPad Air</div>
-                <div class="product-price">₮3,299,000</div>
-            </div>
+        <div class="product-grid" id="featured-products">
+            <div class="loading">Ачааллаж байна...</div>
         </div>
-
         <div class="see-more-container">
             <button class="more">
                 <p>Дэлгэрэнгүй үзэх</p>
@@ -121,44 +62,17 @@
 
     <section class="container">
         <h2 class="section-title">Нэмэлт хэрэгсэл</h2>
-        <div class="product-grid">
-            <div class="product-card">
-                <img src="IMG/macbook.jpg" alt="macbook" class="product-image">
-                <div class="product-name">Magic Keyboard</div>
-                <div class="product-price">₮599,000</div>
-            </div>
-
-            <div class="product-card">
-                <img src="IMG/iphone.jpg" alt="iphone" class="product-image">
-                <div class="product-name">MagSafe Charger</div>
-                <div class="product-price">₮199,000</div>
-            </div>
-
-            <div class="product-card">
-                <img src="IMG/applewatch.jpg" alt="iwatch" class="product-image">
-                <div class="product-name">Apple Pencil Pro</div>
-                <div class="product-price">₮699,000</div>
-            </div>
-
-            <div class="product-card">
-                <img src="IMG/airpod.jpg" alt="air pod" class="product-image">
-                <div class="product-name">HomePod Mini</div>
-                <div class="product-price">₮499,000</div>
-            </div>
-
-            <div class="product-card">
-                <img src="IMG/ipad.jpg" alt="ipad" class="product-image">
-                <div class="product-name">AirTag 4 Pack</div>
-                <div class="product-price">₮399,000</div>
-            </div>
+        <div class="product-grid" id="accessories">
+            <div class="loading">Ачааллаж байна...</div>
         </div>
-
         <div class="see-more-container">
             <button class="more">
                 <p>Дэлгэрэнгүй үзэх</p>
             </button>
         </div>
     </section>
+
+    <script src="ecomm2.js"></script>
 </body>
 
 </html>
