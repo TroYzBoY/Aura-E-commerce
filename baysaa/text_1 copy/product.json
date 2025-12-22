@@ -1,0 +1,113 @@
+{
+  "newProducts": [
+    {
+      "id": 1,
+      "name": "Macbook Pro M4",
+      "price": "₮8,999,000",
+      "image": "💻",
+      "category": "laptop"
+    },
+    {
+      "id": 2,
+      "name": "iPhone 17 Pro Max",
+      "price": "₮5,500,000",
+      "image": "📱",
+      "category": "phone"
+    },
+    {
+      "id": 3,
+      "name": "Apple Watch",
+      "price": "₮3,999,000",
+      "image": "⌚",
+      "category": "watch"
+    },
+    {
+      "id": 4,
+      "name": "AirPods Pro Gen3",
+      "price": "₮2,999,000",
+      "image": "🎧",
+      "category": "audio"
+    },
+    {
+      "id": 5,
+      "name": "iPad Pro",
+      "price": "₮4,999,000",
+      "image": "📲",
+      "category": "tablet"
+    }
+  ],
+  "recommendedProducts": [
+    {
+      "id": 6,
+      "name": "Macbook Air M2",
+      "price": "₮5,999,000",
+      "image": "💻",
+      "category": "laptop"
+    },
+    {
+      "id": 7,
+      "name": "iPhone 16 Pro",
+      "price": "₮4,500,000",
+      "image": "📱",
+      "category": "phone"
+    },
+    {
+      "id": 8,
+      "name": "Apple Watch SE",
+      "price": "₮1,999,000",
+      "image": "⌚",
+      "category": "watch"
+    },
+    {
+      "id": 9,
+      "name": "AirPods Max",
+      "price": "₮3,499,000",
+      "image": "🎧",
+      "category": "audio"
+    },
+    {
+      "id": 10,
+      "name": "iPad Air",
+      "price": "₮3,299,000",
+      "image": "📲",
+      "category": "tablet"
+    }
+  ],
+  "accessories": [
+    {
+      "id": 11,
+      "name": "Magic Keyboard",
+      "price": "₮599,000",
+      "image": "⌨️",
+      "category": "accessory"
+    },
+    {
+      "id": 12,
+      "name": "MagSafe Charger",
+      "price": "₮199,000",
+      "image": "🔌",
+      "category": "accessory"
+    },
+    {
+      "id": 13,
+      "name": "Apple Pencil Pro",
+      "price": "₮699,000",
+      "image": "✏️",
+      "category": "accessory"
+    },
+    {
+      "id": 14,
+      "name": "HomePod Mini",
+      "price": "₮499,000",
+      "image": "🔊",
+      "category": "accessory"
+    },
+    {
+      "id": 15,
+      "name": "AirTag 4 Pack",
+      "price": "₮399,000",
+      "image": "📍",
+      "category": "accessory"
+    }
+  ]
+}
