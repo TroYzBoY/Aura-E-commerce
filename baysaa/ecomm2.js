@@ -454,11 +454,11 @@ function displayProducts(products, containerId, isInitialLoad = false) {
       card.style.animation = `fadeInUp 0.6s ease forwards ${index * 0.1}s`;
     }
 
-    card.innerHTML = `
-      <div style="font-size: 60px; margin-bottom: 15px;">${product.image}</div>
-      <div class="product-name">${product.name}</div>
-      <div class="product-price">${displayPrice}</div>
-    `;
+  card.innerHTML = `
+    <img src="${product.image}" alt="${product.name}" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 15px;">
+    <div class="product-name">${product.name}</div>
+    <div class="product-price">${displayPrice}</div>
+  `;
 
     // Бүтээгдэхүүн дээр дарахад popup нээх
     card.addEventListener("click", () => showProductPopup(product));
@@ -600,7 +600,7 @@ function showProductPopup(product) {
         transition: all 0.3s;
       " onmouseover="this.style.background='#e5e5e7'" onmouseout="this.style.background='#f5f5f7'">×</button>
       
-      <div style="font-size: 120px; text-align: center; margin-bottom: 30px;">${product.image}</div>
+      <img style="font-size: 120px; text-align: center; margin-bottom: 30px;">${product.image}</img>
       
       <h2 style="
         font-size: 32px;

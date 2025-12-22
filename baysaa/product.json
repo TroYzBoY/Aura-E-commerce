@@ -4,7 +4,7 @@
       "id": 1,
       "name": "Macbook Pro M4",
       "price": "₮8,999,000",
-      "image": "💻",
+      "image": "./IMG/airpod.jpg",
       "category": "laptop"
     },
     {
