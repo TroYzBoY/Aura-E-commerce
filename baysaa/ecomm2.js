@@ -454,10 +454,12 @@ function displayProducts(products, containerId, isInitialLoad = false) {
       card.style.animation = `fadeInUp 0.6s ease forwards ${index * 0.1}s`;
     }
 
-  card.innerHTML = `
-    <img src="${product.image}" alt="${product.name}" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 15px;">
+    card.innerHTML = `
+    <img src="${product.image}" alt="${product.name}" style="width: 300px; height: 300px; object-fit: contain; margin-bottom: 15px;">
     <div class="product-name">${product.name}</div>
     <div class="product-price">${displayPrice}</div>
+    <div class="product-icon">${product.icon || ''}</div>
+
   `;
 
     // Бүтээгдэхүүн дээр дарахад popup нээх
