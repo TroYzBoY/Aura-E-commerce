@@ -1,3 +1,20 @@
+let allProducts = [];
+
+// JSON-оос бүх бүтээгдэхүүн авах
+async function loadAllData() {
+  const data = await fetch("products.json").then(res => res.json());
+
+  allProducts = [
+    ...data.newProducts,
+    ...data.recommendedProducts,
+    ...data.accessories
+  ];
+
+  displayProducts(allProducts, "search-results", true);
+}
+
+loadAllData();
+
 // Сагсны state
 let cart = [];
 
@@ -487,36 +504,35 @@ function displayProducts(products, containerId, isInitialLoad = false) {
 }
 
 // Хайлт хийх функц
-async function searchProducts(searchTerm) {
+async function initProducts() {
   try {
-    // Бүх категориос өгөгдөл татах
-    const newProducts = await fetchProducts('newProducts');
-    const recommendedProducts = await fetchProducts('recommendedProducts');
-    const accessories = await fetchProducts('accessories');
+    const newProducts = await fetchProducts("newProducts");
+    const recommendedProducts = await fetchProducts("recommendedProducts");
+    const accessories = await fetchProducts("accessories");
 
-    const allProducts = [...newProducts, ...recommendedProducts, ...accessories];
-    const filtered = allProducts.filter((product) =>
-      product.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    ALL_PRODUCTS = [
+      ...newProducts,
+      ...recommendedProducts,
+      ...accessories
+    ];
 
-    if (filtered.length > 0) {
-      displayProducts(filtered, "new-products", false); // Animation алгасах
-      document.getElementById("featured-products").innerHTML = "";
-      document.getElementById("accessories").innerHTML = "";
-    } else {
-      document.getElementById("new-products").innerHTML =
-        '<div style="text-align: center; color: #86868b; padding: 40px;">Хайлтын үр дүн олдсонгүй</div>';
-      document.getElementById("featured-products").innerHTML = "";
-      document.getElementById("accessories").innerHTML = "";
-    }
-  } catch (error) {
-    console.error("Хайлтад алдаа гарлаа:", error);
+    // default view
+    displayProducts(newProducts, "new-products", true);
+    displayProducts(recommendedProducts, "featured-products", true);
+    displayProducts(accessories, "accessories", true);
+
+  } catch (err) {
+    console.error("Init error:", err);
   }
 }
 
+initProducts();
+
+
 // Хайлтын товч дарахад
 document.querySelector(".icon1").addEventListener("click", () => {
-  const searchTerm = document.querySelector(".input-wrapper").value;
+  const searchTerm = document.querySelector(".input").value;
+
   if (searchTerm.trim() !== "") {
     searchProducts(searchTerm);
   } else {
