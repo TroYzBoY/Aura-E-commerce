@@ -456,9 +456,13 @@ function displayProducts(products, containerId, isInitialLoad = false) {
 
     card.innerHTML = `
     <img src="${product.image}" alt="${product.name}" style="width: 300px; height: 300px; object-fit: contain; margin-bottom: 15px;">
-    <div class="product-name">${product.name}</div>
-    <div class="product-price">${displayPrice}</div>
-    <div class="product-icon">${product.icon || ''}</div>
+    <div class="product-details">
+      <div class="product-info">
+         <div class="product-name">${product.name}</div>
+         <div class="product-price">${displayPrice}</div>
+      </div>
+      <div class="product-icon">${product.icon || ''}</div>
+    </div>
 
   `;
 
@@ -628,7 +632,7 @@ function showProductPopup(product) {
       <button onclick="addToCart({id: ${product.id}, name: '${product.name}', price: ${numericPrice}, image: '${product.image}'}); this.closest('[style*=fixed]').remove();" style="
         width: 100%;
         padding: 16px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #000000ff 0%, #764ba2 100%);
         color: white;
         border: none;
         border-radius: 12px;
