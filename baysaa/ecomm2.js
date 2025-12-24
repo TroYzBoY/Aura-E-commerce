@@ -472,7 +472,8 @@ function displayProducts(products, containerId, isInitialLoad = false) {
     }
 
     card.innerHTML = `
-    <img src="${product.image}" alt="${product.name}" style="width: 300px; height: 300px; object-fit: contain; margin-bottom: 15px;">
+    <div class="product-new">${product.new}</div>
+    <img src="${product.image}" alt="${product.name}" style="width: 250px; height: 250px; object-fit: contain; margin-bottom: 15px;">
     <div class="product-details">
       <div class="product-info">
          <div class="product-name">${product.name}</div>
@@ -482,7 +483,17 @@ function displayProducts(products, containerId, isInitialLoad = false) {
     </div>
 
   `;
+    // When rendering products
+    products.map(product => {
+      const showNewTag = product.category !== 'accessory';
 
+      return `
+    <div class="product-item">
+      ${showNewTag && product.new ? `<span class="new-tag">${product.new}</span>` : ''}
+      <!-- rest of product HTML -->
+    </div>
+  `;
+    });
     // Бүтээгдэхүүн дээр дарахад popup нээх
     card.addEventListener("click", () => showProductPopup(product));
 
