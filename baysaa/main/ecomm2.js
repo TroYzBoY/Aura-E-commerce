@@ -147,7 +147,12 @@ function updateCartContent() {
             border-radius: 12px;
             margin-bottom: 15px;
           ">
-            <div style="font-size: 50px;">${item.image}</div>
+            <img src="${item.image}" alt="${item.name}" style="
+              width: 60px;
+              height: 60px;
+              object-fit: cover;
+              border-radius: 8px;
+            " />
             <div style="flex: 1;">
               <div style="font-weight: 600; margin-bottom: 5px;">${item.name}</div>
               <div style="color: #06c; font-weight: 700;">₮${item.price.toLocaleString()}</div>
@@ -283,7 +288,6 @@ function showNotification(message) {
   }, 2000);
 }
 
-// Сагсны popup харуулах
 function showCartPopup() {
   const existingPopup = document.querySelector(".cart-popup");
   if (existingPopup) existingPopup.remove();
