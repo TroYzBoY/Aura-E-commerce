@@ -159,29 +159,29 @@ async function loadDataFromJSON() {
     try {
         cartData.loading = true;
         cartData.error = null;
-        
+
         const response = await fetch('./data/products.json');
-        
+
         if (!response.ok) {
             throw new Error('JSON файл олдсонгүй');
         }
-        
+
         const jsonData = await response.json();
-        
+
         // Сагсанд анхны бүтээгдэхүүнүүдийг нэмэх
         cartData.items = [
             { ...jsonData.newProducts[0], quantity: 1 },
             { ...jsonData.newProducts[1], quantity: 1 }
         ];
-        
+
         cartData.loading = false;
         loadCart();
-        
+
     } catch (error) {
         console.error('JSON уншихад алдаа гарлаа:', error);
         cartData.error = error.message;
         cartData.loading = false;
-        
+
         showLoadingError();
         useLocalData();
     }
@@ -194,7 +194,7 @@ function useLocalData() {
         { ...productDatabase.newProducts[1], quantity: 1 },
         { ...productDatabase.accessories[0], quantity: 2 }
     ];
-    
+
     setTimeout(() => {
         cartData.loading = false;
         loadCart();
@@ -205,7 +205,7 @@ function useLocalData() {
 function showLoadingError() {
     const container = document.getElementById('cartItems');
     if (!container) return;
-    
+
     container.innerHTML = `
         <div style="text-align: center; padding: 40px; color: #86868b;">
             <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #ff9500; margin-bottom: 16px;"></i>
@@ -219,7 +219,7 @@ function showLoadingError() {
 function loadCart() {
     const container = document.getElementById('cartItems');
     if (!container) return;
-    
+
     if (cartData.loading) {
         container.innerHTML = `
             <div style="text-align: center; padding: 40px; color: #86868b;">
@@ -229,7 +229,7 @@ function loadCart() {
         `;
         return;
     }
-    
+
     if (cartData.items.length === 0) {
         container.innerHTML = `
             <div style="text-align: center; padding: 40px; color: #86868b;">
@@ -239,17 +239,17 @@ function loadCart() {
         `;
         return;
     }
-    
+
     container.innerHTML = '';
-    
+
     cartData.items.forEach((item, index) => {
         const itemEl = document.createElement('div');
         itemEl.className = 'cart-item';
-        
-        const imageContent = item.image 
+
+        const imageContent = item.image
             ? `<img src="${item.image}" alt="${item.name}" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fas fa-box\\'></i>'">`
             : '<i class="fas fa-box"></i>';
-        
+
         itemEl.innerHTML = `
             <div class="item-image">${imageContent}</div>
             <div class="item-details">
@@ -268,28 +268,28 @@ function loadCart() {
         `;
         container.appendChild(itemEl);
     });
-    
+
     updateCartSummary();
 }
 
 // ================== ТОО ШИРХЭГ ШИНЭЧЛЭХ ==================
 function updateQty(index, change) {
     if (index < 0 || index >= cartData.items.length) return;
-    
+
     cartData.items[index].quantity = Math.max(1, cartData.items[index].quantity + change);
-    
+
     const qtyElement = document.getElementById('qty' + index);
     if (qtyElement) {
         qtyElement.textContent = cartData.items[index].quantity;
     }
-    
+
     updateCartSummary();
 }
 
 // ================== БҮТЭЭГДЭХҮҮН УСТГАХ ==================
 function removeItem(index) {
     if (index < 0 || index >= cartData.items.length) return;
-    
+
     if (confirm('Энэ бүтээгдэхүүнийг сагснаас устгах уу?')) {
         cartData.items.splice(index, 1);
         loadCart();
@@ -300,7 +300,7 @@ function removeItem(index) {
 function updateCartSummary() {
     const subtotal = cartData.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const total = subtotal + cartData.shipping - cartData.discount;
-    
+
     const updates = {
         'cartCount': cartData.items.length,
         'subtotal': '₮' + subtotal.toLocaleString(),
@@ -308,7 +308,7 @@ function updateCartSummary() {
         'payButtonAmount': '₮' + total.toLocaleString(),
         'paypalAmount': '₮' + total.toLocaleString()
     };
-    
+
     Object.entries(updates).forEach(([id, value]) => {
         const element = document.getElementById(id);
         if (element) element.textContent = value;
@@ -319,23 +319,23 @@ function updateCartSummary() {
 function applyPromo() {
     const input = document.getElementById('promoInput');
     if (!input) return;
-    
+
     const code = input.value.trim().toUpperCase();
-    
+
     if (code === '') {
         alert('⚠️ Промо код оруулна уу');
         return;
     }
-    
+
     if (code === 'SAVE10') {
         const subtotal = cartData.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
         cartData.discount = Math.floor(subtotal * 0.1);
-        
+
         const discountEl = document.getElementById('discount');
         if (discountEl) {
             discountEl.textContent = '-₮' + cartData.discount.toLocaleString();
         }
-        
+
         updateCartSummary();
         alert('✅ Промо код амжилттай! 10% хөнгөлөлт авлаа.');
         input.value = '';
@@ -348,14 +348,14 @@ function applyPromo() {
 function switchPaymentMethod(method, event) {
     const tabs = document.querySelectorAll('.method-tab');
     const contents = document.querySelectorAll('.payment-content');
-    
+
     tabs.forEach(tab => tab.classList.remove('active'));
     contents.forEach(content => content.classList.remove('active'));
 
     if (event && event.target) {
         event.target.classList.add('active');
     }
-    
+
     const methodContent = document.getElementById(method + 'Payment');
     if (methodContent) {
         methodContent.classList.add('active');
@@ -365,7 +365,7 @@ function switchPaymentMethod(method, event) {
 // ================== КАРТЫН ДУГААР ФОРМАТЛАХ ==================
 function formatCardNumber(input) {
     if (!input) return;
-    
+
     let value = input.value.replace(/\s/g, '').replace(/\D/g, '');
     const parts = value.match(/.{1,4}/g);
     input.value = parts ? parts.join(' ').substring(0, 19) : value;
@@ -374,7 +374,7 @@ function formatCardNumber(input) {
 // ================== ДУУСАХ ХУГАЦАА ФОРМАТЛАХ ==================
 function formatExpiry(input) {
     if (!input) return;
-    
+
     let value = input.value.replace(/\D/g, '');
     if (value.length >= 2) {
         value = value.substring(0, 2) + '/' + value.substring(2, 4);
@@ -385,17 +385,17 @@ function formatExpiry(input) {
 // ================== CVV ФОРМАТЛАХ ==================
 function formatCVV(input) {
     if (!input) return;
-    
+
     input.value = input.value.replace(/\D/g, '').substring(0, 3);
 }
 
 // ================== ТӨЛБӨР БОЛОВСРУУЛАХ ==================
 function processPayment(event) {
     if (event) event.preventDefault();
-    
+
     const button = document.getElementById('payButton');
     if (!button) return;
-    
+
     button.disabled = true;
     button.innerHTML = '<span class="spinner"></span> Боловсруулж байна...';
 
@@ -403,7 +403,7 @@ function processPayment(event) {
         button.disabled = false;
         const amount = document.getElementById('payButtonAmount');
         button.innerHTML = (amount ? amount.textContent : '₮0') + ' төлөх';
-        
+
         // 70% магадлалтай амжилттай
         if (Math.random() > 0.3) {
             showModal('successModal');
@@ -417,10 +417,10 @@ function processPayment(event) {
 function processPayPal() {
     const button = event.target;
     const originalText = button.innerHTML;
-    
+
     button.disabled = true;
     button.innerHTML = '<span class="spinner"></span> Боловсруулж байна...';
-    
+
     setTimeout(() => {
         button.disabled = false;
         button.innerHTML = originalText;
@@ -432,10 +432,10 @@ function processPayPal() {
 function processQPay() {
     const button = event.target;
     const originalText = button.innerHTML;
-    
+
     button.disabled = true;
     button.innerHTML = '<span class="spinner"></span> Боловсруулж байна...';
-    
+
     setTimeout(() => {
         button.disabled = false;
         button.innerHTML = originalText;

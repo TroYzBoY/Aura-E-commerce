@@ -78,10 +78,10 @@ function addToCart(product) {
 // Сагснаас хасах функц (localStorage шинэчлэх)
 function removeFromCart(productId) {
   cart = cart.filter((item) => item.id !== productId);
-  
+
   // localStorage шинэчлэх
   localStorage.setItem('cartItems', JSON.stringify(cart));
-  
+
   updateCartBadge();
   updateCartContent();
 }
@@ -108,13 +108,13 @@ function goToCheckout() {
     alert('⚠️ Таны сагс хоосон байна!\n\nЭхлээд бүтээгдэхүүн сонгоно уу.');
     return;
   }
-  
+
   // localStorage-д сагсны өгөгдөл хадгалах
   localStorage.setItem('cartItems', JSON.stringify(cart));
-  
+
   // Мэдэгдэл харуулах
   showNotification('💳 Төлбөрийн хуудас руу шилжиж байна...');
-  
+
   // 500ms дараа checkout хуудас руу шилжих
   setTimeout(() => {
     window.location.href = '/baysaa/tulbur.html';
@@ -515,8 +515,16 @@ function displayProducts(products, containerId, isInitialLoad = false) {
       card.style.transform = 'translateY(30px)';
       card.style.animation = `fadeInUp 0.6s ease forwards ${index * 0.1}s`;
     }
-
-    card.innerHTML = `
+    product.category == 'accessory' ? card.innerHTML = `
+    <img src="${product.image}" alt="${product.name}" style="width: 250px; height: 250px; object-fit: contain; margin-bottom: 15px;">
+    <div class="product-details">
+      <div class="product-info">
+         <div class="product-name">${product.name}</div>
+         <div class="product-price">${displayPrice}</div>
+      </div>
+      <div class="product-icon">${product.icon || ''}</div>
+    </div> `:
+      card.innerHTML = `
     <div class="product-new">${product.new}</div>
     <img src="${product.image}" alt="${product.name}" style="width: 250px; height: 250px; object-fit: contain; margin-bottom: 15px;">
     <div class="product-details">
@@ -721,14 +729,14 @@ function showProductPopup(product) {
   });
 
   document.body.appendChild(popup);
-  
+
   // Товч дээр event listener нэмэх
   const addBtn = document.getElementById(`add-btn-${product.id}`);
   addBtn.addEventListener('click', () => {
     addToCart({
-      id: product.id, 
-      name: product.name, 
-      price: numericPrice, 
+      id: product.id,
+      name: product.name,
+      price: numericPrice,
       image: product.image
     });
     popup.remove();
