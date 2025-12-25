@@ -11,6 +11,7 @@ const imageFiles = {
     'iphone16promax': 'iphone16promax.png',
     'iwatch se': 'iwatch se.png',
     'iwatch': 'iwatch.png',
+    'Magic Keyboard': 'magick.png',
     'logo': 'Logo.png'
 };
 
@@ -114,7 +115,7 @@ const productDatabase = {
             "id": 11,
             "name": "Magic Keyboard",
             "price": 599000,
-            "image": "image/keyboard.png",
+            "image": "image/magick.png",
             "category": "accessory",
             "variant": "Монгол хэл"
         },
@@ -396,7 +397,7 @@ function processPayment(event) {
     if (!button) return;
     
     button.disabled = true;
-    button.innerHTML = '<span class="spinner-small"></span> Боловсруулж байна...';
+    button.innerHTML = '<span class="spinner"></span> Боловсруулж байна...';
 
     setTimeout(() => {
         button.disabled = false;
@@ -418,7 +419,7 @@ function processPayPal() {
     const originalText = button.innerHTML;
     
     button.disabled = true;
-    button.innerHTML = '<span class="spinner-small"></span> Боловсруулж байна...';
+    button.innerHTML = '<span class="spinner"></span> Боловсруулж байна...';
     
     setTimeout(() => {
         button.disabled = false;
@@ -433,7 +434,7 @@ function processQPay() {
     const originalText = button.innerHTML;
     
     button.disabled = true;
-    button.innerHTML = '<span class="spinner-small"></span> Боловсруулж байна...';
+    button.innerHTML = '<span class="spinner"></span> Боловсруулж байна...';
     
     setTimeout(() => {
         button.disabled = false;

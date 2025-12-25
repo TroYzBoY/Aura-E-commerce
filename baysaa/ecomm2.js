@@ -18,10 +18,29 @@ loadAllData();
 // Сагсны state
 let cart = [];
 
-// Сагсыг шинэчлэх функц
+// ============= LOCALSTORAGE ХОЛБОХ =============
+// Хуудас ачаалагдахад localStorage-с сагсыг авах
+window.addEventListener('DOMContentLoaded', () => {
+  const savedCart = localStorage.getItem('cartItems');
+  if (savedCart) {
+    try {
+      cart = JSON.parse(savedCart);
+      updateCartBadge();
+      console.log('✅ Сагсны өгөгдөл localStorage-с ачаалагдлаа:', cart);
+    } catch (error) {
+      console.error('localStorage уншихад алдаа:', error);
+      cart = [];
+    }
+  }
+});
+
+// Сагсыг шинэчлэх функц (localStorage-д хадгалах)
 function updateCartBadge() {
   const cartIcon = document.getElementById("cart-icon");
   let badge = cartIcon.querySelector(".cart-badge");
+
+  // localStorage-д хадгалах
+  localStorage.setItem('cartItems', JSON.stringify(cart));
 
   if (cart.length > 0) {
     if (!badge) {
@@ -37,7 +56,7 @@ function updateCartBadge() {
   }
 }
 
-// Сагсанд нэмэх функц
+// Сагсанд нэмэх функц (localStorage-д хадгалах)
 function addToCart(product) {
   const existingItem = cart.find((item) => item.id === product.id);
 
@@ -47,20 +66,27 @@ function addToCart(product) {
     cart.push({ ...product, quantity: 1 });
   }
 
+  // localStorage-д хадгалах
+  localStorage.setItem('cartItems', JSON.stringify(cart));
+
   updateCartBadge();
 
   // Амжилттай мэдэгдэл
   showNotification(`${product.name} сагсанд нэмэгдлээ!`);
 }
 
-// Сагснаас хасах функц
+// Сагснаас хасах функц (localStorage шинэчлэх)
 function removeFromCart(productId) {
   cart = cart.filter((item) => item.id !== productId);
+  
+  // localStorage шинэчлэх
+  localStorage.setItem('cartItems', JSON.stringify(cart));
+  
   updateCartBadge();
-  updateCartContent(); // Popup-г дахин ачаалахгүйгээр зөвхөн агуулгыг шинэчлэх
+  updateCartContent();
 }
 
-// Тоо ширхэг өөрчлөх
+// Тоо ширхэг өөрчлөх (localStorage шинэчлэх)
 function updateQuantity(productId, change) {
   const item = cart.find((item) => item.id === productId);
   if (item) {
@@ -68,10 +94,31 @@ function updateQuantity(productId, change) {
     if (item.quantity <= 0) {
       removeFromCart(productId);
     } else {
+      // localStorage шинэчлэх
+      localStorage.setItem('cartItems', JSON.stringify(cart));
       updateCartBadge();
-      updateCartContent(); // Popup-г дахин ачаалахгүйгээр зөвхөн агуулгыг шинэчлэх
+      updateCartContent();
     }
   }
+}
+
+// ============= CHECKOUT РУУ ШИЛЖИХ =============
+function goToCheckout() {
+  if (cart.length === 0) {
+    alert('⚠️ Таны сагс хоосон байна!\n\nЭхлээд бүтээгдэхүүн сонгоно уу.');
+    return;
+  }
+  
+  // localStorage-д сагсны өгөгдөл хадгалах
+  localStorage.setItem('cartItems', JSON.stringify(cart));
+  
+  // Мэдэгдэл харуулах
+  showNotification('💳 Төлбөрийн хуудас руу шилжиж байна...');
+  
+  // 500ms дараа checkout хуудас руу шилжих
+  setTimeout(() => {
+    window.location.href = '/baysaa/tulbur.html';
+  }, 500);
 }
 
 // Сагсны агуулгыг шинэчлэх (popup-г дахин нээхгүй)
@@ -188,7 +235,7 @@ function updateCartContent() {
               <span>Нийт:</span>
               <span style="color: #06c;">₮${totalPrice.toLocaleString()}</span>
             </div>
-            <button onclick="alert('Худалдан авалт баталгаажлаа!')" style="
+            <button onclick="goToCheckout()" style="
               width: 100%;
               padding: 16px;
               background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -200,7 +247,7 @@ function updateCartContent() {
               cursor: pointer;
               transition: all 0.3s;
             " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 30px rgba(102, 126, 234, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-              Худалдан авах
+              💳 Худалдан авах
             </button>
           </div>
         `
@@ -375,7 +422,7 @@ function showCartPopup() {
               <span>Нийт:</span>
               <span style="color: #06c;">₮${totalPrice.toLocaleString()}</span>
             </div>
-            <button onclick="alert('Худалдан авалт баталгаажлаа!')" style="
+            <button onclick="goToCheckout()" style="
               width: 100%;
               padding: 16px;
               background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -387,7 +434,7 @@ function showCartPopup() {
               cursor: pointer;
               transition: all 0.3s;
             " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 30px rgba(102, 126, 234, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-              Худалдан авах
+              💳 Худалдан авах
             </button>
           </div>
         `
@@ -445,7 +492,6 @@ async function fetchProducts(category) {
 // Үнийг тооноос string болгох функц
 function parsePrice(priceStr) {
   if (typeof priceStr === 'number') return priceStr;
-  // "₮8,999,000" -> 8999000
   return parseInt(priceStr.replace(/[₮,]/g, ''));
 }
 
@@ -464,7 +510,6 @@ function displayProducts(products, containerId, isInitialLoad = false) {
     card.className = "product-card";
     const displayPrice = typeof product.price === 'string' ? product.price : `₮${product.price.toLocaleString()}`;
 
-    // Анхны ачаалтад animation нэмэх
     if (isInitialLoad) {
       card.style.opacity = '0';
       card.style.transform = 'translateY(30px)';
@@ -481,12 +526,11 @@ function displayProducts(products, containerId, isInitialLoad = false) {
       </div>
       <div class="product-icon">${product.icon || ''}</div>
     </div>
-
   `;
     const iconElement = card.querySelector('.product-icon');
     if (iconElement && product.icon) {
       iconElement.addEventListener("click", (e) => {
-        e.stopPropagation(); // Card-ийн click event-ийг зогсоох
+        e.stopPropagation();
         showProductPopup(product);
       });
       iconElement.style.cursor = 'pointer';
@@ -495,7 +539,6 @@ function displayProducts(products, containerId, isInitialLoad = false) {
     container.appendChild(card);
   });
 
-  // Animation style нэмэх
   if (isInitialLoad && !document.getElementById('product-animation-style')) {
     const style = document.createElement('style');
     style.id = 'product-animation-style';
@@ -522,13 +565,6 @@ async function initProducts() {
     const recommendedProducts = await fetchProducts("recommendedProducts");
     const accessories = await fetchProducts("accessories");
 
-    ALL_PRODUCTS = [
-      ...newProducts,
-      ...recommendedProducts,
-      ...accessories
-    ];
-
-    // default view
     displayProducts(newProducts, "new-products", true);
     displayProducts(recommendedProducts, "featured-products", true);
     displayProducts(accessories, "accessories", true);
@@ -539,7 +575,6 @@ async function initProducts() {
 }
 
 initProducts();
-
 
 // Хайлтын товч дарахад
 document.querySelector(".icon1").addEventListener("click", () => {
@@ -583,7 +618,7 @@ async function loadAllProducts() {
   }
 }
 
-// Бүтээгдэхүүн дээр дарахад popup харуулах
+// Бүтээгдэхүүн дээр дарахад popup харуулах (localStorage холбоотой)
 function showProductPopup(product) {
   const popup = document.createElement("div");
   popup.style.cssText = `
@@ -651,10 +686,10 @@ function showProductPopup(product) {
         margin-bottom: 30px;
       ">Энэхүү бүтээгдэхүүн нь хамгийн сүүлийн үеийн технологи, өндөр чанартай материалаар хийгдсэн бөгөөд таны өдөр тутмын амьдралд хялбар байдал авчирна.</p>
       
-      <button onclick="addToCart({id: ${product.id}, name: '${product.name}', price: ${numericPrice}, image: '${product.image}'}); this.closest('[style*=fixed]').remove();" style="
+      <button id="add-btn-${product.id}" style="
         width: 100%;
         padding: 16px;
-        background: linear-gradient(135deg, #000000ff 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         border: none;
         border-radius: 12px;
@@ -686,6 +721,18 @@ function showProductPopup(product) {
   });
 
   document.body.appendChild(popup);
+  
+  // Товч дээр event listener нэмэх
+  const addBtn = document.getElementById(`add-btn-${product.id}`);
+  addBtn.addEventListener('click', () => {
+    addToCart({
+      id: product.id, 
+      name: product.name, 
+      price: numericPrice, 
+      image: product.image
+    });
+    popup.remove();
+  });
 }
 
 // Хуудас ачаалагдахад бүтээгдэхүүнүүдийг харуулах
