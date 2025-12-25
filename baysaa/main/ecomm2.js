@@ -2,12 +2,12 @@ let allProducts = [];
 
 // JSON-оос бүх бүтээгдэхүүн авах
 async function loadAllData() {
-  const data = await fetch("products.json").then(res => res.json());
+  const data = await fetch("products.json").then((res) => res.json());
 
   allProducts = [
     ...data.newProducts,
     ...data.recommendedProducts,
-    ...data.accessories
+    ...data.accessories,
   ];
 
   displayProducts(allProducts, "search-results", true);
@@ -20,15 +20,15 @@ let cart = [];
 
 // ============= LOCALSTORAGE ХОЛБОХ =============
 // Хуудас ачаалагдахад localStorage-с сагсыг авах
-window.addEventListener('DOMContentLoaded', () => {
-  const savedCart = localStorage.getItem('cartItems');
+window.addEventListener("DOMContentLoaded", () => {
+  const savedCart = localStorage.getItem("cartItems");
   if (savedCart) {
     try {
       cart = JSON.parse(savedCart);
       updateCartBadge();
-      console.log('✅ Сагсны өгөгдөл localStorage-с ачаалагдлаа:', cart);
+      console.log("✅ Сагсны өгөгдөл localStorage-с ачаалагдлаа:", cart);
     } catch (error) {
-      console.error('localStorage уншихад алдаа:', error);
+      console.error("localStorage уншихад алдаа:", error);
       cart = [];
     }
   }
@@ -40,7 +40,7 @@ function updateCartBadge() {
   let badge = cartIcon.querySelector(".cart-badge");
 
   // localStorage-д хадгалах
-  localStorage.setItem('cartItems', JSON.stringify(cart));
+  localStorage.setItem("cartItems", JSON.stringify(cart));
 
   if (cart.length > 0) {
     if (!badge) {
@@ -67,7 +67,7 @@ function addToCart(product) {
   }
 
   // localStorage-д хадгалах
-  localStorage.setItem('cartItems', JSON.stringify(cart));
+  localStorage.setItem("cartItems", JSON.stringify(cart));
 
   updateCartBadge();
 
@@ -80,7 +80,7 @@ function removeFromCart(productId) {
   cart = cart.filter((item) => item.id !== productId);
 
   // localStorage шинэчлэх
-  localStorage.setItem('cartItems', JSON.stringify(cart));
+  localStorage.setItem("cartItems", JSON.stringify(cart));
 
   updateCartBadge();
   updateCartContent();
@@ -95,7 +95,7 @@ function updateQuantity(productId, change) {
       removeFromCart(productId);
     } else {
       // localStorage шинэчлэх
-      localStorage.setItem('cartItems', JSON.stringify(cart));
+      localStorage.setItem("cartItems", JSON.stringify(cart));
       updateCartBadge();
       updateCartContent();
     }
@@ -105,25 +105,25 @@ function updateQuantity(productId, change) {
 // ============= CHECKOUT РУУ ШИЛЖИХ =============
 function goToCheckout() {
   if (cart.length === 0) {
-    alert('⚠️ Таны сагс хоосон байна!\n\nЭхлээд бүтээгдэхүүн сонгоно уу.');
+    alert("⚠️ Таны сагс хоосон байна!\n\nЭхлээд бүтээгдэхүүн сонгоно уу.");
     return;
   }
 
   // localStorage-д сагсны өгөгдөл хадгалах
-  localStorage.setItem('cartItems', JSON.stringify(cart));
+  localStorage.setItem("cartItems", JSON.stringify(cart));
 
   // Мэдэгдэл харуулах
-  showNotification('💳 Төлбөрийн хуудас руу шилжиж байна...');
+  showNotification("💳 Төлбөрийн хуудас руу шилжиж байна...");
 
   // 500ms дараа checkout хуудас руу шилжих
   setTimeout(() => {
-    window.location.href = '/baysaa/tulbur.html';
+    window.location.href = "/baysaa/tulbur.html";
   }, 500);
 }
 
 // Сагсны агуулгыг шинэчлэх (popup-г дахин нээхгүй)
 function updateCartContent() {
-  const popup = document.querySelector('.cart-popup');
+  const popup = document.querySelector(".cart-popup");
   if (!popup) return;
 
   const totalPrice = cart.reduce(
@@ -133,7 +133,8 @@ function updateCartContent() {
 
   let cartHTML = "";
   if (cart.length === 0) {
-    cartHTML = '<p style="text-align: center; color: #86868b; padding: 40px;">Таны сагс хоосон байна</p>';
+    cartHTML =
+      '<p style="text-align: center; color: #86868b; padding: 40px;">Таны сагс хоосон байна</p>';
   } else {
     cartHTML = cart
       .map(
@@ -154,7 +155,9 @@ function updateCartContent() {
               border-radius: 8px;
             " />
             <div style="flex: 1;">
-              <div style="font-weight: 600; margin-bottom: 5px;">${item.name}</div>
+              <div style="font-weight: 600; margin-bottom: 5px;">${
+                item.name
+              }</div>
               <div style="color: #06c; font-weight: 700;">₮${item.price.toLocaleString()}</div>
             </div>
             <div style="display: flex; align-items: center; gap: 10px;">
@@ -168,7 +171,9 @@ function updateCartContent() {
                 font-size: 18px;
                 font-weight: 700;
               ">-</button>
-              <span style="font-weight: 600; min-width: 20px; text-align: center;">${item.quantity}</span>
+              <span style="font-weight: 600; min-width: 20px; text-align: center;">${
+                item.quantity
+              }</span>
               <button onclick="updateQuantity(${item.id}, 1)" style="
                 width: 30px;
                 height: 30px;
@@ -223,8 +228,9 @@ function updateCartContent() {
       
       ${cartHTML}
       
-      ${cart.length > 0
-        ? `
+      ${
+        cart.length > 0
+          ? `
           <div style="
             border-top: 2px solid #e5e5e7;
             padding-top: 20px;
@@ -256,7 +262,7 @@ function updateCartContent() {
             </button>
           </div>
         `
-        : ""
+          : ""
       }
     `;
   }
@@ -315,7 +321,8 @@ function showCartPopup() {
 
   let cartHTML = "";
   if (cart.length === 0) {
-    cartHTML = '<p style="text-align: center; color: #86868b; padding: 40px;">Таны сагс хоосон байна</p>';
+    cartHTML =
+      '<p style="text-align: center; color: #86868b; padding: 40px;">Таны сагс хоосон байна</p>';
   } else {
     cartHTML = cart
       .map(
@@ -329,9 +336,13 @@ function showCartPopup() {
             border-radius: 12px;
             margin-bottom: 15px;
           ">
-            <img src="${item.image}" alt="${item.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;" />
+            <img src="${item.image}" alt="${
+          item.name
+        }" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;" />
             <div style="flex: 1;">
-              <div style="font-weight: 600; margin-bottom: 5px;">${item.name}</div>
+              <div style="font-weight: 600; margin-bottom: 5px;">${
+                item.name
+              }</div>
               <div style="color: #06c; font-weight: 700;">₮${item.price.toLocaleString()}</div>
             </div>
             <div style="display: flex; align-items: center; gap: 10px;">
@@ -345,7 +356,9 @@ function showCartPopup() {
                 font-size: 18px;
                 font-weight: 700;
               ">-</button>
-              <span style="font-weight: 600; min-width: 20px; text-align: center;">${item.quantity}</span>
+              <span style="font-weight: 600; min-width: 20px; text-align: center;">${
+                item.quantity
+              }</span>
               <button onclick="updateQuantity(${item.id}, 1)" style="
                 width: 30px;
                 height: 30px;
@@ -409,8 +422,9 @@ function showCartPopup() {
       
       ${cartHTML}
       
-      ${cart.length > 0
-      ? `
+      ${
+        cart.length > 0
+          ? `
           <div style="
             border-top: 2px solid #e5e5e7;
             padding-top: 20px;
@@ -442,8 +456,8 @@ function showCartPopup() {
             </button>
           </div>
         `
-      : ""
-    }
+          : ""
+      }
     </div>
     
     <style>
@@ -495,8 +509,8 @@ async function fetchProducts(category) {
 
 // Үнийг тооноос string болгох функц
 function parsePrice(priceStr) {
-  if (typeof priceStr === 'number') return priceStr;
-  return parseInt(priceStr.replace(/[₮,]/g, ''));
+  if (typeof priceStr === "number") return priceStr;
+  return parseInt(priceStr.replace(/[₮,]/g, ""));
 }
 
 // Бүтээгдэхүүнүүдийг харуулах функц
@@ -512,48 +526,56 @@ function displayProducts(products, containerId, isInitialLoad = false) {
   products.forEach((product, index) => {
     const card = document.createElement("div");
     card.className = "product-card";
-    const displayPrice = typeof product.price === 'string' ? product.price : `₮${product.price.toLocaleString()}`;
+    const displayPrice =
+      typeof product.price === "string"
+        ? product.price
+        : `₮${product.price.toLocaleString()}`;
 
     if (isInitialLoad) {
-      card.style.opacity = '0';
-      card.style.transform = 'translateY(30px)';
+      card.style.opacity = "0";
+      card.style.transform = "translateY(30px)";
       card.style.animation = `fadeInUp 0.6s ease forwards ${index * 0.1}s`;
     }
-    product.category == 'accessory' ? card.innerHTML = `
-    <img src="${product.image}" alt="${product.name}" style="width: 250px; height: 250px; object-fit: contain; margin-bottom: 15px;">
+    product.category == "accessory"
+      ? (card.innerHTML = `
+    <img src="${product.image}" alt="${
+          product.name
+        }" style="width: 250px; height: 250px; object-fit: contain; margin-bottom: 15px;">
     <div class="product-details">
       <div class="product-info">
          <div class="product-name">${product.name}</div>
          <div class="product-price">${displayPrice}</div>
       </div>
-      <div class="product-icon">${product.icon || ''}</div>
-    </div> `:
-      card.innerHTML = `
+      <div class="product-icon">${product.icon || ""}</div>
+    </div> `)
+      : (card.innerHTML = `
     <div class="product-new">${product.new}</div>
-    <img src="${product.image}" alt="${product.name}" style="width: 250px; height: 250px; object-fit: contain; margin-bottom: 15px;">
+    <img src="${product.image}" alt="${
+          product.name
+        }" style="width: 250px; height: 250px; object-fit: contain; margin-bottom: 15px;">
     <div class="product-details">
       <div class="product-info">
          <div class="product-name">${product.name}</div>
          <div class="product-price">${displayPrice}</div>
       </div>
-      <div class="product-icon">${product.icon || ''}</div>
+      <div class="product-icon">${product.icon || ""}</div>
     </div>
-  `;
-    const iconElement = card.querySelector('.product-icon');
+  `);
+    const iconElement = card.querySelector(".product-icon");
     if (iconElement && product.icon) {
       iconElement.addEventListener("click", (e) => {
         e.stopPropagation();
         showProductPopup(product);
       });
-      iconElement.style.cursor = 'pointer';
+      iconElement.style.cursor = "pointer";
     }
 
     container.appendChild(card);
   });
 
-  if (isInitialLoad && !document.getElementById('product-animation-style')) {
-    const style = document.createElement('style');
-    style.id = 'product-animation-style';
+  if (isInitialLoad && !document.getElementById("product-animation-style")) {
+    const style = document.createElement("style");
+    style.id = "product-animation-style";
     style.textContent = `
       @keyframes fadeInUp {
         from {
@@ -580,7 +602,6 @@ async function initProducts() {
     displayProducts(newProducts, "new-products", true);
     displayProducts(recommendedProducts, "featured-products", true);
     displayProducts(accessories, "accessories", true);
-
   } catch (err) {
     console.error("Init error:", err);
   }
@@ -625,7 +646,8 @@ async function loadAllProducts() {
   } catch (error) {
     console.error("Алдаа гарлаа:", error);
     document.querySelectorAll(".product-grid").forEach((grid) => {
-      grid.innerHTML = '<div class="error">Өгөгдөл ачаалахад алдаа гарлаа</div>';
+      grid.innerHTML =
+        '<div class="error">Өгөгдөл ачаалахад алдаа гарлаа</div>';
     });
   }
 }
@@ -648,7 +670,10 @@ function showProductPopup(product) {
   `;
 
   const numericPrice = parsePrice(product.price);
-  const displayPrice = typeof product.price === 'string' ? product.price : `₮${product.price.toLocaleString()}`;
+  const displayPrice =
+    typeof product.price === "string"
+      ? product.price
+      : `₮${product.price.toLocaleString()}`;
 
   popup.innerHTML = `
     <div style="
@@ -675,7 +700,14 @@ function showProductPopup(product) {
         transition: all 0.3s;
       " onmouseover="this.style.background='#e5e5e7'" onmouseout="this.style.background='#f5f5f7'">×</button>
       
-      <img style="font-size: 120px; text-align: center; margin-bottom: 30px;">${product.image}</img>
+      <img src="${product.image}" alt="${product.name}" style="
+        max-width: 300px;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin: 0 auto 30px;
+        display: block;
+      " />
       
       <h2 style="
         font-size: 32px;
@@ -736,12 +768,12 @@ function showProductPopup(product) {
 
   // Товч дээр event listener нэмэх
   const addBtn = document.getElementById(`add-btn-${product.id}`);
-  addBtn.addEventListener('click', () => {
+  addBtn.addEventListener("click", () => {
     addToCart({
       id: product.id,
       name: product.name,
       price: numericPrice,
-      image: product.image
+      image: product.image,
     });
     popup.remove();
   });
