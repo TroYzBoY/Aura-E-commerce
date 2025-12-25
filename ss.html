@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Төлбөрийн Систем</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .checkout-container {
+            display: grid;
+            grid-template-columns: 1fr 450px;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+
+        .payment-section {
+            padding: 60px 80px;
+            background: white;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 40px;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .breadcrumb .active {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .payment-methods {
+            margin-bottom: 30px;
+        }
+
+        .method-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .method-tab {
+            padding: 15px 25px;
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            position: relative;
+            bottom: -2px;
+        }
+
+        .method-tab:hover {
+            color: #667eea;
+        }
+
+        .method-tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .payment-content {
+            display: none;
+        }
+
+        .payment-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e8e8e8;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .card-icons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 35px;
+            background: #f8f9fa;
+            border: 2px solid #e8e8e8;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: #666;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .security-note {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #999;
+            font-size: 13px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .cart-section {
+            background: #fafbfc;
+            padding: 60px 40px;
+            border-left: 1px solid #e8e8e8;
+        }
+
+        .cart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .cart-header h2 {
+            font-size: 20px;
+            color: #1a1a1a;
+        }
+
+        .cart-count {
+            background: #667eea;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .cart-items {
+            margin-bottom: 30px;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 15px;
+            padding: 20px 0;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .cart-item:first-child {
+            padding-top: 0;
+        }
+
+        .item-image {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 5px;
+            font-size: 15px;
+        }
+
+        .item-variant {
+            color: #999;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .qty-btn {
+            width: 24px;
+            height: 24px;
+            border: 1px solid #e8e8e8;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .qty-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .qty-number {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .item-price {
+            font-weight: 600;
+            color: #1a1a1a;
+            font-size: 16px;
+        }
+
+        .promo-code {
+            margin-bottom: 30px;
+        }
+
+        .promo-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .promo-input-group input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e8e8e8;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .promo-input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-apply {
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-apply:hover {
+            background: #5568d3;
+        }
+
+        .order-summary {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            color: #666;
+            font-size: 15px;
+        }
+
+        .summary-row.total {
+            border-top: 2px solid #e8e8e8;
+            padding-top: 20px;
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .summary-row.total .amount {
+            color: #667eea;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            animation: modalSlideUp 0.3s;
+        }
+
+        @keyframes modalSlideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+
+        .modal-icon.success {
+            background: #d4edda;
+            color: #28a745;
+        }
+
+        .modal-icon.error {
+            background: #f8d7da;
+            color: #dc3545;
+        }
+
+        @media (max-width: 1024px) {
+            .checkout-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .payment-section {
+                padding: 40px 30px;
+            }
+
+            .cart-section {
+                border-left: none;
+                border-top: 1px solid #e8e8e8;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="checkout-container">
+        <div class="payment-section">
+            <div class="logo">🛍️ YourShop</div>
+            
+            <div class="breadcrumb">
+                <span>Сагс</span>
+                <span>→</span>
+                <span class="active">Төлбөр</span>
+                <span>→</span>
+                <span>Баталгаажуулалт</span>
+            </div>
+
+            <h1>Төлбөрийн мэдээлэл</h1>
+            <p class="subtitle">Аюулгүй төлбөрийн системээр дамжуулан төлнө үү</p>
+
+            <div class="payment-methods">
+                <div class="method-tabs">
+                    <button class="method-tab active" onclick="switchPaymentMethod('card')">
+                        💳 Карт
+                    </button>
+                    <button class="method-tab" onclick="switchPaymentMethod('paypal')">
+                        📱 PayPal
+                    </button>
+                    <button class="method-tab" onclick="switchPaymentMethod('qpay')">
+                        📲 QPay
+                    </button>
+                </div>
+
+                <div id="cardPayment" class="payment-content active">
+                    <div class="card-icons">
+                        <div class="card-icon">VISA</div>
+                        <div class="card-icon">MC</div>
+                        <div class="card-icon">AMEX</div>
+                    </div>
+
+                    <form id="cardForm" onsubmit="processPayment(event)">
+                        <div class="form-group">
+                            <label>Картын дугаар</label>
+                            <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" 
+                                   maxlength="19" required oninput="formatCardNumber(this)">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Картын эзэмшигчийн нэр</label>
+                            <input type="text" id="cardName" placeholder="JOHN DOE" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Дуусах хугацаа</label>
+                                <input type="text" id="cardExpiry" placeholder="MM/YY" 
+                                       maxlength="5" required oninput="formatExpiry(this)">
+                            </div>
+                            <div class="form-group">
+                                <label>CVV</label>
+                                <input type="text" id="cardCVV" placeholder="123" 
+                                       maxlength="3" required pattern="[0-9]{3}">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" id="payButton">
+                            <span id="payButtonAmount">₮174,000</span> төлөх
+                        </button>
+
+                        <div class="security-note">
+                            🔒 256-бит SSL шифрлэлттэй найдвартай төлбөр
+                        </div>
+                    </form>
+                </div>
+
+                <div id="paypalPayment" class="payment-content">
+                    <div style="background: linear-gradient(135deg, #0070ba 0%, #003087 100%); padding: 40px; border-radius: 16px; text-align: center; color: white; margin-bottom: 20px;">
+                        <h3 style="margin-bottom: 15px; font-size: 20px;">PayPal бүртгэл рүүгээ нэвтэрнэ үү</h3>
+                        <div style="font-size: 36px; font-weight: bold; margin-bottom: 10px;" id="paypalAmount">₮174,000</div>
+                        <p>Та PayPal хуудас руу шилжиж төлбөрөө баталгаажуулна</p>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="processPayPal()">
+                        PayPal рүү шилжих
+                    </button>
+
+                    <div class="security-note">
+                        🔒 PayPal-ын аюулгүй системээр дамжуулан төлнө
+                    </div>
+                </div>
+
+                <div id="qpayPayment" class="payment-content">
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px; border-radius: 16px; text-align: center; color: white; margin-bottom: 20px;">
+                        <div style="width: 220px; height: 220px; background: white; border-radius: 12px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 80px;">📱</div>
+                        <h3 style="margin-bottom: 10px; font-size: 18px;">QPay апп ашиглан уншуулна уу</h3>
+                        <p style="opacity: 0.9; font-size: 14px;">QR код автоматаар үүсгэгдлээ</p>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="processQPay()">
+                        Төлбөр баталгаажуулах
+                    </button>
+
+                    <div class="security-note">
+                        🔒 QPay-н аюулгүй системээр төлнө
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cart-section">
+            <div class="cart-header">
+                <h2>Таны сагс</h2>
+                <div class="cart-count" id="cartCount">0</div>
+            </div>
+
+            <div class="cart-items" id="cartItems">
+                <!-- JSON-ээс динамикаар нэмэгдэнэ -->
+            </div>
+
+            <div class="promo-code">
+                <div class="promo-input-group">
+                    <input type="text" placeholder="Промо код оруулах" id="promoInput">
+                    <button class="btn-apply" onclick="applyPromo()">Ашиглах</button>
+                </div>
+            </div>
+
+            <div class="order-summary">
+                <div class="summary-row">
+                    <span>Нийт дүн</span>
+                    <span id="subtotal">₮0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Хүргэлт</span>
+                    <span id="shipping">₮5,000</span>
+                </div>
+                <div class="summary-row">
+                    <span>Хөнгөлөлт</span>
+                    <span id="discount" style="color: #28a745;">-₮0</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Төлөх дүн</span>
+                    <span class="amount" id="totalAmount">₮0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-icon success">✓</div>
+            <h2>Төлбөр амжилттай!</h2>
+            <p>Таны захиалга амжилттай баталгаажлаа</p>
+            <button class="btn btn-primary" onclick="closeModal()">Баярлалаа</button>
+        </div>
+    </div>
+
+    <div id="errorModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-icon error">✕</div>
+            <h2>Төлбөр амжилтгүй</h2>
+            <p>Төлбөр хийхэд алдаа гарлаа. Дахин оролдоно уу.</p>
+            <button class="btn btn-primary" onclick="closeModal()">Хаах</button>
+        </div>
+    </div>
+
+    <script>
+        // ================== CART DATA (JSON) ==================
+        const cartData = {
+            items: [
+                {
+                    id: 1,
+                    name: "Premium Cotton T-Shirt",
+                    variant: "Хар өнгө • M размер",
+                    price: 45000,
+                    quantity: 2,
+                    emoji: "👕"
+                },
+                {
+                    id: 2,
+                    name: "Running Shoes Pro",
+                    variant: "Цэнхэр • 42 размер",
+                    price: 89000,
+                    quantity: 1,
+                    emoji: "👟"
+                },
+                {
+                    id: 3,
+                    name: "Backpack Classic",
+                    variant: "Саарал өнгө",
+                    price: 35000,
+                    quantity: 1,
+                    emoji: "🎒"
+                }
+            ],
+            shipping: 5000,
+            discount: 0
+        };
+
+        // ================== LOAD CART ==================
+        function loadCart() {
+            const container = document.getElementById('cartItems');
+            container.innerHTML = '';
+            
+            cartData.items.forEach((item, index) => {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'cart-item';
+                itemEl.innerHTML = `
+                    <div class="item-image">${item.emoji}</div>
+                    <div class="item-details">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-variant">${item.variant}</div>
+                        <div class="item-quantity">
+                            <button class="qty-btn" onclick="updateQty(${index}, -1)">−</button>
+                            <span class="qty-number" id="qty${index}">${item.quantity}</span>
+                            <button class="qty-btn" onclick="updateQty(${index}, 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="item-price">₮${item.price.toLocaleString()}</div>
+                `;
+                container.appendChild(itemEl);
+            });
+            
+            updateCartSummary();
+        }
+
+        // ================== UPDATE QUANTITY ==================
+        function updateQty(index, change) {
+            cartData.items[index].quantity = Math.max(1, cartData.items[index].quantity + change);
+            document.getElementById('qty' + index).textContent = cartData.items[index].quantity;
+            updateCartSummary();
+        }
+
+        // ================== UPDATE SUMMARY ==================
+        function updateCartSummary() {
+            const subtotal = cartData.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const total = subtotal + cartData.shipping - cartData.discount;
+            
+            document.getElementById('cartCount').textContent = cartData.items.length;
+            document.getElementById('subtotal').textContent = '₮' + subtotal.toLocaleString();
+            document.getElementById('totalAmount').textContent = '₮' + total.toLocaleString();
+            document.getElementById('payButtonAmount').textContent = '₮' + total.toLocaleString();
+            document.getElementById('paypalAmount').textContent = '₮' + total.toLocaleString();
+        }
+
+        // ================== PROMO CODE ==================
+        function applyPromo() {
+            const code = document.getElementById('promoInput').value;
+            if (code === 'SAVE10') {
+                const subtotal = cartData.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                cartData.discount = Math.floor(subtotal * 0.1);
+                document.getElementById('discount').textContent = '-₮' + cartData.discount.toLocaleString();
+                updateCartSummary();
+                alert('Промо код амжилттай ашигласан!');
+            } else {
+                alert('Промо код буруу байна');
+            }
+        }
+
+        // ================== PAYMENT METHODS ==================
+        function switchPaymentMethod(method) {
+            const tabs = document.querySelectorAll('.method-tab');
+            const contents = document.querySelectorAll('.payment-content');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(method + 'Payment').classList.add('active');
+        }
+
+        function formatCardNumber(input) {
+            const value = input.value.replace(/\s/g, '');
+            const parts = value.match(/.{1,4}/g);
+            input.value = parts ? parts.join(' ').substring(0, 19) : value;
+        }
+
+        function formatExpiry(input) {
+            let value = input.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            input.value = value;
+        }
+
+        function processPayment(event) {
+            event.preventDefault();
+            
+            const button = document.getElementById('payButton');
+            button.disabled = true;
+            button.innerHTML = '<span class="spinner"></span>Боловсруулж байна...';
+
+            setTimeout(() => {
+                button.disabled = false;
+                button.innerHTML = document.getElementById('payButtonAmount').textContent + ' төлөх';
+                
+                if (Math.random() > 0.3) {
+                    document.getElementById('successModal').classList.add('active');
+                } else {
+                    document.getElementById('errorModal').classList.add('active');
+                }
+            }, 2000);
+        }
+
+        function processPayPal() {
+            setTimeout(() => {
+                document.getElementById('successModal').classList.add('active');
+            }, 1500);
+        }
+
+        function processQPay() {
+            setTimeout(() => {
+                document.getElementById('successModal').classList.add('active');
+            }, 1500);
+        }
+
+        function closeModal() {
+            document.getElementById('successModal').classList.remove('active');
+            document.getElementById('errorModal').classList.remove('active');
+        }
+
+        // ================== INITIALIZE ==================
+        loadCart();
+    </script>
+</body>
+</html>
