@@ -483,19 +483,14 @@ function displayProducts(products, containerId, isInitialLoad = false) {
     </div>
 
   `;
-    // When rendering products
-    products.map(product => {
-      const showNewTag = product.category !== 'accessory';
-
-      return `
-    <div class="product-item">
-      ${showNewTag && product.new ? `<span class="new-tag">${product.new}</span>` : ''}
-      <!-- rest of product HTML -->
-    </div>
-  `;
-    });
-    // Бүтээгдэхүүн дээр дарахад popup нээх
-    card.addEventListener("click", () => showProductPopup(product));
+    const iconElement = card.querySelector('.product-icon');
+    if (iconElement && product.icon) {
+      iconElement.addEventListener("click", (e) => {
+        e.stopPropagation(); // Card-ийн click event-ийг зогсоох
+        showProductPopup(product);
+      });
+      iconElement.style.cursor = 'pointer';
+    }
 
     container.appendChild(card);
   });
