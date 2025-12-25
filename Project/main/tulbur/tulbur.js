@@ -393,6 +393,11 @@ function formatCVV(input) {
 function processPayment(event) {
     if (event) event.preventDefault();
 
+    // Нэвтэрсэн эсэхийг шалгах
+    if (typeof requireLogin === 'function' && !requireLogin()) {
+        return; // Хэрэв нэвтэрээгүй бол popup нээгдэж, функц дуусна
+    }
+
     const button = document.getElementById('payButton');
     if (!button) return;
 
@@ -415,6 +420,11 @@ function processPayment(event) {
 
 // ================== PAYPAL ТӨЛБӨР ==================
 function processPayPal() {
+    // Нэвтэрсэн эсэхийг шалгах
+    if (typeof requireLogin === 'function' && !requireLogin()) {
+        return; // Хэрэв нэвтэрээгүй бол popup нээгдэж, функц дуусна
+    }
+
     const button = event.target;
     const originalText = button.innerHTML;
 
@@ -430,6 +440,11 @@ function processPayPal() {
 
 // ================== QPAY ТӨЛБӨР ==================
 function processQPay() {
+    // Нэвтэрсэн эсэхийг шалгах
+    if (typeof requireLogin === 'function' && !requireLogin()) {
+        return; // Хэрэв нэвтэрээгүй бол popup нээгдэж, функц дуусна
+    }
+
     const button = event.target;
     const originalText = button.innerHTML;
 
@@ -461,6 +476,12 @@ function closeModal() {
 if (typeof window !== 'undefined') {
     window.addEventListener('DOMContentLoaded', () => {
         loadDataFromJSON();
+        // Checkout хуудас дээр нэвтэрсэн эсэхийг шалгах
+        setTimeout(() => {
+            if (typeof requireLogin === 'function' && !requireLogin()) {
+                // Хэрэв нэвтэрээгүй бол popup нээгдэх (requireLogin() функц popup-г нээнэ)
+            }
+        }, 500);
     });
 
     // Global функцууд

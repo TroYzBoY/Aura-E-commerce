@@ -87,6 +87,11 @@ function displayDetailedProducts(productsArray) {
 }
 
 function addToCart(id, name, price) {
+  // Нэвтэрсэн эсэхийг шалгах
+  if (typeof requireLogin === 'function' && !requireLogin()) {
+    return; // Хэрэв нэвтэрээгүй бол popup нээгдэж, функц дуусна
+  }
+
   cart.push({ id, name, price });
   updateCartBadge();
   showNotification(`${name} сагсанд нэмэгдлээ!`);
