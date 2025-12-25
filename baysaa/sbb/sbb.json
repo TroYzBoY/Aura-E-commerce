@@ -1,0 +1,49 @@
+{
+  "newProducts": [
+    {
+      "id": 6,
+      "name": "Macbook Air M3",
+      "price": "₮5,999,000",
+      "image": "./IMG/mac air m4.png",
+      "new": "20% OFF",
+      "category": "laptop",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 7,
+      "name": "iPhone 16 Pro Max",
+      "price": "₮4,500,000",
+      "image": "./IMG/iphone16promax.png",
+      "new": "20% OFF",
+      "category": "phone",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 8,
+      "name": "Apple Watch SE",
+      "price": "₮1,999,000",
+      "image": "./IMG/iwatch se.png",
+      "new": "20% OFF",
+      "category": "watch",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 9,
+      "name": "AirPods Max",
+      "price": "₮3,499,000",
+      "image": "./IMG/airpod max.png",
+      "new": "20% OFF",
+      "category": "audio",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 10,
+      "name": "iPad Air",
+      "price": "₮3,299,000",
+      "image": "./IMG/ipad air.png",
+      "new": "20% OFF",
+      "category": "tablet",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    }
+  ]
+}
