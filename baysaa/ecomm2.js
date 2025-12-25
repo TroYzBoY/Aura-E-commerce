@@ -325,7 +325,7 @@ function showCartPopup() {
             border-radius: 12px;
             margin-bottom: 15px;
           ">
-            <div style="font-size: 50px;">${item.image}</div>
+            <img src="${item.image}" alt="${item.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;" />
             <div style="flex: 1;">
               <div style="font-weight: 600; margin-bottom: 5px;">${item.name}</div>
               <div style="color: #06c; font-weight: 700;">₮${item.price.toLocaleString()}</div>
