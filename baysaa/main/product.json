@@ -1,0 +1,143 @@
+{
+  "newProducts": [
+    {
+      "id": 1,
+      "name": "Macbook Pro M4",
+      "price": "₮8,999,000",
+      "image": "./IMG/mac.png",
+      "new": "NEW",
+      "category": "laptop",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 2,
+      "name": "iPhone 17 Pro Max",
+      "price": "₮5,500,000",
+      "image": "./IMG/iphone.png",
+      "new": "NEW",
+      "category": "phone",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 3,
+      "name": "Apple Watch",
+      "price": "₮3,999,000",
+      "image": "./IMG/iwatch.png",
+      "new": "NEW",
+      "category": "watch",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 4,
+      "name": "AirPods Pro Gen3",
+      "price": "₮2,999,000",
+      "image": "./IMG/airpod.png",
+      "new": "NEW",
+      "category": "audio",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 5,
+      "name": "iPad Pro",
+      "price": "₮4,999,000",
+      "image": "./IMG/ipad.png",
+      "new": "NEW",
+      "category": "tablet",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    }
+  ],
+  "recommendedProducts": [
+    {
+      "id": 6,
+      "name": "Macbook Air M3",
+      "price": "₮5,999,000",
+      "image": "./IMG/mac air m4.png",
+      "new": "20% OFF",
+      "category": "laptop",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 7,
+      "name": "iPhone 16 Pro Max",
+      "price": "₮4,500,000",
+      "image": "./IMG/iphone16promax.png",
+      "new": "20% OFF",
+      "category": "phone",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 8,
+      "name": "Apple Watch SE",
+      "price": "₮1,999,000",
+      "image": "./IMG/iwatch se.png",
+      "new": "20% OFF",
+      "category": "watch",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 9,
+      "name": "AirPods Max",
+      "price": "₮3,499,000",
+      "image": "./IMG/airpod max.png",
+      "new": "20% OFF",
+      "category": "audio",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 10,
+      "name": "iPad Air",
+      "price": "₮3,299,000",
+      "image": "./IMG/ipad air.png",
+      "new": "20% OFF",
+      "category": "tablet",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    }
+  ],
+  "accessories": [
+    {
+      "id": 11,
+      "name": "Magic Keyboard",
+      "price": "₮599,000",
+      "image": "./IMG/magick.png",
+      "category": "accessory",
+      "new": "",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 12,
+      "name": "MagSafe Charger",
+      "price": "₮199,000",
+      "image": "./IMG/magsafe.png",
+      "category": "accessory",
+      "new": "",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 13,
+      "name": "Apple Pencil Pro",
+      "price": "₮699,000",
+      "image": "./IMG/apple pencil.png",
+      "category": "accessory",
+      "new": "",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 14,
+      "name": "HomePod Mini",
+      "price": "₮499,000",
+      "image": "./IMG/homepod.png",
+      "category": "accessory",
+      "new": "",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 15,
+      "name": "AirTag 4 Pack",
+      "price": "₮399,000",
+      "image": "./IMG/airtag.png",
+      "category": "accessory",
+      "new": "",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    }
+  ]
+}
