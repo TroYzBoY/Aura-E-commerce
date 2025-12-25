@@ -1,0 +1,49 @@
+{
+  "newProducts": [
+    {
+      "id": 1,
+      "name": "Macbook Pro M4",
+      "price": "₮8,999,000",
+      "image": "./IMG/mac.png",
+      "new": "NEW",
+      "category": "laptop",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 2,
+      "name": "iPhone 17 Pro Max",
+      "price": "₮5,500,000",
+      "image": "./IMG/iphone.png",
+      "new": "NEW",
+      "category": "phone",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 3,
+      "name": "Apple Watch",
+      "price": "₮3,999,000",
+      "image": "./IMG/iwatch.png",
+      "new": "NEW",
+      "category": "watch",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 4,
+      "name": "AirPods Pro Gen3",
+      "price": "₮2,999,000",
+      "image": "./IMG/airpod.png",
+      "new": "NEW",
+      "category": "audio",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 5,
+      "name": "iPad Pro",
+      "price": "₮4,999,000",
+      "image": "./IMG/ipad.png",
+      "new": "NEW",
+      "category": "tablet",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    }
+  ]
+}
