@@ -4,7 +4,7 @@ let isLoggedIn = false;
 /* =========================
    CONFIG
 ========================= */
-const API_URL = "http://localhost:3000/users";
+const API_URL = "http://localhost:3000";
 
 /* =========================
    INIT
@@ -87,9 +87,9 @@ function getLoginValues(form) {
 ========================= */
 function initSignupForm(form) {
   if (!form) return;
-
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    console.log("Signup form initialized");
 
     if (!isPolicyAccepted()) return;
 
@@ -144,13 +144,13 @@ function isPolicyAccepted() {
    API (JSON SERVER)
 ========================= */
 async function fetchUsers() {
-  const res = await fetch(API_URL);
+  const res = await fetch(`${API_URL}/users`);
   if (!res.ok) throw new Error("Fetch users failed");
   return res.json();
 }
-
+  
 async function createUser(user) {
-  const res = await fetch(API_URL, {
+  const res = await fetch(`${API_URL}/users`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(user),

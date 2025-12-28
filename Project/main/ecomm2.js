@@ -1,9 +1,10 @@
 let allProducts = [];
+const API_Product_URL = "http://localhost:3000";
 
 // JSON-оос бүх бүтээгдэхүүн авах (хайлтын зориулалтаар)
 async function loadAllData() {
   try {
-    const response = await fetch("./product.json");
+    const response = await fetch(`${API_Product_URL}/Products`);
     if (!response.ok) {
       console.error("product.json файл олдсонгүй");
       return;
@@ -531,18 +532,39 @@ if (cartIcon) {
 }
 
 // API-аас өгөгдөл татах функц
-async function fetchProducts(category) {
+async function fetchProducts(tag) {
   try {
-    const response = await fetch("./product.json");
+    const response = await fetch(`${API_Product_URL}/Products?new=${tag}`);
     if (!response.ok) {
       throw new Error(`HTTP алдаа: ${response.status} ${response.statusText}`);
     }
     const data = await response.json();
-    if (!data[category]) {
+    // if (!data[category]) {
+    //   console.warn(`${category} категори олдсонгүй`);
+    //   return [];
+    // }
+    return data;
+  } catch (error) {
+    console.error("Fetch алдаа:", error);
+    console.error("Алдааны мэдээлэл:", error.message);
+    throw error;
+  }
+}
+
+async function fetchCatProducts(category) {
+  try {
+    const response = await fetch(
+      `${API_Product_URL}/Products?category=${category}`
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP алдаа: ${response.status} ${response.statusText}`);
+    }
+    const data = await response.json();
+    if (!data && data.length === 0) {
       console.warn(`${category} категори олдсонгүй`);
       return [];
     }
-    return data[category] || [];
+    return data || [];
   } catch (error) {
     console.error("Fetch алдаа:", error);
     console.error("Алдааны мэдээлэл:", error.message);
@@ -582,7 +604,7 @@ function calculateSalePrice(currentPrice, salePercentage) {
 
 // Store current page for each product section
 const productPages = {
-  "new-products": 0,
+  NEW: 0,
   "featured-products": 0,
   accessories: 0,
 };
@@ -596,16 +618,16 @@ const allProductsData = {
 
 // Бүтээгдэхүүнүүдийг харуулах функц
 function displayProducts(products, containerId, isInitialLoad = false) {
-  const container = document.getElementById(containerId);
+  const container = document.querySelector(`#${containerId}`);
   container.innerHTML = "";
 
   if (!products || products.length === 0) {
     container.innerHTML = '<div class="loading">Бүтээгдэхүүн олдсонгүй</div>';
     return;
   }
+  allProductsData[containerId] = products;
 
   // Store all products
-  allProductsData[containerId] = products;
 
   // Display first 4 products
   showProductPage(containerId, 0);
@@ -614,7 +636,9 @@ function displayProducts(products, containerId, isInitialLoad = false) {
 // Show specific page of products (4 products per page)
 function showProductPage(containerId, page) {
   const container = document.getElementById(containerId);
+  console.log(`Showing page ${page} for container ${containerId}`);
   const products = allProductsData[containerId];
+  console.log(`Products for ${containerId}:`, products);
 
   if (!products || products.length === 0) return;
 
@@ -747,6 +771,7 @@ function scrollProducts(containerId, direction) {
   const productsPerPage = 4;
   const totalPages = Math.ceil(products.length / productsPerPage);
   let currentPage = productPages[containerId];
+  console.log(`Current page for ${containerId}: ${currentPage}`);
 
   if (direction === "next" && currentPage < totalPages - 1) {
     currentPage++;
@@ -763,13 +788,13 @@ function scrollProducts(containerId, direction) {
 // Хайлт хийх функц
 async function initProducts() {
   try {
-    const newProducts = await fetchProducts("newProducts");
-    const recommendedProducts = await fetchProducts("recommendedProducts");
-    const accessories = await fetchProducts("accessories");
+    const newProducts = await fetchProducts("NEW");
+    const recommendedProducts = await fetchProducts("20% OFF");
+    const accessories = await fetchCatProducts("accessory");
 
-    displayProducts(newProducts, "new-products", true);
+    displayProducts(newProducts, "NEW", true);
     displayProducts(recommendedProducts, "featured-products", true);
-    displayProducts(accessories, "accessories", true);
+    displayProducts(accessories, "accessory", true);
   } catch (err) {
     console.error("Init error:", err);
     // Алдааны мессежийг бүх grid дээр харуулах
@@ -872,11 +897,10 @@ function searchProducts(searchTerm) {
     const categoryMatch = product.category?.toLowerCase().includes(searchLower);
     return nameMatch || categoryMatch;
   });
-  
+
   // Dropdown-оор үр дүнг харуулах
   showSearchDropdown(filteredProducts);
 } // ✅ Энэ хаалтыг нэмнэ үү!
-
 
 // Debounce функц - хэт олон удаа дуудагдахаас сэргийлэх
 function debounce(func, wait) {
@@ -1048,14 +1072,13 @@ if (document.readyState === "loading") {
 // Бүх бүтээгдэхүүнийг ачаалах
 async function loadAllProducts() {
   try {
-    const newProducts = await fetchProducts("newProducts");
-    displayProducts(newProducts, "new-products", true);
+    const newProducts = await fetchProducts("NEW");
 
-    const recommendedProducts = await fetchProducts("recommendedProducts");
-    displayProducts(recommendedProducts, "featured-products", true);
+    // const recommendedProducts = await fetchProducts("recommendedProducts");
+    // displayProducts(recommendedProducts, "featured-products", true);
 
-    const accessories = await fetchProducts("accessories");
-    displayProducts(accessories, "accessories", true);
+    const accessories = await fetchCatProducts("accessory");
+    displayProducts(accessories, "accessory", true);
   } catch (error) {
     console.error("Алдаа гарлаа:", error);
     document.querySelectorAll(".product-grid").forEach((grid) => {
