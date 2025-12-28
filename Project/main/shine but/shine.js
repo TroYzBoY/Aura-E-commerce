@@ -11,7 +11,7 @@ let currentCategory = 'all';
 // Fetch products from JSON file
 async function loadProducts() {
   try {
-    const response = await fetch('shine.json');
+    const response = await fetch('../product.json');
     if (!response.ok) {
       throw new Error('Өгөгдөл ачаалахад алдаа гарлаа');
     }
