@@ -5,10 +5,10 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f5f7fa;
-    min-height: 100vh;
-    padding-top: 100px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #f5f7fa;
+  min-height: 100vh;
+  padding-top: 100px;
 }
 
 .menu {
@@ -90,12 +90,6 @@ body {
   color: #1f1d1d;
 }
 
-/* Dropdown styles */
-.menu-item {
-  position: relative;
-}
-
-/* DROPDOWN CONTAINER */
 .dropdown {
   position: absolute;
   left: 0;

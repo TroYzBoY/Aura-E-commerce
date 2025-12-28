@@ -108,9 +108,11 @@ function displayDetailedProducts(productsArray) {
   container.innerHTML = productsArray
     .map(
       (product, index) => `
-        <div class="detailed-card" style="animation: fadeInUp 0.6s ease forwards ${
-          index * 0.05
-        }s; opacity: 0;">
+        <div class="detailed-card" onclick="showProductPopupById(${
+          product.id
+        })" style="animation: fadeInUp 0.6s ease forwards ${
+        index * 0.05
+      }s; opacity: 0; cursor: pointer;">
           ${product.new ? `<div class="product-new">${product.new}</div>` : ""}
           <img src="${product.image}" alt="${
         product.name
@@ -118,7 +120,7 @@ function displayDetailedProducts(productsArray) {
           <div class="detailed-card-info">
             <div class="detailed-card-name">${product.name}</div>
             <div class="detailed-card-price">${product.price}</div>
-            <button class="add-to-cart-btn" onclick="addToCart(${
+            <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart(${
               product.id
             }, '${product.name}', '${product.price}')">
               <i class="fa-solid fa-cart-plus"></i> Сагсанд нэмэх
@@ -228,20 +230,51 @@ function clearFilters() {
 // CART FUNCTIONS
 // ============================================
 
-function addToCart(id, name, price) {
+function addToCart(idOrObj, name, price) {
   // Нэвтэрсэн эсэхийг шалгах
   if (typeof requireLogin === "function" && !requireLogin()) {
-    return; // Хэрэв нэвтэрээгүй бол popup нээгдэж, функц дуусна
+    return;
   }
 
-  cart.push({ id, name, price });
+  // Support passing a product object or (id, name, price)
+  let id = idOrObj && typeof idOrObj === "object" ? idOrObj.id : idOrObj;
+  let productName =
+    idOrObj && typeof idOrObj === "object" ? idOrObj.name : name;
+  let productPrice =
+    idOrObj && typeof idOrObj === "object"
+      ? parseFloat(String(idOrObj.price).replace(/[₮,]/g, "")) || 0
+      : typeof price === "string"
+      ? parseFloat(String(price).replace(/[₮,]/g, "")) || 0
+      : Number(price) || 0;
+
+  // find product data if exists
+  const productObj = allProducts.find((p) => Number(p.id) === Number(id)) || {};
+
+  const existing = cart.find((c) => Number(c.id) === Number(id));
+  if (existing) {
+    existing.quantity = (existing.quantity || 1) + 1;
+  } else {
+    cart.push({
+      id: Number(id),
+      name: productObj.name || productName,
+      price: productPrice || Number(productObj.price) || 0,
+      image: productObj.image || "",
+      quantity: 1,
+    });
+  }
+
+  localStorage.setItem("cartItems", JSON.stringify(cart));
   updateCartBadge();
-  showNotification(`${name} сагсанд нэмэгдлээ!`);
+  showNotification(`${productObj.name || productName} сагсанд нэмэгдлээ!`);
 }
 
 function updateCartBadge() {
   const cartIcon = document.getElementById("cart-icon");
+  if (!cartIcon) return;
   let badge = cartIcon.querySelector(".cart-badge");
+
+  // persist
+  localStorage.setItem("cartItems", JSON.stringify(cart));
 
   if (cart.length > 0) {
     if (!badge) {
@@ -277,6 +310,127 @@ function showNotification(message) {
     notification.style.animation = "slideOutRight 0.3s";
     setTimeout(() => notification.remove(), 300);
   }, 2000);
+}
+
+// ================= CART POPUP & HELPERS =================
+function showCartPopup() {
+  const existingPopup = document.querySelector(".cart-popup");
+  if (existingPopup) existingPopup.remove();
+
+  const totalPrice = cart.reduce(
+    (sum, item) => sum + Number(item.price) * (item.quantity || 1),
+    0
+  );
+
+  const popup = document.createElement("div");
+  popup.className = "cart-popup";
+  popup.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s;
+  `;
+
+  let cartHTML = "";
+  if (cart.length === 0) {
+    cartHTML =
+      '<p style="text-align: center; color: #86868b; padding: 40px;">Таны сагс хоосон байна</p>';
+  } else {
+    cartHTML = cart
+      .map(
+        (item) => `
+      <div class="cart-item" style="display:flex;align-items:center;gap:15px;padding:15px;background:#f5f5f7;border-radius:12px;margin-bottom:15px;">
+        <img src="${item.image || "./IMG/Logo.png"}" alt="${
+          item.name
+        }" style="width:50px;height:50px;object-fit:cover;border-radius:8px;" />
+        <div style="flex:1;">
+          <div style="font-weight:600;margin-bottom:5px;">${item.name}</div>
+          <div style="color:#06c;font-weight:700;">₮${Number(
+            item.price
+          ).toLocaleString()}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button onclick="updateQuantity(${
+            item.id
+          }, -1)" style="width:30px;height:30px;border:none;background:white;border-radius:50%;cursor:pointer;font-size:18px;font-weight:700;">-</button>
+          <span style="font-weight:600;min-width:20px;text-align:center;">${
+            item.quantity || 1
+          }</span>
+          <button onclick="updateQuantity(${
+            item.id
+          }, 1)" style="width:30px;height:30px;border:none;background:white;border-radius:50%;cursor:pointer;font-size:18px;font-weight:700;">+</button>
+        </div>
+        <button onclick="removeFromCart(${
+          item.id
+        })" style="background:#ff3b30;color:white;border:none;width:30px;height:30px;border-radius:50%;">×</button>
+      </div>
+    `
+      )
+      .join("");
+  }
+
+  popup.innerHTML = `
+    <div style="width:520px; max-width:95%; background:white; padding:20px; border-radius:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <h3 style="margin:0;">Таны сагс</h3>
+        <button onclick="this.closest('.cart-popup').remove()" style="background:none;border:none;font-size:20px;">✕</button>
+      </div>
+      <div style="max-height:420px; overflow:auto;">${cartHTML}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-weight:700;">
+        <div>Нийт</div>
+        <div>₮${Number(totalPrice).toLocaleString()}</div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:18px;">
+        <button onclick="this.closest('.cart-popup').remove();" style="flex:1;padding:12px;border-radius:8px;border:1px solid #ccc;background:white;">Үргэлжлүүлэх</button>
+        <button onclick="goToCheckout()" style="flex:1;padding:12px;border-radius:8px;border:none;background:linear-gradient(135deg,#667eea 0%, #764ba2 100%);color:white;">Төлбөр рүү</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(popup);
+}
+
+function removeFromCart(productId) {
+  cart = cart.filter((item) => Number(item.id) !== Number(productId));
+  localStorage.setItem("cartItems", JSON.stringify(cart));
+  updateCartBadge();
+  const openPopup = document.querySelector(".cart-popup");
+  if (openPopup) showCartPopup();
+}
+
+function updateQuantity(productId, change) {
+  const item = cart.find((i) => Number(i.id) === Number(productId));
+  if (!item) return;
+  item.quantity = (item.quantity || 1) + change;
+  if (item.quantity <= 0) {
+    removeFromCart(productId);
+  } else {
+    localStorage.setItem("cartItems", JSON.stringify(cart));
+    updateCartBadge();
+    const openPopup = document.querySelector(".cart-popup");
+    if (openPopup) showCartPopup();
+  }
+}
+
+function goToCheckout() {
+  if (typeof requireLogin === "function" && !requireLogin()) return;
+  if (cart.length === 0) {
+    alert("⚠️ Таны сагс хоосон байна!\n\nЭхлээд бүтээгдэхүүн сонгоно уу.");
+    return;
+  }
+
+  localStorage.setItem("cartItems", JSON.stringify(cart));
+  showNotification("💳 Төлбөрийн хуудас руу шилжиж байна...");
+  setTimeout(() => {
+    window.location.href = "../tulbur/tulbur.html";
+  }, 500);
 }
 
 // ============================================
@@ -495,10 +649,74 @@ document.head.appendChild(style);
 
 // DOM ачаалагдсаны дараа search listener-уудыг тохируулах
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", setupSearchListeners);
+  document.addEventListener("DOMContentLoaded", () => {
+    setupSearchListeners();
+
+    // load cart from localStorage and bind cart icon
+    const saved = localStorage.getItem("cartItems");
+    if (saved) {
+      try {
+        cart = JSON.parse(saved);
+      } catch (e) {
+        cart = [];
+      }
+    }
+    updateCartBadge();
+    const cartIcon = document.getElementById("cart-icon");
+    if (cartIcon) cartIcon.addEventListener("click", showCartPopup);
+  });
 } else {
   setupSearchListeners();
+  const saved = localStorage.getItem("cartItems");
+  if (saved) {
+    try {
+      cart = JSON.parse(saved);
+    } catch (e) {
+      cart = [];
+    }
+  }
+  updateCartBadge();
+  const cartIcon = document.getElementById("cart-icon");
+  if (cartIcon) cartIcon.addEventListener("click", showCartPopup);
 }
 
 // Initialize
 loadProducts();
+
+// ================= PRODUCT QUICK VIEW =================
+function showProductPopupById(id) {
+  const product = allProducts.find((p) => Number(p.id) === Number(id));
+  if (!product) return;
+
+  const existing = document.querySelector(".product-popup");
+  if (existing) existing.remove();
+
+  const popup = document.createElement("div");
+  popup.className = "product-popup";
+  popup.style.cssText = `position: fixed; inset: 0; display:flex; align-items:center; justify-content:center; background: rgba(0,0,0,0.6); z-index:10002;`;
+
+  popup.innerHTML = `
+    <div style="background:white; padding:20px; border-radius:12px; width:520px; max-width:95%;">
+      <div style="display:flex; gap:12px; align-items:flex-start;">
+        <img src="${product.image}" alt="${
+    product.name
+  }" style="width:180px; height:180px; object-fit:cover; border-radius:8px;" />
+        <div style="flex:1;">
+          <h3 style="margin:0 0 8px 0;">${product.name}</h3>
+          <div style="font-weight:700; color:#06c; margin-bottom:8px;">₮${Number(
+            product.price
+          ).toLocaleString()}</div>
+          <p style="color:#666;">${product.description || ""}</p>
+          <div style="display:flex; gap:8px; margin-top:12px;">
+            <button onclick="addToCart(${product.id}, '${product.name}', '${
+    product.price
+  }'); this.closest('.product-popup').remove();" style="padding:10px 14px; background:linear-gradient(135deg,#667eea 0%, #764ba2 100%); color:white; border:none; border-radius:8px;">Сагсанд нэмэх</button>
+            <button onclick="this.closest('.product-popup').remove();" style="padding:10px 14px; border-radius:8px; border:1px solid #ccc; background:white;">Хаах</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(popup);
+}

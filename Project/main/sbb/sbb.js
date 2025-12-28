@@ -171,14 +171,39 @@ function addToCart(id, name, price) {
     return; // Хэрэв нэвтэрээгүй бол popup нээгдэж, функц дуусна
   }
 
-  cart.push({ id, name, price });
+  // Try to find full product data from allProducts (if available)
+  const productObj = allProducts.find((p) => p.id === id) || {};
+  const parsedPrice =
+    typeof price === "string"
+      ? parseFloat(String(price).replace(/[₮,]/g, "")) || 0
+      : Number(price) || 0;
+
+  const existing = cart.find((c) => Number(c.id) === Number(id));
+  if (existing) {
+    existing.quantity = (existing.quantity || 1) + 1;
+  } else {
+    cart.push({
+      id: Number(id),
+      name: productObj.name || name,
+      price: parsedPrice,
+      image: productObj.image || "",
+      quantity: 1,
+    });
+  }
+
+  // Persist cart and update UI
+  localStorage.setItem("cartItems", JSON.stringify(cart));
   updateCartBadge();
-  showNotification(`${name} сагсанд нэмэгдлээ!`);
+  showNotification(`${productObj.name || name} сагсанд нэмэгдлээ!`);
 }
 
 function updateCartBadge() {
   const cartIcon = document.getElementById("cart-icon");
+  if (!cartIcon) return;
   let badge = cartIcon.querySelector(".cart-badge");
+
+  // Persist cart
+  localStorage.setItem("cartItems", JSON.stringify(cart));
 
   if (cart.length > 0) {
     if (!badge) {
@@ -214,6 +239,128 @@ function showNotification(message) {
     notification.style.animation = "slideOutRight 0.3s";
     setTimeout(() => notification.remove(), 300);
   }, 2000);
+}
+
+// ================= CART POPUP + HELPERS =================
+function showCartPopup() {
+  const existingPopup = document.querySelector(".cart-popup");
+  if (existingPopup) existingPopup.remove();
+
+  const totalPrice = cart.reduce(
+    (sum, item) => sum + Number(item.price) * (item.quantity || 1),
+    0
+  );
+
+  const popup = document.createElement("div");
+  popup.className = "cart-popup";
+  popup.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s;
+  `;
+
+  let cartHTML = "";
+  if (cart.length === 0) {
+    cartHTML =
+      '<p style="text-align: center; color: #86868b; padding: 40px;">Таны сагс хоосон байна</p>';
+  } else {
+    cartHTML = cart
+      .map(
+        (item) => `
+      <div class="cart-item" style="display:flex;align-items:center;gap:15px;padding:15px;background:#f5f5f7;border-radius:12px;margin-bottom:15px;">
+        <img src="${item.image || "./IMG/Logo.png"}" alt="${
+          item.name
+        }" style="width:50px;height:50px;object-fit:cover;border-radius:8px;" />
+        <div style="flex:1;">
+          <div style="font-weight:600;margin-bottom:5px;">${item.name}</div>
+          <div style="color:#06c;font-weight:700;">₮${Number(
+            item.price
+          ).toLocaleString()}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button onclick="updateQuantity(${
+            item.id
+          }, -1)" style="width:30px;height:30px;border:none;background:white;border-radius:50%;cursor:pointer;font-size:18px;font-weight:700;">-</button>
+          <span style="font-weight:600;min-width:20px;text-align:center;">${
+            item.quantity || 1
+          }</span>
+          <button onclick="updateQuantity(${
+            item.id
+          }, 1)" style="width:30px;height:30px;border:none;background:white;border-radius:50%;cursor:pointer;font-size:18px;font-weight:700;">+</button>
+        </div>
+        <button onclick="removeFromCart(${
+          item.id
+        })" style="background:#ff3b30;color:white;border:none;width:30px;height:30px;border-radius:50%;">×</button>
+      </div>
+    `
+      )
+      .join("");
+  }
+
+  popup.innerHTML = `
+    <div style="width:520px; max-width:95%; background:white; padding:20px; border-radius:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <h3 style="margin:0;">Таны сагс</h3>
+        <button onclick="this.closest('.cart-popup').remove()" style="background:none;border:none;font-size:20px;">✕</button>
+      </div>
+      <div style="max-height:420px; overflow:auto;">${cartHTML}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-weight:700;">
+        <div>Нийт</div>
+        <div>₮${Number(totalPrice).toLocaleString()}</div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:18px;">
+        <button onclick="this.closest('.cart-popup').remove();" style="flex:1;padding:12px;border-radius:8px;border:1px solid #ccc;background:white;">Үргэлжлүүлэх</button>
+        <button onclick="goToCheckout()" style="flex:1;padding:12px;border-radius:8px;border:none;background:linear-gradient(135deg,#667eea 0%, #764ba2 100%);color:white;">Төлбөр рүү</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(popup);
+}
+
+function removeFromCart(productId) {
+  cart = cart.filter((item) => Number(item.id) !== Number(productId));
+  localStorage.setItem("cartItems", JSON.stringify(cart));
+  updateCartBadge();
+  // Refresh popup if open
+  const openPopup = document.querySelector(".cart-popup");
+  if (openPopup) showCartPopup();
+}
+
+function updateQuantity(productId, change) {
+  const item = cart.find((i) => Number(i.id) === Number(productId));
+  if (!item) return;
+  item.quantity = (item.quantity || 1) + change;
+  if (item.quantity <= 0) {
+    removeFromCart(productId);
+  } else {
+    localStorage.setItem("cartItems", JSON.stringify(cart));
+    updateCartBadge();
+    const openPopup = document.querySelector(".cart-popup");
+    if (openPopup) showCartPopup();
+  }
+}
+
+function goToCheckout() {
+  if (typeof requireLogin === "function" && !requireLogin()) return;
+  if (cart.length === 0) {
+    alert("⚠️ Таны сагс хоосон байна!\n\nЭхлээд бүтээгдэхүүн сонгоно уу.");
+    return;
+  }
+
+  localStorage.setItem("cartItems", JSON.stringify(cart));
+  showNotification("💳 Төлбөрийн хуудас руу шилжиж байна...");
+  setTimeout(() => {
+    window.location.href = "../tulbur/tulbur.html";
+  }, 500);
 }
 
 // Add CSS animations
@@ -426,4 +573,33 @@ if (document.readyState === "loading") {
 }
 
 // Initialize
+// Load cart from localStorage and bind cart icon
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => {
+    const saved = localStorage.getItem("cartItems");
+    if (saved) {
+      try {
+        cart = JSON.parse(saved);
+      } catch (e) {
+        cart = [];
+      }
+    }
+    updateCartBadge();
+    const cartIcon = document.getElementById("cart-icon");
+    if (cartIcon) cartIcon.addEventListener("click", showCartPopup);
+  });
+} else {
+  const saved = localStorage.getItem("cartItems");
+  if (saved) {
+    try {
+      cart = JSON.parse(saved);
+    } catch (e) {
+      cart = [];
+    }
+  }
+  updateCartBadge();
+  const cartIcon = document.getElementById("cart-icon");
+  if (cartIcon) cartIcon.addEventListener("click", showCartPopup);
+}
+
 loadProducts();

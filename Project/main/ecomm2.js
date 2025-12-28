@@ -42,7 +42,14 @@ window.addEventListener("DOMContentLoaded", () => {
   const savedCart = localStorage.getItem("cartItems");
   if (savedCart) {
     try {
-      cart = JSON.parse(savedCart);
+      const parsed = JSON.parse(savedCart);
+      // Normalize ids and quantities to numbers for consistent behaviour
+      cart = (parsed || []).map((it) => ({
+        ...it,
+        id: Number(it.id),
+        quantity: Number(it.quantity) || 0,
+        price: Number(it.price) || it.price,
+      }));
       updateCartBadge();
       console.log("✅ Сагсны өгөгдөл localStorage-с ачаалагдлаа:", cart);
     } catch (error) {
@@ -55,18 +62,27 @@ window.addEventListener("DOMContentLoaded", () => {
 // Сагсыг шинэчлэх функц (localStorage-д хадгалах)
 function updateCartBadge() {
   const cartIcon = document.getElementById("cart-icon");
+  if (!cartIcon) {
+    // If page has no cart icon, only persist cart and return
+    localStorage.setItem("cartItems", JSON.stringify(cart));
+    return;
+  }
   let badge = cartIcon.querySelector(".cart-badge");
 
-  // localStorage-д хадгалах
+  // Persist cart to localStorage
   localStorage.setItem("cartItems", JSON.stringify(cart));
 
-  if (cart.length > 0) {
+  // Show total quantity if available, otherwise fallback to item count
+  const totalCount =
+    cart.reduce((s, i) => s + (Number(i.quantity) || 0), 0) || cart.length;
+
+  if (totalCount > 0) {
     if (!badge) {
       badge = document.createElement("span");
       badge.className = "cart-badge";
       cartIcon.appendChild(badge);
     }
-    badge.textContent = cart.length;
+    badge.textContent = totalCount;
   } else {
     if (badge) {
       badge.remove();
@@ -77,16 +93,15 @@ function updateCartBadge() {
 // Сагсанд нэмэх функц (localStorage-д хадгалах)
 function addToCart(product) {
   // Нэвтэрсэн эсэхийг шалгах
-  if (typeof requireLogin === "function" && !requireLogin()) {
-    return; // Хэрэв нэвтэрээгүй бол popup нээгдэж, функц дуусна
-  }
+  if (typeof requireLogin === "function" && !requireLogin()) return; // If not logged in, requireLogin() shows UI and we stop
 
-  const existingItem = cart.find((item) => item.id === product.id);
+  const prodId = Number(product.id);
+  const existingItem = cart.find((item) => Number(item.id) === prodId);
 
   if (existingItem) {
-    existingItem.quantity += 1;
+    existingItem.quantity = (Number(existingItem.quantity) || 0) + 1;
   } else {
-    cart.push({ ...product, quantity: 1 });
+    cart.push({ ...product, id: prodId, quantity: 1 });
   }
 
   // localStorage-д хадгалах
@@ -100,7 +115,8 @@ function addToCart(product) {
 
 // Сагснаас хасах функц (localStorage шинэчлэх)
 function removeFromCart(productId) {
-  cart = cart.filter((item) => item.id !== productId);
+  const idNum = Number(productId);
+  cart = cart.filter((item) => Number(item.id) !== idNum);
 
   // localStorage шинэчлэх
   localStorage.setItem("cartItems", JSON.stringify(cart));
@@ -111,17 +127,17 @@ function removeFromCart(productId) {
 
 // Тоо ширхэг өөрчлөх (localStorage шинэчлэх)
 function updateQuantity(productId, change) {
-  const item = cart.find((item) => item.id === productId);
-  if (item) {
-    item.quantity += change;
-    if (item.quantity <= 0) {
-      removeFromCart(productId);
-    } else {
-      // localStorage шинэчлэх
-      localStorage.setItem("cartItems", JSON.stringify(cart));
-      updateCartBadge();
-      updateCartContent();
-    }
+  const idNum = Number(productId);
+  const item = cart.find((it) => Number(it.id) === idNum);
+  if (!item) return;
+  item.quantity = (Number(item.quantity) || 0) + change;
+  if (item.quantity <= 0) {
+    removeFromCart(idNum);
+  } else {
+    // localStorage шинэчлэх
+    localStorage.setItem("cartItems", JSON.stringify(cart));
+    updateCartBadge();
+    updateCartContent();
   }
 }
 
@@ -183,8 +199,9 @@ function updateCartContent() {
               border-radius: 8px;
             " />
             <div style="flex: 1;">
-              <div style="font-weight: 600; margin-bottom: 5px;">${item.name
-          }</div>
+              <div style="font-weight: 600; margin-bottom: 5px;">${
+                item.name
+              }</div>
               <div style="color: #06c; font-weight: 700;">₮${item.price.toLocaleString()}</div>
             </div>
             <div style="display: flex; align-items: center; gap: 10px;">
@@ -198,8 +215,9 @@ function updateCartContent() {
                 font-size: 18px;
                 font-weight: 700;
               ">-</button>
-              <span style="font-weight: 600; min-width: 20px; text-align: center;">${item.quantity
-          }</span>
+              <span style="font-weight: 600; min-width: 20px; text-align: center;">${
+                item.quantity
+              }</span>
               <button onclick="updateQuantity(${item.id}, 1)" style="
                 width: 30px;
                 height: 30px;
@@ -254,8 +272,9 @@ function updateCartContent() {
       
       ${cartHTML}
       
-      ${cart.length > 0
-        ? `
+      ${
+        cart.length > 0
+          ? `
           <div style="
             border-top: 2px solid #e5e5e7;
             padding-top: 20px;
@@ -287,7 +306,7 @@ function updateCartContent() {
             </button>
           </div>
         `
-        : ""
+          : ""
       }
     `;
   }
@@ -361,11 +380,13 @@ function showCartPopup() {
             border-radius: 12px;
             margin-bottom: 15px;
           ">
-            <img src="${item.image}" alt="${item.name
-          }" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;" />
+            <img src="${item.image}" alt="${
+          item.name
+        }" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;" />
             <div style="flex: 1;">
-              <div style="font-weight: 600; margin-bottom: 5px;">${item.name
-          }</div>
+              <div style="font-weight: 600; margin-bottom: 5px;">${
+                item.name
+              }</div>
               <div style="color: rgba(255, 0, 0, 1); font-weight: 700;">₮${item.price.toLocaleString()}</div>
             </div>
             <div style="display: flex; align-items: center; gap: 10px;">
@@ -379,8 +400,9 @@ function showCartPopup() {
                 font-size: 18px;
                 font-weight: 700;
               ">-</button>
-              <span style="font-weight: 600; min-width: 20px; text-align: center;">${item.quantity
-          }</span>
+              <span style="font-weight: 600; min-width: 20px; text-align: center;">${
+                item.quantity
+              }</span>
               <button onclick="updateQuantity(${item.id}, 1)" style="
                 width: 30px;
                 height: 30px;
@@ -444,8 +466,9 @@ function showCartPopup() {
       
       ${cartHTML}
       
-      ${cart.length > 0
-      ? `
+      ${
+        cart.length > 0
+          ? `
           <div style="
             border-top: 2px solid #e5e5e7;
             padding-top: 20px;
@@ -477,8 +500,8 @@ function showCartPopup() {
             </button>
           </div>
         `
-      : ""
-    }
+          : ""
+      }
     </div>
     
     <style>
@@ -691,7 +714,8 @@ function showProductPage(containerId, page) {
 
     product.category == "accessory"
       ? (card.innerHTML = `
-    <img src="${product.image}" alt="${product.name
+    <img src="${product.image}" alt="${
+          product.name
         }" class="product-image" style="width: 100%; max-width: 250px; height: 250px; object-fit: contain; margin-bottom: 15px;" onerror="this.src='IMG/Logo.png'; this.alt='Зураг олдсонгүй';">
     <div class="product-details">
       <div class="product-info">
@@ -702,7 +726,8 @@ function showProductPage(containerId, page) {
     </div> `)
       : (card.innerHTML = `
     ${product.new ? `<div class="product-new">${product.new}</div>` : ""}
-    <img src="${product.image}" alt="${product.name
+    <img src="${product.image}" alt="${
+          product.name
         }" class="product-image" style="width: 100%; max-width: 250px; height: 250px; object-fit: contain; margin-bottom: 15px;" onerror="this.src='IMG/Logo.png'; this.alt='Зураг олдсонгүй';">
     <div class="product-details">
       <div class="product-info">
@@ -855,7 +880,9 @@ function showSearchDropdown(results) {
   container.querySelectorAll(".search-result-item").forEach((item) => {
     item.addEventListener("click", () => {
       const productId = parseInt(item.getAttribute("data-product-id"));
-      const product = allProducts.find((p) => p.id === productId);
+      const product = allProducts.find(
+        (p) => Number(p.id) === Number(productId)
+      );
       if (product) {
         showProductPopup(product);
         hideSearchDropdown();
@@ -1253,7 +1280,7 @@ function showProductPopup(product) {
 // Хуудас ачаалагдахад бүтээгдэхүүнүүдийг харуулах
 window.addEventListener("load", loadAllProducts);
 
-// buteegdhuunii loop 
+// buteegdhuunii loop
 function scrollProducts(containerId, direction) {
   const products = allProductsData[containerId];
   if (!products || products.length === 0) return;
