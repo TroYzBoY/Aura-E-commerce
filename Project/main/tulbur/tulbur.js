@@ -24,181 +24,65 @@ const cartData = {
     error: null
 };
 
-// ================== БҮТЭЭГДЭХҮҮНИЙ ӨГӨГДӨЛ ==================
-const productDatabase = {
-    "newProducts": [
-        {
-            "id": 1,
-            "name": "Macbook Pro M4",
-            "price": 8999000,
-            "image": "image/mac.png",
-            "category": "laptop",
-            "variant": "16GB RAM, 512GB SSD"
-        },
-        {
-            "id": 2,
-            "name": "iPhone 17 Pro Max",
-            "price": 5500000,
-            "image": "image/iphone.png",
-            "category": "phone",
-            "variant": "256GB, Titanium"
-        },
-        {
-            "id": 3,
-            "name": "Apple Watch",
-            "price": 3999000,
-            "image": "image/iwatch.png",
-            "category": "watch",
-            "variant": "45mm, GPS + Cellular"
-        },
-        {
-            "id": 4,
-            "name": "AirPods Pro Gen3",
-            "price": 2999000,
-            "image": "image/airpod.png",
-            "category": "audio",
-            "variant": "USB-C"
-        },
-        {
-            "id": 5,
-            "name": "iPad Pro",
-            "price": 4999000,
-            "image": "image/ipad.png",
-            "category": "tablet",
-            "variant": "12.9 inch, M2"
-        }
-    ],
-    "recommendedProducts": [
-        {
-            "id": 6,
-            "name": "Macbook Air M3",
-            "price": 5999000,
-            "image": "image/mac air.png",
-            "category": "laptop",
-            "variant": "8GB RAM, 256GB SSD"
-        },
-        {
-            "id": 7,
-            "name": "iPhone 16 Pro Max",
-            "price": 4500000,
-            "image": "image/iphone16promax.png",
-            "category": "phone",
-            "variant": "128GB, Black"
-        },
-        {
-            "id": 8,
-            "name": "Apple Watch SE",
-            "price": 1999000,
-            "image": "image/iwatch se.png",
-            "category": "watch",
-            "variant": "40mm, GPS"
-        },
-        {
-            "id": 9,
-            "name": "AirPods Max",
-            "price": 3499000,
-            "image": "image/airpod max.png",
-            "category": "audio",
-            "variant": "Silver"
-        },
-        {
-            "id": 10,
-            "name": "iPad Air",
-            "price": 3299000,
-            "image": "image/ipad air.png",
-            "category": "tablet",
-            "variant": "10.9 inch, M1"
-        }
-    ],
-    "accessories": [
-        {
-            "id": 11,
-            "name": "Magic Keyboard",
-            "price": 599000,
-            "image": "image/magick.png",
-            "category": "accessory",
-            "variant": "Монгол хэл"
-        },
-        {
-            "id": 12,
-            "name": "MagSafe Charger",
-            "price": 199000,
-            "image": "image/magsafe.png",
-            "category": "accessory",
-            "variant": "White"
-        },
-        {
-            "id": 13,
-            "name": "Apple Pencil Pro",
-            "price": 699000,
-            "image": "image/apple pencil.png",
-            "category": "accessory",
-            "variant": "2nd Gen"
-        },
-        {
-            "id": 14,
-            "name": "HomePod Mini",
-            "price": 499000,
-            "image": "image/homepod.png",
-            "category": "accessory",
-            "variant": "Blue"
-        },
-        {
-            "id": 15,
-            "name": "AirTag 4 Pack",
-            "price": 399000,
-            "image": "image/airtag.png",
-            "category": "accessory",
-            "variant": "4 ширхэг"
-        }
-    ]
-};
+// ================== ЗУРГИЙН ЗАМ ЗАСАХ ==================
+function fixImagePath(imagePath) {
+    if (!imagePath) return '';
+    
+    // Хэрэв зураг ./IMG/-ээр эхэлвэл ../IMG/ болгох (төлбөрийн хуудсанд)
+    if (imagePath.startsWith('./IMG/')) {
+        return imagePath.replace('./IMG/', '../IMG/');
+    }
+    
+    // Бусад тохиолдолд өөрчлөлтгүй буцаах
+    return imagePath;
+}
 
-// ================== JSON ӨГӨГДӨЛ АЧААЛАХ ==================
-async function loadDataFromJSON() {
+// ================== ЛОКАЛ СТОРЭЙЖЭЭС САГС АЧААЛАХ ==================
+function loadCartFromLocalStorage() {
     try {
         cartData.loading = true;
         cartData.error = null;
 
-        const response = await fetch('./data/products.json');
-
-        if (!response.ok) {
-            throw new Error('JSON файл олдсонгүй');
+        // localStorage-с сагсны өгөгдөл авах
+        const savedCart = localStorage.getItem('cartItems');
+        
+        if (savedCart) {
+            const parsedCart = JSON.parse(savedCart);
+            
+            // Өгөгдөл зөв форматтай эсэхийг шалгах
+            if (Array.isArray(parsedCart) && parsedCart.length > 0) {
+                // Үнийг тоо болгон хувиргах (хэрэв string бол) + зургийн замыг засах
+                cartData.items = parsedCart.map(item => ({
+                    ...item,
+                    price: typeof item.price === 'string' 
+                        ? parseInt(item.price.replace(/[₮,]/g, '')) 
+                        : item.price,
+                    quantity: item.quantity || 1,
+                    image: fixImagePath(item.image) // 🔥 Зургийн замыг засах
+                }));
+                
+                console.log('✅ localStorage-с сагс амжилттай ачаалагдлаа:', cartData.items);
+            } else {
+                console.warn('⚠️ Сагс хоосон байна');
+                cartData.items = [];
+            }
+        } else {
+            console.warn('⚠️ localStorage-д сагсны өгөгдөл олдсонгүй');
+            cartData.items = [];
         }
-
-        const jsonData = await response.json();
-
-        // Сагсанд анхны бүтээгдэхүүнүүдийг нэмэх
-        cartData.items = [
-            { ...jsonData.newProducts[0], quantity: 1 },
-            { ...jsonData.newProducts[1], quantity: 1 }
-        ];
 
         cartData.loading = false;
         loadCart();
 
     } catch (error) {
-        console.error('JSON уншихад алдаа гарлаа:', error);
+        console.error('❌ localStorage уншихад алдаа:', error);
         cartData.error = error.message;
         cartData.loading = false;
-
+        
         showLoadingError();
-        useLocalData();
-    }
-}
-
-// ================== ЛОКАЛ ӨГӨГДӨЛ АШИГЛАХ ==================
-function useLocalData() {
-    cartData.items = [
-        { ...productDatabase.newProducts[0], quantity: 1 },
-        { ...productDatabase.newProducts[1], quantity: 1 },
-        { ...productDatabase.accessories[0], quantity: 2 }
-    ];
-
-    setTimeout(() => {
-        cartData.loading = false;
+        cartData.items = [];
         loadCart();
-    }, 1000);
+    }
 }
 
 // ================== АЛДААНЫ МЭДЭГДЭЛ ==================
@@ -209,8 +93,18 @@ function showLoadingError() {
     container.innerHTML = `
         <div style="text-align: center; padding: 40px; color: #86868b;">
             <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #ff9500; margin-bottom: 16px;"></i>
-            <h3 style="margin-bottom: 8px;">Өгөгдөл ачаалж чадсангүй</h3>
-            <p>JSON файл олдсонгүй. Локал өгөгдлийг ашиглаж байна...</p>
+            <h3 style="margin-bottom: 8px;">Сагсны өгөгдөл ачаалж чадсангүй</h3>
+            <p>Нүүр хуудас руу буцаж сагсандаа бараа нэмнэ үү.</p>
+            <a href="../index.html" style="
+                display: inline-block;
+                margin-top: 20px;
+                padding: 12px 24px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                text-decoration: none;
+                border-radius: 8px;
+                font-weight: 600;
+            ">← Нүүр хуудас руу буцах</a>
         </div>
     `;
 }
@@ -234,7 +128,16 @@ function loadCart() {
         container.innerHTML = `
             <div style="text-align: center; padding: 40px; color: #86868b;">
                 <i class="fas fa-shopping-cart" style="font-size: 48px; margin-bottom: 16px;"></i>
-                <p>Таны сагс хоосон байна</p>
+                <p style="margin-bottom: 20px;">Таны сагс хоосон байна</p>
+                <a href="../index.html" style="
+                    display: inline-block;
+                    padding: 12px 24px;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    text-decoration: none;
+                    border-radius: 8px;
+                    font-weight: 600;
+                ">← Нүүр хуудас руу буцах</a>
             </div>
         `;
         return;
@@ -283,6 +186,9 @@ function updateQty(index, change) {
         qtyElement.textContent = cartData.items[index].quantity;
     }
 
+    // localStorage шинэчлэх
+    localStorage.setItem('cartItems', JSON.stringify(cartData.items));
+
     updateCartSummary();
 }
 
@@ -292,6 +198,10 @@ function removeItem(index) {
 
     if (confirm('Энэ бүтээгдэхүүнийг сагснаас устгах уу?')) {
         cartData.items.splice(index, 1);
+        
+        // localStorage шинэчлэх
+        localStorage.setItem('cartItems', JSON.stringify(cartData.items));
+        
         loadCart();
     }
 }
@@ -395,7 +305,7 @@ function processPayment(event) {
 
     // Нэвтэрсэн эсэхийг шалгах
     if (typeof requireLogin === 'function' && !requireLogin()) {
-        return; // Хэрэв нэвтэрээгүй бол popup нээгдэж, функц дуусна
+        return;
     }
 
     const button = document.getElementById('payButton');
@@ -409,8 +319,9 @@ function processPayment(event) {
         const amount = document.getElementById('payButtonAmount');
         button.innerHTML = (amount ? amount.textContent : '₮0') + ' төлөх';
 
-        // 70% магадлалтай амжилттай
         if (Math.random() > 0.3) {
+            // Амжилттай бол localStorage-г цэвэрлэх
+            localStorage.removeItem('cartItems');
             showModal('successModal');
         } else {
             showModal('errorModal');
@@ -420,9 +331,8 @@ function processPayment(event) {
 
 // ================== PAYPAL ТӨЛБӨР ==================
 function processPayPal() {
-    // Нэвтэрсэн эсэхийг шалгах
     if (typeof requireLogin === 'function' && !requireLogin()) {
-        return; // Хэрэв нэвтэрээгүй бол popup нээгдэж, функц дуусна
+        return;
     }
 
     const button = event.target;
@@ -434,15 +344,17 @@ function processPayPal() {
     setTimeout(() => {
         button.disabled = false;
         button.innerHTML = originalText;
+        
+        // Амжилттай бол localStorage-г цэвэрлэх
+        localStorage.removeItem('cartItems');
         showModal('successModal');
     }, 1500);
 }
 
 // ================== QPAY ТӨЛБӨР ==================
 function processQPay() {
-    // Нэвтэрсэн эсэхийг шалгах
     if (typeof requireLogin === 'function' && !requireLogin()) {
-        return; // Хэрэв нэвтэрээгүй бол popup нээгдэж, функц дуусна
+        return;
     }
 
     const button = event.target;
@@ -454,6 +366,9 @@ function processQPay() {
     setTimeout(() => {
         button.disabled = false;
         button.innerHTML = originalText;
+        
+        // Амжилттай бол localStorage-г цэвэрлэх
+        localStorage.removeItem('cartItems');
         showModal('successModal');
     }, 1500);
 }
@@ -463,6 +378,13 @@ function showModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.classList.add('active');
+        
+        // Амжилттай модал бол 3 секундын дараа нүүр хуудас руу шилжүүлэх
+        if (modalId === 'successModal') {
+            setTimeout(() => {
+                window.location.href = '../index.html';
+            }, 3000);
+        }
     }
 }
 
@@ -475,11 +397,13 @@ function closeModal() {
 // ================== ЭХЛҮҮЛЭХ ==================
 if (typeof window !== 'undefined') {
     window.addEventListener('DOMContentLoaded', () => {
-        loadDataFromJSON();
+        // localStorage-с сагс ачаалах (JSON биш)
+        loadCartFromLocalStorage();
+        
         // Checkout хуудас дээр нэвтэрсэн эсэхийг шалгах
         setTimeout(() => {
             if (typeof requireLogin === 'function' && !requireLogin()) {
-                // Хэрэв нэвтэрээгүй бол popup нээгдэх (requireLogin() функц popup-г нээнэ)
+                // Хэрэв нэвтэрээгүй бол popup нээгдэх
             }
         }, 500);
     });
