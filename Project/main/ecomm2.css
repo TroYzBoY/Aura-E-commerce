@@ -7,9 +7,9 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f5f7fa;
-    min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f5f7fa;
+  min-height: 100vh;
 }
 
 .menu {
@@ -602,6 +602,7 @@ a {
   border: none;
 }
 
+
 .arrow-btn.right {
   right: 0;
 }
@@ -772,7 +773,8 @@ a {
 
 .more:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 10px 30px rgba(255, 0, 0, 0.4);
+    background: linear-gradient(135deg, #a9a9a9 0%, #000000 100%);
 }
 
 .loading {

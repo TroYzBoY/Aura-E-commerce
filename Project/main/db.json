@@ -7,78 +7,87 @@
       "image": "./IMG/mac.png",
       "new": "NEW",
       "category": "laptop",
+      "description": "M4 чиптэй, өндөр гүйцэтгэлтэй мэргэжлийн түвшний MacBook.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
       "id": "2",
       "name": "iPhone 17 Pro Max",
-      "price": "₮5,500,000",
+      "price": "₮4,975,000",
       "image": "./IMG/iphone.png",
       "new": "NEW",
       "category": "phone",
+      "description": "Хамгийн хүчирхэг камер, урт батерейтай дээд зэрэглэлийн iPhone.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
       "id": "3",
       "name": "Iphone 17 Pro",
-      "price": "₮4,999,000",
+      "price": "₮4,000,000",
       "image": "./IMG/iphone_17_pro.png",
       "new": "NEW",
       "category": "tablet",
+      "description": "Өндөр хурдтай, хөнгөн загвартай Pro загварын iPhone.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
       "id": "4",
       "name": "Iphone 17",
-      "price": "₮4,999,000",
+      "price": "₮3,299,000",
       "image": "./IMG/iphone_17.png",
       "new": "NEW",
       "category": "tablet",
+      "description": "Өдөр тутмын хэрэглээнд тохиромжтой хүчирхэг iPhone.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
       "id": "5",
       "name": "Apple Watch Series 11",
-      "price": "₮3,999,000",
+      "price": "₮1,999,000",
       "image": "./IMG/iwatch.png",
       "new": "NEW",
       "category": "watch",
+      "description": "Эрүүл мэнд, дасгал хөдөлгөөнийг хянах ухаалаг цаг.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
       "id": "6",
       "name": "AirPods Pro Gen3",
-      "price": "₮2,999,000",
+      "price": "₮900,000",
       "image": "./IMG/airpod.png",
       "new": "NEW",
       "category": "audio",
+      "description": "Дуу чимээ дарах технологитой, цэвэр чанартай чихэвч.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
       "id": "7",
       "name": "iPad Pro",
-      "price": "₮4,999,000",
-      "image": "./IMG/ipad.png",
+      "price": "₮5,500,000",
+      "image": "./IMG/ipad pro.png",
       "new": "NEW",
       "category": "tablet",
+      "description": "Ажил, бүтээлч хэрэглээнд зориулагдсан хүчирхэг iPad.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
       "id": "8",
       "name": "Apple Vision Pro",
-      "price": "₮2,999,000",
+      "price": "₮12,441,000",
       "image": "./IMG/apple_vision_pro.png",
       "new": "NEW",
       "category": "audio",
+      "description": "XR технологид суурилсан ирээдүйн ухаалаг төхөөрөмж.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
       "id": "9",
       "name": "Macbook Air M3",
-      "price": "₮5,999,000",
+      "price": "₮4,999,000",
       "image": "./IMG/mac air m4.png",
       "new": "20% OFF",
       "category": "laptop",
+      "description": "Хөнгөн, нимгэн, өдөр тутмын хэрэглээнд төгс MacBook.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
@@ -88,123 +97,137 @@
       "image": "./IMG/iphone16promax.png",
       "new": "20% OFF",
       "category": "phone",
+      "description": "Том дэлгэцтэй, өндөр хүчин чадалтай iPhone.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
       "id": "11",
       "name": "iPhone 16 Pro",
-      "price": "₮4,500,000",
+      "price": "₮3,800,000",
       "image": "./IMG/iphone_16_pro.png",
       "new": "20% OFF",
       "category": "phone",
+      "description": "Pro гүйцэтгэлтэй, дэвшилтэт камер бүхий загвар.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
       "id": "12",
-      "name": "iPhone 16 ",
-      "price": "₮4,500,000",
+      "name": "iPhone 16",
+      "price": "₮3,000,000",
       "image": "./IMG/iphone_16.png",
       "new": "20% OFF",
       "category": "phone",
+      "description": "Шинэ үеийн дизайнтай, хурдан ажиллагаатай iPhone.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
       "id": "13",
       "name": "Apple Watch Ultra 2",
-      "price": "₮1,999,000",
+      "price": "₮2,999,000",
       "image": "./IMG/iwatch_ultra_2.png",
       "new": "20% OFF",
       "category": "watch",
+      "description": "Экстрим орчинд тохирсон бат бөх ухаалаг цаг.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
       "id": "14",
       "name": "Apple Watch SE",
-      "price": "₮1,999,000",
+      "price": "₮1,200,000",
       "image": "./IMG/iwatch se.png",
       "new": "20% OFF",
       "category": "watch",
+      "description": "Үнэ боломжийн, ухаалаг үйлдэлтэй Apple Watch.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
       "id": "15",
       "name": "AirPods Max",
-      "price": "₮3,499,000",
+      "price": "₮2,199,000",
       "image": "./IMG/airpod max.png",
       "new": "20% OFF",
       "category": "audio",
+      "description": "Дээд зэргийн дуугаралттай, premium чихэвч.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
       "id": "16",
       "name": "AirPods Pro Gen2",
-      "price": "₮3,499,000",
+      "price": "₮799,000",
       "image": "./IMG/airpod_pro_gen_2.png",
       "new": "20% OFF",
       "category": "audio",
+      "description": "Идэвхтэй дуу тусгаарлагчтай шинэ үеийн чихэвч.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
       "id": "17",
       "name": "iPad Air",
-      "price": "₮3,299,000",
+      "price": "₮3,000,000",
       "image": "./IMG/ipad air.png",
       "new": "20% OFF",
       "category": "tablet",
+      "description": "Хөнгөн атлаа хүчирхэг, сурах болон ажиллахад тохиромжтой.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
       "id": "18",
       "name": "iPad 11",
-      "price": "₮3,299,000",
+      "price": "₮2,299,000",
       "image": "./IMG/ipad.png",
       "new": "20% OFF",
       "category": "tablet",
+      "description": "Өдөр тутмын хэрэглээнд төгс тохирох iPad.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
       "id": "19",
       "name": "iPad Mini",
-      "price": "₮2,999,000",
+      "price": "₮2,599,000",
       "image": "./IMG/ipad_mini.png",
       "new": "20% OFF",
       "category": "tablet",
+      "description": "Жижиг, авсаархан, хүчирхэг таблет.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
       "id": "20",
       "name": "Magic Keyboard",
-      "price": "₮599,000",
+      "price": "₮1,099,000",
       "image": "./IMG/magick.png",
       "category": "accessory",
       "new": "",
+      "description": "Apple төхөөрөмжид зориулсан ухаалаг гар.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
       "id": "21",
       "name": "MagSafe Charger",
-      "price": "₮199,000",
+      "price": "₮139,000",
       "image": "./IMG/magsafe.png",
       "category": "accessory",
       "new": "",
+      "description": "Соронзон цэнэглэгч, хурдан цэнэглэнэ.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
       "id": "22",
       "name": "Apple Pencil Pro",
-      "price": "₮699,000",
+      "price": "₮459,000",
       "image": "./IMG/apple pencil.png",
       "category": "accessory",
       "new": "",
+      "description": "Зурах, тэмдэглэл хийхэд төгс Apple Pencil.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
       "id": "23",
       "name": "HomePod Mini",
-      "price": "₮499,000",
+      "price": "₮352,000",
       "image": "./IMG/homepod.png",
       "category": "accessory",
       "new": "",
+      "description": "Жижиг биетэй, чанартай ухаалаг чанга яригч.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
@@ -214,6 +237,7 @@
       "image": "./IMG/airtag.png",
       "category": "accessory",
       "new": "",
+      "description": "Алдагдсан зүйлсээ амархан олоход тусална.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
@@ -223,15 +247,17 @@
       "image": "./IMG/magic_mouse.png",
       "category": "accessory",
       "new": "",
+      "description": "Мэдрэгчтэй, ухаалаг удирдлагатай хулгана.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
       "id": "26",
       "name": "Apple Vision Pro",
-      "price": "₮2,999,000",
+      "price": "₮12,441,000",
       "image": "./IMG/apple_vision_pro.png",
       "new": "featured-products",
       "category": "audio",
+      "description": "Ирээдүйн технологийг мэдрүүлэх VR төхөөрөмж.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     }
   ],
@@ -292,16 +318,6 @@
       "id": "11cf",
       "username": "troyzboy4023@gmail.com",
       "password": "TroYzBoY#4023"
-    },
-    {
-      "id": "2d50",
-      "username": "asd",
-      "password": "asd"
-    },
-    {
-      "id": "5244",
-      "username": "asd",
-      "password": "asd"
     }
   ]
 }
