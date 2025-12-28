@@ -630,8 +630,38 @@ a p {
 
 .detailed-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(5, 1fr);
   gap: 30px;
+}
+
+/* Responsive: 4 columns on large tablets */
+@media (max-width: 1400px) {
+  .detailed-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Responsive: 3 columns on tablets */
+@media (max-width: 1024px) {
+  .detailed-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Responsive: 2 columns on small tablets */
+@media (max-width: 768px) {
+  .detailed-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+/* Responsive: 1 column on mobile */
+@media (max-width: 480px) {
+  .detailed-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
 }
 
 .detailed-card {

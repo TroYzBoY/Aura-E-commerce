@@ -105,9 +105,153 @@
     </section>
 
     <section class="container">
-      <h2 class="section-title">Шинэ бүтээгдэхүүн</h2>
-      <div class="product-grid" id="new-products">
-        <div class="loading">Ачааллаж байна...</div>
+      <div class="container-wrapper">
+        <!-- Sidebar Filter -->
+        <aside class="sidebar-filter">
+          <div class="filter-header">
+            <h3>Шүүлтүүр</h3>
+            <button class="clear-filters" onclick="clearFilters()">
+              Цэвэрлэх
+            </button>
+          </div>
+
+          <div class="filter-group">
+            <h4>Ангилал</h4>
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                class="filter-checkbox"
+                data-category="phone"
+                onchange="applyFilters()"
+              />
+              <span>Утас</span>
+            </label>
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                class="filter-checkbox"
+                data-category="laptop"
+                onchange="applyFilters()"
+              />
+              <span>Ноутбук</span>
+            </label>
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                class="filter-checkbox"
+                data-category="tablet"
+                onchange="applyFilters()"
+              />
+              <span>Таблет</span>
+            </label>
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                class="filter-checkbox"
+                data-category="watch"
+                onchange="applyFilters()"
+              />
+              <span>Цаг</span>
+            </label>
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                class="filter-checkbox"
+                data-category="audio"
+                onchange="applyFilters()"
+              />
+              <span>Аудио</span>
+            </label>
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                class="filter-checkbox"
+                data-category="accessory"
+                onchange="applyFilters()"
+              />
+              <span>Нэмэлт хэрэгсэл</span>
+            </label>
+          </div>
+
+          <div class="filter-group">
+            <h4>Үнийн хүрээ</h4>
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                class="filter-checkbox"
+                data-price="0-500000"
+                onchange="applyFilters()"
+              />
+              <span>₮0 - ₮500,000</span>
+            </label>
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                class="filter-checkbox"
+                data-price="500000-1000000"
+                onchange="applyFilters()"
+              />
+              <span>₮500,000 - ₮1,000,000</span>
+            </label>
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                class="filter-checkbox"
+                data-price="1000000-2000000"
+                onchange="applyFilters()"
+              />
+              <span>₮1,000,000 - ₮2,000,000</span>
+            </label>
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                class="filter-checkbox"
+                data-price="2000000-5000000"
+                onchange="applyFilters()"
+              />
+              <span>₮2,000,000 - ₮5,000,000</span>
+            </label>
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                class="filter-checkbox"
+                data-price="5000000-999999999"
+                onchange="applyFilters()"
+              />
+              <span>₮5,000,000+</span>
+            </label>
+          </div>
+
+          <div class="filter-group">
+            <h4>Нөхцөл</h4>
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                class="filter-checkbox"
+                data-condition="new"
+                onchange="applyFilters()"
+              />
+              <span>Шинэ бүтээгдэхүүн</span>
+            </label>
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                class="filter-checkbox"
+                data-condition="sale"
+                onchange="applyFilters()"
+              />
+              <span>Хямдралтай</span>
+            </label>
+          </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main-content">
+          <h2 class="section-title">Бүх Бүтээгдэхүүн</h2>
+          <div class="product-grid" id="new-products">
+            <div class="loading">Ачааллаж байна...</div>
+          </div>
+        </div>
       </div>
     </section>
 

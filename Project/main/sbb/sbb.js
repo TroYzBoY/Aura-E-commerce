@@ -1,24 +1,59 @@
+const API_Product_URL = "http://localhost:3000";
+
 let products = {
   newProducts: [],
   recommendedProducts: [],
   accessories: [],
 };
 
-const API_URL = "http://localhost:3000";
-
 let allProducts = []; // For search functionality
 let cart = [];
 let currentFilter = "all";
 let currentCategory = "all";
 
-// Fetch products from JSON file
+// Fetch products from API
+async function fetchProducts(tag) {
+  try {
+    const response = await fetch(`${API_Product_URL}/Products?new=${tag}`);
+    if (!response.ok) {
+      throw new Error(`HTTP алдаа: ${response.status} ${response.statusText}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Fetch алдаа:", error);
+    throw error;
+  }
+}
+
+async function fetchCatProducts(category) {
+  try {
+    const response = await fetch(
+      `${API_Product_URL}/Products?category=${category}`
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP алдаа: ${response.status} ${response.statusText}`);
+    }
+    const data = await response.json();
+    return data || [];
+  } catch (error) {
+    console.error("Fetch алдаа:", error);
+    throw error;
+  }
+}
+
+// Fetch all products from API
 async function loadProducts() {
   try {
-    const response = await fetch("../product.json");
-    if (!response.ok) {
-      throw new Error("Өгөгдөл ачаалахад алдаа гарлаа");
-    }
-    products = await response.json();
+    // Fetch all product types
+    const newProducts = await fetchProducts("NEW");
+    const recommendedProducts = await fetchProducts("20% OFF");
+    const accessories = await fetchCatProducts("accessory");
+
+    products = {
+      newProducts: newProducts || [],
+      recommendedProducts: recommendedProducts || [],
+      accessories: accessories || [],
+    };
 
     // Combine all products for search
     allProducts = [
@@ -27,7 +62,7 @@ async function loadProducts() {
       ...(products.accessories || []),
     ];
 
-    displayProducts(products.recommendedProducts, "new-products");
+    displayProducts(products.recommendedProducts, "new-products", 0);
   } catch (error) {
     console.error("Fetch алдаа:", error);
     document.getElementById("new-products").innerHTML =
@@ -35,10 +70,11 @@ async function loadProducts() {
   }
 }
 
-function displayProducts(productsArray, containerId) {
+function displayProducts(productsArray, containerId, limit = 5) {
   const container = document.getElementById(containerId);
-  container.innerHTML = productsArray
-    .slice(0, 5)
+  const list =
+    limit && limit > 0 ? productsArray.slice(0, limit) : productsArray;
+  container.innerHTML = list
     .map(
       (product) => `
         <div class="product-card">
@@ -54,7 +90,7 @@ function displayProducts(productsArray, containerId) {
     .join("");
 }
 
-function openDetailedPage(category) {
+async function openDetailedPage(category) {
   currentCategory = category;
   const page = document.getElementById("detailed-page");
   const title = document.getElementById("detailed-title");
@@ -64,26 +100,35 @@ function openDetailedPage(category) {
   subtitle.textContent = "Таны хайж байгаа бүгдийг нэг дор";
 
   page.classList.add("active");
-  filterProducts("all");
+  // Find the 'all' button and pass it to filterProducts
+  const allButton =
+    document.querySelector(".filter-btn.active") ||
+    document.querySelector(".filter-btn");
+  await filterProducts("all", allButton);
 }
 
 function closeDetailedPage() {
   document.getElementById("detailed-page").classList.remove("active");
 }
 
-function filterProducts(category) {
+async function filterProducts(category, buttonElement) {
   currentFilter = category;
 
   document.querySelectorAll(".filter-btn").forEach((btn) => {
     btn.classList.remove("active");
   });
-  event.target.classList.add("active");
 
-  const allProducts = [
-    ...products.newProducts,
-    ...products.recommendedProducts,
-    ...products.accessories,
-  ];
+  // Set active class on the clicked button
+  if (buttonElement) {
+    buttonElement.classList.add("active");
+  } else if (typeof event !== "undefined" && event && event.target) {
+    event.target.classList.add("active");
+  }
+
+  // Ensure all products are loaded
+  if (allProducts.length === 0) {
+    await loadProducts();
+  }
 
   const filtered =
     category === "all"
@@ -228,11 +273,11 @@ function showSearchDropdown(results) {
 
   // Item дээр дарахад detailed page нээж, хайлтын үр дүнг харуулах
   container.querySelectorAll(".search-result-item").forEach((item) => {
-    item.addEventListener("click", () => {
+    item.addEventListener("click", async () => {
       const productId = parseInt(item.getAttribute("data-product-id"));
       const searchTerm = document.querySelector(".input").value;
       hideSearchDropdown();
-      openDetailedPage("all");
+      await openDetailedPage("all");
       // Хайлтын үр дүнг харуулах
       setTimeout(() => {
         searchProductsInDetailed(searchTerm);
@@ -347,10 +392,10 @@ function setupSearchListeners() {
   }
 
   // Хайлтын товч дарахад
-  searchIcon.addEventListener("click", () => {
+  searchIcon.addEventListener("click", async () => {
     const searchTerm = searchInput.value;
     if (searchTerm.trim() !== "") {
-      openDetailedPage("all");
+      await openDetailedPage("all");
       setTimeout(() => {
         searchProductsInDetailed(searchTerm);
       }, 100);
@@ -359,11 +404,11 @@ function setupSearchListeners() {
   });
 
   // Enter товч дарахад хайх
-  inputWrapper.addEventListener("keypress", (e) => {
+  inputWrapper.addEventListener("keypress", async (e) => {
     if (e.key === "Enter") {
       const searchTerm = e.target.value || searchInput.value;
       if (searchTerm.trim() !== "") {
-        openDetailedPage("all");
+        await openDetailedPage("all");
         setTimeout(() => {
           searchProductsInDetailed(searchTerm);
         }, 100);

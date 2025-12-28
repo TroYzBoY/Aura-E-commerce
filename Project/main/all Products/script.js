@@ -1,103 +1,236 @@
 let products = {
   newProducts: [],
   recommendedProducts: [],
-  accessories: []
+  accessories: [],
 };
 
 let allProducts = []; // For search functionality
 let cart = [];
-let currentFilter = 'all';
-let currentCategory = 'all';
+let currentFilter = "all";
+let currentCategory = "all";
 
 // Fetch products from JSON file
 async function loadProducts() {
   try {
-    const response = await fetch('../product.json');
+    const response = await fetch("../product.json");
     if (!response.ok) {
-      throw new Error('Өгөгдөл ачаалахад алдаа гарлаа');
+      throw new Error("Өгөгдөл ачаалахад алдаа гарлаа");
     }
     products = await response.json();
-    
+
     // Combine all products for search
     allProducts = [
       ...(products.newProducts || []),
       ...(products.recommendedProducts || []),
-      ...(products.accessories || [])
+      ...(products.accessories || []),
     ];
-    
-    displayProducts(products.newProducts, 'new-products');
+
+    // Show all products on the page (combine all categories)
+    displayProducts(allProducts, "new-products", 0);
   } catch (error) {
-    console.error('Fetch алдаа:', error);
-    document.getElementById('new-products').innerHTML = '<div class="loading">Өгөгдөл ачаалахад алдаа гарлаа</div>';
+    console.error("Fetch алдаа:", error);
+    document.getElementById("new-products").innerHTML =
+      '<div class="loading">Өгөгдөл ачаалахад алдаа гарлаа</div>';
   }
 }
 
-function displayProducts(productsArray, containerId) {
+function displayProducts(productsArray, containerId, limit = 5) {
   const container = document.getElementById(containerId);
-  container.innerHTML = productsArray.slice(0, 5).map(product => `
-        <div class="product-card">
-          ${product.new ? `<div class="product-new">${product.new}</div>` : ''}
-          <img src="${product.image}" alt="${product.name}" class="product-image">
-          <div class="product-name">${product.name}</div>
-          <div class="product-price">${product.price}</div>
-        </div>
-      `).join('');
+  if (!container) return;
+
+  const list =
+    limit && limit > 0 ? productsArray.slice(0, limit) : productsArray;
+
+  container.innerHTML = list
+    .map((product) => {
+      // Parse price to number for filtering
+      const priceNum = parseFloat(product.price.replace(/[₮,]/g, ""));
+
+      return `
+      <div class="product-card" 
+           data-category="${product.category || "accessory"}"
+           data-price="${priceNum}"
+           data-is-new="${product.new ? "true" : "false"}"
+           data-on-sale="${product.salePrice ? "true" : "false"}">
+        ${product.new ? `<div class="product-new">${product.new}</div>` : ""}
+        <img src="${product.image}" alt="${product.name}" class="product-image">
+        <div class="product-name">${product.name}</div>
+        <div class="product-price">${product.price}</div>
+      </div>
+    `;
+    })
+    .join("");
 }
 
 function openDetailedPage(category) {
   currentCategory = category;
-  const page = document.getElementById('detailed-page');
-  const title = document.getElementById('detailed-title');
-  const subtitle = document.getElementById('detailed-subtitle');
+  const page = document.getElementById("detailed-page");
+  const title = document.getElementById("detailed-title");
+  const subtitle = document.getElementById("detailed-subtitle");
 
-  title.textContent = 'Бүх бүтээгдэхүүн';
-  subtitle.textContent = 'Таны хайж байгаа бүгдийг нэг дор';
+  title.textContent = "Бүх бүтээгдэхүүн";
+  subtitle.textContent = "Таны хайж байгаа бүгдийг нэг дор";
 
-  page.classList.add('active');
-  filterProducts('all');
+  page.classList.add("active");
+  filterProducts("all");
 }
 
 function closeDetailedPage() {
-  document.getElementById('detailed-page').classList.remove('active');
+  document.getElementById("detailed-page").classList.remove("active");
 }
 
 function filterProducts(category) {
   currentFilter = category;
 
-  document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.classList.remove('active');
+  document.querySelectorAll(".filter-btn").forEach((btn) => {
+    btn.classList.remove("active");
   });
-  event.target.classList.add('active');
+  if (event && event.target) {
+    event.target.classList.add("active");
+  }
 
-  const allProducts = [...products.newProducts, ...products.recommendedProducts, ...products.accessories];
+  const allProducts = [
+    ...products.newProducts,
+    ...products.recommendedProducts,
+    ...products.accessories,
+  ];
 
-  const filtered = category === 'all'
-    ? allProducts
-    : allProducts.filter(p => p.category === category);
+  const filtered =
+    category === "all"
+      ? allProducts
+      : allProducts.filter((p) => p.category === category);
 
   displayDetailedProducts(filtered);
 }
 
 function displayDetailedProducts(productsArray) {
-  const container = document.getElementById('detailed-grid');
-  container.innerHTML = productsArray.map((product, index) => `
-        <div class="detailed-card" style="animation: fadeInUp 0.6s ease forwards ${index * 0.05}s; opacity: 0;">
-          ${product.new ? `<div class="product-new">${product.new}</div>` : ''}
-          <img src="${product.image}" alt="${product.name}" class="detailed-card-image">
+  const container = document.getElementById("detailed-grid");
+  container.innerHTML = productsArray
+    .map(
+      (product, index) => `
+        <div class="detailed-card" style="animation: fadeInUp 0.6s ease forwards ${
+          index * 0.05
+        }s; opacity: 0;">
+          ${product.new ? `<div class="product-new">${product.new}</div>` : ""}
+          <img src="${product.image}" alt="${
+        product.name
+      }" class="detailed-card-image">
           <div class="detailed-card-info">
             <div class="detailed-card-name">${product.name}</div>
             <div class="detailed-card-price">${product.price}</div>
-            <button class="add-to-cart-btn" onclick="addToCart(${product.id}, '${product.name}', '${product.price}')">
+            <button class="add-to-cart-btn" onclick="addToCart(${
+              product.id
+            }, '${product.name}', '${product.price}')">
               <i class="fa-solid fa-cart-plus"></i> Сагсанд нэмэх
             </button>
           </div>
         </div>
-      `).join('');
+      `
+    )
+    .join("");
 }
+
+// ============================================
+// SIDEBAR FILTER FUNCTIONS
+// ============================================
+
+// Sidebar filter-ийг ажиллуулах үндсэн функц
+function applyFilters() {
+  const categoryCheckboxes = document.querySelectorAll(
+    ".filter-checkbox[data-category]:checked"
+  );
+  const priceCheckboxes = document.querySelectorAll(
+    ".filter-checkbox[data-price]:checked"
+  );
+  const conditionCheckboxes = document.querySelectorAll(
+    ".filter-checkbox[data-condition]:checked"
+  );
+
+  const selectedCategories = Array.from(categoryCheckboxes).map(
+    (cb) => cb.dataset.category
+  );
+  const selectedPrices = Array.from(priceCheckboxes).map(
+    (cb) => cb.dataset.price
+  );
+  const selectedConditions = Array.from(conditionCheckboxes).map(
+    (cb) => cb.dataset.condition
+  );
+
+  const productCards = document.querySelectorAll(".product-card");
+
+  productCards.forEach((card) => {
+    let showCard = true;
+
+    // Category filter
+    if (selectedCategories.length > 0) {
+      const cardCategory = card.dataset.category;
+      if (!selectedCategories.includes(cardCategory)) {
+        showCard = false;
+      }
+    }
+
+    // Price filter
+    if (selectedPrices.length > 0 && showCard) {
+      const cardPrice = parseFloat(card.dataset.price);
+      let priceMatch = false;
+
+      selectedPrices.forEach((priceRange) => {
+        const [min, max] = priceRange.split("-").map(Number);
+        if (cardPrice >= min && cardPrice <= max) {
+          priceMatch = true;
+        }
+      });
+
+      if (!priceMatch) {
+        showCard = false;
+      }
+    }
+
+    // Condition filter
+    if (selectedConditions.length > 0 && showCard) {
+      let conditionMatch = false;
+
+      selectedConditions.forEach((condition) => {
+        if (condition === "new" && card.dataset.isNew === "true") {
+          conditionMatch = true;
+        }
+        if (condition === "sale" && card.dataset.onSale === "true") {
+          conditionMatch = true;
+        }
+      });
+
+      if (!conditionMatch) {
+        showCard = false;
+      }
+    }
+
+    // Animate card visibility
+    if (showCard) {
+      card.style.display = "block";
+      card.style.animation = "fadeInUp 0.4s ease forwards";
+    } else {
+      card.style.opacity = "0";
+      setTimeout(() => {
+        card.style.display = "none";
+      }, 300);
+    }
+  });
+}
+
+// Бүх filter-ийг цэвэрлэх
+function clearFilters() {
+  const allCheckboxes = document.querySelectorAll(".filter-checkbox");
+  allCheckboxes.forEach((cb) => (cb.checked = false));
+  applyFilters();
+}
+
+// ============================================
+// CART FUNCTIONS
+// ============================================
 
 function addToCart(id, name, price) {
   // Нэвтэрсэн эсэхийг шалгах
-  if (typeof requireLogin === 'function' && !requireLogin()) {
+  if (typeof requireLogin === "function" && !requireLogin()) {
     return; // Хэрэв нэвтэрээгүй бол popup нээгдэж, функц дуусна
   }
 
@@ -107,13 +240,13 @@ function addToCart(id, name, price) {
 }
 
 function updateCartBadge() {
-  const cartIcon = document.getElementById('cart-icon');
-  let badge = cartIcon.querySelector('.cart-badge');
+  const cartIcon = document.getElementById("cart-icon");
+  let badge = cartIcon.querySelector(".cart-badge");
 
   if (cart.length > 0) {
     if (!badge) {
-      badge = document.createElement('span');
-      badge.className = 'cart-badge';
+      badge = document.createElement("span");
+      badge.className = "cart-badge";
       cartIcon.appendChild(badge);
     }
     badge.textContent = cart.length;
@@ -123,7 +256,7 @@ function updateCartBadge() {
 }
 
 function showNotification(message) {
-  const notification = document.createElement('div');
+  const notification = document.createElement("div");
   notification.style.cssText = `
         position: fixed;
         top: 100px;
@@ -141,34 +274,14 @@ function showNotification(message) {
   document.body.appendChild(notification);
 
   setTimeout(() => {
-    notification.style.animation = 'slideOutRight 0.3s';
+    notification.style.animation = "slideOutRight 0.3s";
     setTimeout(() => notification.remove(), 300);
   }, 2000);
 }
 
-// Add CSS animations
-const style = document.createElement('style');
-style.textContent = `
-      @keyframes fadeInUp {
-        from {
-          opacity: 0;
-          transform: translateY(30px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      @keyframes slideInRight {
-        from { transform: translateX(100px); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-      }
-      @keyframes slideOutRight {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(100px); opacity: 0; }
-      }
-    `;
-document.head.appendChild(style);
+// ============================================
+// SEARCH FUNCTIONS
+// ============================================
 
 // Search dropdown-оор үр дүнг харуулах
 function showSearchDropdown(results) {
@@ -207,7 +320,7 @@ function showSearchDropdown(results) {
       const productId = parseInt(item.getAttribute("data-product-id"));
       const searchTerm = document.querySelector(".input").value;
       hideSearchDropdown();
-      openDetailedPage('all');
+      openDetailedPage("all");
       // Хайлтын үр дүнг харуулах
       setTimeout(() => {
         searchProductsInDetailed(searchTerm);
@@ -239,7 +352,7 @@ function searchProducts(searchTerm) {
     const categoryMatch = product.category?.toLowerCase().includes(searchLower);
     return nameMatch || categoryMatch;
   });
-  
+
   // Dropdown-оор үр дүнг харуулах
   showSearchDropdown(filteredProducts);
 }
@@ -325,7 +438,7 @@ function setupSearchListeners() {
   searchIcon.addEventListener("click", () => {
     const searchTerm = searchInput.value;
     if (searchTerm.trim() !== "") {
-      openDetailedPage('all');
+      openDetailedPage("all");
       setTimeout(() => {
         searchProductsInDetailed(searchTerm);
       }, 100);
@@ -338,7 +451,7 @@ function setupSearchListeners() {
     if (e.key === "Enter") {
       const searchTerm = e.target.value || searchInput.value;
       if (searchTerm.trim() !== "") {
-        openDetailedPage('all');
+        openDetailedPage("all");
         setTimeout(() => {
           searchProductsInDetailed(searchTerm);
         }, 100);
@@ -347,6 +460,38 @@ function setupSearchListeners() {
     }
   });
 }
+
+// ============================================
+// CSS ANIMATIONS
+// ============================================
+
+// Add CSS animations
+const style = document.createElement("style");
+style.textContent = `
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes slideInRight {
+        from { transform: translateX(100px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      @keyframes slideOutRight {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100px); opacity: 0; }
+      }
+    `;
+document.head.appendChild(style);
+
+// ============================================
+// INITIALIZATION
+// ============================================
 
 // DOM ачаалагдсаны дараа search listener-уудыг тохируулах
 if (document.readyState === "loading") {
