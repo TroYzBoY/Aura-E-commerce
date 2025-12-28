@@ -886,3 +886,9 @@ a {
     grid-template-columns: 1fr;
   }
 }
+
+
+#accessories-prev,
+#accessories-next {
+  display: none !important;
+}
