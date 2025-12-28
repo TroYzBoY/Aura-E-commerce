@@ -1,8 +1,10 @@
 /* Basic layout and header reuse */
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css");
+
 * {
   box-sizing: border-box;
 }
+
 body {
   font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
   background: #f7f9fb;
@@ -10,6 +12,7 @@ body {
   margin: 0;
   padding-top: 100px;
 }
+
 .menu {
   display: flex;
   align-items: center;
@@ -49,11 +52,21 @@ body {
 .text {
   display: flex;
   gap: 30px;
+  align-items: center;
 }
 
-.text > p,
+a {
+  text-decoration: none;
+  color: #000000;
+}
+
+a p {
+  color: #000000;
+}
+
+.text>p,
 .menu-item,
-.text > a,
+.text>a,
 .menu-link {
   position: relative;
   cursor: pointer;
@@ -65,9 +78,9 @@ body {
   text-decoration: none;
 }
 
-.text > p::after,
+.text>p::after,
 .menu-item::after,
-.text > a::after,
+.text>a::after,
 .menu-link::after {
   content: "";
   position: absolute;
@@ -82,25 +95,25 @@ body {
   transition: transform 0.3s ease;
 }
 
-.text > p:hover::after,
+.text>p:hover::after,
 .menu-item:hover::after,
-.text > a:hover::after,
+.text>a:hover::after,
 .menu-link:hover::after {
   transform: scaleX(1);
   transform-origin: left;
 }
 
-.text > p:hover::after,
+.text>p:hover::after,
 .menu-item:hover::after,
-.text > a:hover::after,
+.text>a:hover::after,
 .menu-link:hover::after {
   transform: scaleX(1);
   transform-origin: left;
 }
 
-.text > p:hover,
+.text>p:hover,
 .menu-item:hover,
-.text > a:hover,
+.text>a:hover,
 .menu-link:hover {
   color: #1f1d1d;
 }
@@ -209,6 +222,7 @@ body {
   justify-content: center;
   padding: 40px 20px;
 }
+
 .contact-container {
   max-width: 920px;
   background: white;
@@ -216,23 +230,28 @@ body {
   border-radius: 14px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
 }
+
 .contact-container h1 {
   font-size: 28px;
   margin-bottom: 6px;
 }
+
 .lead {
   color: #666;
   margin-bottom: 18px;
 }
+
 .contact-form .row {
   margin-bottom: 14px;
 }
+
 .contact-form label {
   display: block;
   margin-bottom: 8px;
   font-weight: 600;
   color: #333;
 }
+
 .contact-form input[type="text"],
 .contact-form input[type="email"],
 .contact-form textarea {
@@ -242,41 +261,49 @@ body {
   border-radius: 8px;
   font-size: 15px;
 }
+
 .contact-form textarea {
   resize: vertical;
 }
+
 .required {
   color: #e53935;
 }
+
 .actions {
   display: flex;
   gap: 12px;
   align-items: center;
 }
+
 .btn {
   padding: 12px 18px;
   border-radius: 10px;
   border: none;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #000000, #787878);
   color: #fff;
   font-weight: 700;
   cursor: pointer;
 }
+
 .btn.secondary {
   background: #f5f5f7;
   color: #1d1d1f;
 }
+
 .contact-result {
   margin-top: 12px;
   padding: 10px;
   border-radius: 8px;
   display: none;
 }
+
 .contact-result.success {
   display: block;
   background: #e6ffef;
   color: #03664d;
 }
+
 .contact-result.error {
   display: block;
   background: #fff0f0;
@@ -287,6 +314,7 @@ body {
   margin-top: 20px;
   color: #444;
 }
+
 .contact-info h3 {
   margin-bottom: 8px;
 }
@@ -296,10 +324,12 @@ body {
   .menus {
     width: 95%;
   }
+
   .contact-container {
     padding: 24px;
   }
 }
+
 @media (max-width: 480px) {
   .text {
     display: none;

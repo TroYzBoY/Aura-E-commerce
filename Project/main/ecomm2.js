@@ -199,10 +199,9 @@ function updateCartContent() {
               border-radius: 8px;
             " />
             <div style="flex: 1;">
-              <div style="font-weight: 600; margin-bottom: 5px;">${
-                item.name
-              }</div>
-              <div style="color: #06c; font-weight: 700;">₮${item.price.toLocaleString()}</div>
+              <div style="font-weight: 600; margin-bottom: 5px;">${item.name
+          }</div>
+              <div style="color: rgba(255, 0, 0, 1); font-weight: 700;">₮${item.price.toLocaleString()}</div>
             </div>
             <div style="display: flex; align-items: center; gap: 10px;">
               <button onclick="updateQuantity(${item.id}, -1)" style="
@@ -215,9 +214,8 @@ function updateCartContent() {
                 font-size: 18px;
                 font-weight: 700;
               ">-</button>
-              <span style="font-weight: 600; min-width: 20px; text-align: center;">${
-                item.quantity
-              }</span>
+              <span style="font-weight: 600; min-width: 20px; text-align: center;">${item.quantity
+          }</span>
               <button onclick="updateQuantity(${item.id}, 1)" style="
                 width: 30px;
                 height: 30px;
@@ -272,9 +270,8 @@ function updateCartContent() {
       
       ${cartHTML}
       
-      ${
-        cart.length > 0
-          ? `
+      ${cart.length > 0
+        ? `
           <div style="
             border-top: 2px solid #e5e5e7;
             padding-top: 20px;
@@ -288,12 +285,12 @@ function updateCartContent() {
               margin-bottom: 20px;
             ">
               <span>Нийт:</span>
-              <span style="color: #06c;">₮${totalPrice.toLocaleString()}</span>
+              <span style="color: rgba(255, 0, 0, 1);">₮${totalPrice.toLocaleString()}</span>
             </div>
             <button onclick="goToCheckout()" style="
               width: 100%;
               padding: 16px;
-              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              background: linear-gradient(135deg, #000000ff 0% #bebebeff 100%);
               color: white;
               border: none;
               border-radius: 12px;
@@ -301,12 +298,12 @@ function updateCartContent() {
               font-weight: 600;
               cursor: pointer;
               transition: all 0.3s;
-            " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 30px rgba(102, 126, 234, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+            " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 30px rgba(255, 0, 0, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
               💳 Худалдан авах
             </button>
           </div>
         `
-          : ""
+        : ""
       }
     `;
   }
@@ -319,7 +316,7 @@ function showNotification(message) {
     position: fixed;
     top: 100px;
     right: 20px;
-    background: linear-gradient(135deg, #000000ff 0%, #4c4c4cff 100%);
+    background: linear-gradient(135deg, #000000ff 0%, #bebebeff 100%);
     color: white;
     padding: 16px 24px;
     border-radius: 12px;
@@ -380,13 +377,11 @@ function showCartPopup() {
             border-radius: 12px;
             margin-bottom: 15px;
           ">
-            <img src="${item.image}" alt="${
-          item.name
-        }" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;" />
+            <img src="${item.image}" alt="${item.name
+          }" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;" />
             <div style="flex: 1;">
-              <div style="font-weight: 600; margin-bottom: 5px;">${
-                item.name
-              }</div>
+              <div style="font-weight: 600; margin-bottom: 5px;">${item.name
+          }</div>
               <div style="color: rgba(255, 0, 0, 1); font-weight: 700;">₮${item.price.toLocaleString()}</div>
             </div>
             <div style="display: flex; align-items: center; gap: 10px;">
@@ -400,9 +395,8 @@ function showCartPopup() {
                 font-size: 18px;
                 font-weight: 700;
               ">-</button>
-              <span style="font-weight: 600; min-width: 20px; text-align: center;">${
-                item.quantity
-              }</span>
+              <span style="font-weight: 600; min-width: 20px; text-align: center;">${item.quantity
+          }</span>
               <button onclick="updateQuantity(${item.id}, 1)" style="
                 width: 30px;
                 height: 30px;
@@ -466,9 +460,8 @@ function showCartPopup() {
       
       ${cartHTML}
       
-      ${
-        cart.length > 0
-          ? `
+      ${cart.length > 0
+      ? `
           <div style="
             border-top: 2px solid #e5e5e7;
             padding-top: 20px;
@@ -500,8 +493,8 @@ function showCartPopup() {
             </button>
           </div>
         `
-          : ""
-      }
+      : ""
+    }
     </div>
     
     <style>
@@ -714,8 +707,7 @@ function showProductPage(containerId, page) {
 
     product.category == "accessory"
       ? (card.innerHTML = `
-    <img src="${product.image}" alt="${
-          product.name
+    <img src="${product.image}" alt="${product.name
         }" class="product-image" style="width: 100%; max-width: 250px; height: 250px; object-fit: contain; margin-bottom: 15px;" onerror="this.src='IMG/Logo.png'; this.alt='Зураг олдсонгүй';">
     <div class="product-details">
       <div class="product-info">
@@ -726,8 +718,7 @@ function showProductPage(containerId, page) {
     </div> `)
       : (card.innerHTML = `
     ${product.new ? `<div class="product-new">${product.new}</div>` : ""}
-    <img src="${product.image}" alt="${
-          product.name
+    <img src="${product.image}" alt="${product.name
         }" class="product-image" style="width: 100%; max-width: 250px; height: 250px; object-fit: contain; margin-bottom: 15px;" onerror="this.src='IMG/Logo.png'; this.alt='Зураг олдсонгүй';">
     <div class="product-details">
       <div class="product-info">
