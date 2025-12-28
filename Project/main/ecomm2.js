@@ -1261,3 +1261,41 @@ function showProductPopup(product) {
 
 // Хуудас ачаалагдахад бүтээгдэхүүнүүдийг харуулах
 window.addEventListener("load", loadAllProducts);
+
+// buteegdhuunii loop 
+function scrollProducts(containerId, direction) {
+  const products = allProductsData[containerId];
+  if (!products || products.length === 0) return;
+
+  const productsPerPage = 4;
+  const totalPages = Math.ceil(products.length / productsPerPage);
+  let currentPage = productPages[containerId];
+
+  if (direction === "next") {
+    // Loop to first page when reaching the end
+    currentPage = (currentPage + 1) % totalPages;
+  } else if (direction === "prev") {
+    // Loop to last page when going before first
+    currentPage = (currentPage - 1 + totalPages) % totalPages;
+  }
+
+  productPages[containerId] = currentPage;
+  showProductPage(containerId, currentPage);
+}
+
+// ✅ ЭНЭ ХОЁР ФУНКЦИЙГ СОЛИХ ХЭРЭГТЭЙ
+
+// 1. updateArrowButtons функцийг энэ код оруулна:
+function updateArrowButtons(containerId, currentPage, totalProducts) {
+  const prevBtn = document.getElementById(`${containerId}-prev`);
+  const nextBtn = document.getElementById(`${containerId}-next`);
+
+  // Товчууд үргэлж идэвхтэй байна (infinite loop)
+  if (prevBtn) {
+    prevBtn.disabled = false;
+  }
+
+  if (nextBtn) {
+    nextBtn.disabled = false;
+  }
+}
