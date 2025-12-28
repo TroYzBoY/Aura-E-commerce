@@ -1,166 +1,278 @@
 // Login Popup Functionality
 let isLoggedIn = false;
 
-// Initialize login popup
+/* =========================
+   CONFIG
+========================= */
+const API_URL = "http://localhost:3000/users";
+
+/* =========================
+   INIT
+========================= */
 function initLoginPopup() {
-    const formPopup = document.querySelector(".form-popup");
-    if (!formPopup) return;
+  console.log("Login popup initialized");
+  const popup = document.querySelector(".form-popup");
+  if (!popup) return;
 
-    const hidePopupBtn = formPopup.querySelector(".close-btn");
-    const signupLoginLink = formPopup.querySelectorAll(".bottom-link a");
-    const loginForm = document.getElementById("login-form");
-    const signupForm = document.getElementById("signup-form");
+  initPopupClose(popup.querySelector(".close-btn"));
+  initFormSwitching(popup);
 
-    // Close popup
-    if (hidePopupBtn) {
-        hidePopupBtn.addEventListener("click", () => {
-            closeLoginPopup();
-        });
-    }
+  initLoginForm(document.getElementById("login-form"));
+  initSignupForm(document.getElementById("signup-form"));
+}
 
-    // Switch between login and signup
-    signupLoginLink.forEach(link => {
-        link.addEventListener("click", (e) => {
-            e.preventDefault();
-            if (link.id === 'signup-link') {
-                formPopup.classList.add("show-signup");
-            } else if (link.id === 'login-link') {
-                formPopup.classList.remove("show-signup");
-            }
-        });
+document.addEventListener("DOMContentLoaded", initLoginPopup);
+
+/* =========================
+   POPUP CONTROLS
+========================= */
+function initPopupClose(btn) {
+  if (!btn) return;
+  btn.addEventListener("click", closeLoginPopup);
+}
+
+function initFormSwitching(popup) {
+  popup.querySelectorAll(".bottom-link a").forEach((link) => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      popup.classList.toggle("show-signup", link.id === "signup-link");
     });
+  });
+}
 
-    // Handle login form submission
-    if (loginForm) {
-        loginForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            // Simulate login - in real app, validate with backend
-            isLoggedIn = true;
-            localStorage.setItem("isLoggedIn", "true");
-            closeLoginPopup();
-            updateLoginUI();
-            showNotification("Амжилттай нэвтэрлээ!");
-        });
+/* =========================
+   LOGIN
+========================= */
+function initLoginForm(form) {
+  if (!form) return;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const { username, password } = getLoginValues(form);
+    if (!username || !password) {
+      showNotification("Мэдээллээ бүрэн оруулна уу!");
+      return;
     }
 
-    // Handle signup form submission
-    if (signupForm) {
-        signupForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const policyCheckbox = document.getElementById("policy");
-            if (!policyCheckbox.checked) {
-                alert("Terms & Conditions-ийг зөвшөөрнө үү!");
-                return;
-            }
-            // Simulate signup - in real app, register with backend
-            isLoggedIn = true;
-            localStorage.setItem("isLoggedIn", "true");
-            closeLoginPopup();
-            updateLoginUI();
-            showNotification("Бүртгэл амжилттай үүслээ!");
-        });
+    try {
+      const users = await fetchUsers();
+      const user = users.find(
+        (u) => u.username === username && u.password === password
+      );
+
+      if (!user) {
+        showNotification("Нэвтрэх нэр эсвэл нууц үг буруу байна!");
+        return;
+      }
+
+      handleSuccessfulLogin(user);
+      showNotification("Амжилттай нэвтэрлээ!");
+    } catch (err) {
+      console.error(err);
+      showNotification("Сервертэй холбогдож чадсангүй!");
+    }
+  });
+}
+
+function getLoginValues(form) {
+  return {
+    username: form.querySelector('input[type="text"]')?.value.trim(),
+    password: form.querySelector('input[type="password"]')?.value,
+  };
+}
+
+/* =========================
+   SIGNUP
+========================= */
+function initSignupForm(form) {
+  if (!form) return;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    if (!isPolicyAccepted()) return;
+
+    const { username, email, password } = getSignupValues(form);
+    if (!username || !password) {
+      showNotification("Мэдээллээ бүрэн оруулна уу!");
+      return;
     }
 
-    // Close popup when clicking on overlay
-    const overlay = document.querySelector(".blur-bg-overlay");
-    if (overlay) {
-        overlay.addEventListener("click", () => {
-            closeLoginPopup();
-        });
-    }
+    try {
+      const users = await fetchUsers();
+      const exists = users.some((u) => u.username === username);
 
-    // Check if user is already logged in
-    checkLoginStatus();
+      if (exists) {
+        showNotification("Энэ нэвтрэх нэр аль хэдийн бүртгэгдсэн байна!");
+        return;
+      }
+
+      const newUser = await createUser({
+        username,
+        email,
+        password,
+      });
+
+      handleSuccessfulLogin(newUser);
+      showNotification("Бүртгэл амжилттай үүслээ!");
+    } catch (err) {
+      console.error(err);
+      showNotification("Сервертэй холбогдож чадсангүй!");
+    }
+  });
+}
+
+function getSignupValues(form) {
+  return {
+    username: form.querySelector('input[type="text"]')?.value.trim(),
+    email: form.querySelector('input[type="email"]')?.value.trim(),
+    password: form.querySelector('input[type="password"]')?.value,
+  };
+}
+
+function isPolicyAccepted() {
+  const policy = document.getElementById("policy");
+  if (!policy.checked) {
+    alert("Terms & Conditions-ийг зөвшөөрнө үү!");
+    return false;
+  }
+  return true;
+}
+
+/* =========================
+   API (JSON SERVER)
+========================= */
+async function fetchUsers() {
+  const res = await fetch(API_URL);
+  if (!res.ok) throw new Error("Fetch users failed");
+  return res.json();
+}
+
+async function createUser(user) {
+  const res = await fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(user),
+  });
+  if (!res.ok) throw new Error("Create user failed");
+  return res.json();
+}
+
+/* =========================
+   AUTH STATE
+========================= */
+function handleSuccessfulLogin(user) {
+  localStorage.setItem("isLoggedIn", "true");
+  localStorage.setItem("currentUser", JSON.stringify(user));
+  closeLoginPopup();
+  updateLoginUI();
+}
+
+/* =========================
+   UI HELPERS (stub)
+========================= */
+function closeLoginPopup() {
+  document.querySelector(".form-popup")?.classList.remove("show");
+}
+
+function updateLoginUI() {
+  console.log("UI updated");
+}
+
+function showNotification(msg) {
+  alert(msg);
 }
 
 // Show login popup
 function showLoginPopup() {
-    document.body.classList.add("show-popup");
-    const formPopup = document.querySelector(".form-popup");
-    if (formPopup) {
-        formPopup.classList.remove("show-signup");
-    }
+  document.body.classList.add("show-popup");
+  const formPopup = document.querySelector(".form-popup");
+  if (formPopup) {
+    formPopup.classList.remove("show-signup");
+  }
 }
 
 // Close login popup
 function closeLoginPopup() {
-    document.body.classList.remove("show-popup");
+  document.body.classList.remove("show-popup");
 }
 
 // Check if user is logged in
 function checkLoginStatus() {
-    const loggedIn = localStorage.getItem("isLoggedIn");
-    if (loggedIn === "true") {
-        isLoggedIn = true;
-        updateLoginUI();
-    }
+  const loggedIn = localStorage.getItem("isLoggedIn");
+  if (loggedIn === "true") {
+    isLoggedIn = true;
+    updateLoginUI();
+  }
 }
 
 // Check if user needs to login (returns true if login required)
 function requireLogin() {
-    checkLoginStatus();
-    if (!isLoggedIn) {
-        showLoginPopup();
-        return false;
-    }
-    return true;
+  checkLoginStatus();
+  if (!isLoggedIn) {
+    showLoginPopup();
+    return false;
+  }
+  return true;
 }
 
 // Update UI based on login status
 function updateLoginUI() {
-    const userIcon = document.getElementById("user-icon") || document.querySelector(".fa-user");
-    const cartIcon = document.getElementById("cart-icon");
-    
-    if (userIcon) {
-        if (isLoggedIn) {
-            userIcon.style.color = "#00bcd4";
-            userIcon.title = "Профайл";
-        } else {
-            userIcon.style.color = "";
-            userIcon.title = "Нэвтэрэх";
-        }
+  const userIcon =
+    document.getElementById("user-icon") || document.querySelector(".fa-user");
+  const cartIcon = document.getElementById("cart-icon");
+
+  if (userIcon) {
+    if (isLoggedIn) {
+      userIcon.style.color = "#00bcd4";
+      userIcon.title = "Профайл";
+    } else {
+      userIcon.style.color = "";
+      userIcon.title = "Нэвтэрэх";
     }
-    
-    // Update cart icon based on login status
-    if (cartIcon) {
-        if (isLoggedIn) {
-            cartIcon.style.opacity = "1";
-            cartIcon.style.cursor = "pointer";
-            cartIcon.title = "Сагс";
-        } else {
-            cartIcon.style.opacity = "0.5";
-            cartIcon.style.cursor = "not-allowed";
-            cartIcon.title = "Нэвтэрнэ үү";
-        }
+  }
+
+  // Update cart icon based on login status
+  if (cartIcon) {
+    if (isLoggedIn) {
+      cartIcon.style.opacity = "1";
+      cartIcon.style.cursor = "pointer";
+      cartIcon.title = "Сагс";
+    } else {
+      cartIcon.style.opacity = "0.5";
+      cartIcon.style.cursor = "not-allowed";
+      cartIcon.title = "Нэвтэрнэ үү";
     }
+  }
 }
 
 // Logout function
 function logout() {
-    isLoggedIn = false;
-    localStorage.removeItem("isLoggedIn");
-    updateLoginUI();
-    showNotification("Гарах амжилттай!");
+  isLoggedIn = false;
+  localStorage.removeItem("isLoggedIn");
+  updateLoginUI();
+  showNotification("Гарах амжилттай!");
 }
 
 // Show profile popup
 function showProfilePopup() {
-    const existingPopup = document.querySelector(".profile-popup");
-    if (existingPopup) existingPopup.remove();
+  const existingPopup = document.querySelector(".profile-popup");
+  if (existingPopup) existingPopup.remove();
 
-    // Load user data from localStorage
-    const userData = JSON.parse(localStorage.getItem("userData") || "{}");
-    const userName = userData.name || "";
-    const userAge = userData.age || "";
-    const userGender = userData.gender || "";
-    const userEmail = userData.email || "";
-    const userPhone = userData.phone || "";
-    const userAddress = userData.address || "";
-    const profileImageData = userData.profileImage || "";
+  // Load user data from localStorage
+  const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+  const userName = userData.name || "";
+  const userAge = userData.age || "";
+  const userGender = userData.gender || "";
+  const userEmail = userData.email || "";
+  const userPhone = userData.phone || "";
+  const userAddress = userData.address || "";
+  const profileImageData = userData.profileImage || "";
 
-    const popup = document.createElement("div");
-    popup.className = "profile-popup";
-    popup.style.cssText = `
+  const popup = document.createElement("div");
+  popup.className = "profile-popup";
+  popup.style.cssText = `
         position: fixed;
         top: 0;
         left: 0;
@@ -176,7 +288,7 @@ function showProfilePopup() {
         padding: 20px;
     `;
 
-    popup.innerHTML = `
+  popup.innerHTML = `
         <div style="
             background: white;
             border-radius: 20px;
@@ -322,9 +434,15 @@ function showProfilePopup() {
                                 transition: border 0.3s;
                             " onfocus="this.style.border='1px solid #00bcd4'" onblur="this.style.border='1px solid #e5e5e7'">
                                 <option value="">Сонгох</option>
-                                <option value="male" ${userGender === "male" ? "selected" : ""}>Эрэгтэй</option>
-                                <option value="female" ${userGender === "female" ? "selected" : ""}>Эмэгтэй</option>
-                                <option value="other" ${userGender === "other" ? "selected" : ""}>Бусад</option>
+                                <option value="male" ${
+                                  userGender === "male" ? "selected" : ""
+                                }>Эрэгтэй</option>
+                                <option value="female" ${
+                                  userGender === "female" ? "selected" : ""
+                                }>Эмэгтэй</option>
+                                <option value="other" ${
+                                  userGender === "other" ? "selected" : ""
+                                }>Бусад</option>
                             </select>
                         </div>
                     </div>
@@ -424,167 +542,164 @@ function showProfilePopup() {
         </style>
     `;
 
-    popup.addEventListener("click", (e) => {
-        if (e.target === popup) {
-            popup.remove();
-        }
-    });
+  popup.addEventListener("click", (e) => {
+    if (e.target === popup) {
+      popup.remove();
+    }
+  });
 
-    document.body.appendChild(popup);
+  document.body.appendChild(popup);
 }
 
 // Handle image upload
 function handleImageUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
+  const file = event.target.files[0];
+  if (!file) return;
 
-    // Check if file is an image
-    if (!file.type.startsWith('image/')) {
-        alert("Зөвхөн зураг файл сонгоно уу!");
-        return;
+  // Check if file is an image
+  if (!file.type.startsWith("image/")) {
+    alert("Зөвхөн зураг файл сонгоно уу!");
+    return;
+  }
+
+  // Check file size (max 5MB)
+  if (file.size > 5 * 1024 * 1024) {
+    alert("Зургийн хэмжээ 5MB-аас их байж болохгүй!");
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const imageData = e.target.result;
+
+    // Display image in profile circle
+    const profileImage = document.getElementById("profile-image");
+    const profileIcon = document.getElementById("profile-icon");
+
+    if (profileImage) {
+      profileImage.src = imageData;
+      profileImage.style.display = "block";
     }
 
-    // Check file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-        alert("Зургийн хэмжээ 5MB-аас их байж болохгүй!");
-        return;
+    if (profileIcon) {
+      profileIcon.style.display = "none";
     }
 
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const imageData = e.target.result;
-        
-        // Display image in profile circle
-        const profileImage = document.getElementById("profile-image");
-        const profileIcon = document.getElementById("profile-icon");
-        
-        if (profileImage) {
-            profileImage.src = imageData;
-            profileImage.style.display = "block";
-        }
-        
-        if (profileIcon) {
-            profileIcon.style.display = "none";
-        }
+    // Save to temporary variable for later saving
+    if (typeof window !== "undefined") {
+      window.tempProfileImage = imageData;
+    }
+  };
 
-        // Save to temporary variable for later saving
-        if (typeof window !== 'undefined') {
-            window.tempProfileImage = imageData;
-        }
-    };
-    
-    reader.readAsDataURL(file);
+  reader.readAsDataURL(file);
 }
 
 // Update profile icon based on gender selection (removed - no longer needed)
 function updateProfileIcon(gender) {
-    // This function is no longer needed as we removed gender-based icons
-    // Keeping it for backward compatibility but it does nothing
+  // This function is no longer needed as we removed gender-based icons
+  // Keeping it for backward compatibility but it does nothing
 }
 
 // Save profile data to localStorage
 function saveProfileData() {
-    const email = document.getElementById("profile-email")?.value || "";
-    const phone = document.getElementById("profile-phone")?.value || "";
-    
-    // Email validation - must contain @
-    if (email && !email.includes("@")) {
-        alert("Имэйл хаягт @ тэмдэгт байх ёстой!");
-        return;
+  const email = document.getElementById("profile-email")?.value || "";
+  const phone = document.getElementById("profile-phone")?.value || "";
+
+  // Email validation - must contain @
+  if (email && !email.includes("@")) {
+    alert("Имэйл хаягт @ тэмдэгт байх ёстой!");
+    return;
+  }
+
+  // Phone validation - must be exactly 8 digits
+  if (phone) {
+    const phoneDigits = phone.replace(/[^0-9]/g, "");
+    if (phoneDigits.length !== 8) {
+      alert("Утасны дугаар яг 8 оронтой тоо байх ёстой!");
+      return;
     }
-    
-    // Phone validation - must be exactly 8 digits
-    if (phone) {
-        const phoneDigits = phone.replace(/[^0-9]/g, '');
-        if (phoneDigits.length !== 8) {
-            alert("Утасны дугаар яг 8 оронтой тоо байх ёстой!");
-            return;
-        }
-    }
-    
-    // Get image data (either from temp variable or existing image)
-    const profileImage = document.getElementById("profile-image");
-    const imageData = window.tempProfileImage || profileImage?.src || "";
-    
-    const userData = {
-        name: document.getElementById("profile-name")?.value || "",
-        age: document.getElementById("profile-age")?.value || "",
-        gender: document.getElementById("profile-gender")?.value || "",
-        email: email,
-        phone: phoneDigits || phone,
-        address: document.getElementById("profile-address")?.value || "",
-        profileImage: imageData
-    };
-    
-    localStorage.setItem("userData", JSON.stringify(userData));
-    
-    // Clear temp image
-    if (window.tempProfileImage) {
-        delete window.tempProfileImage;
-    }
-    
-    if (typeof showNotification === "function") {
-        showNotification("Профайл амжилттай хадгалагдлаа!");
-    } else {
-        alert("Профайл амжилттай хадгалагдлаа!");
-    }
+  }
+
+  // Get image data (either from temp variable or existing image)
+  const profileImage = document.getElementById("profile-image");
+  const imageData = window.tempProfileImage || profileImage?.src || "";
+
+  const userData = {
+    name: document.getElementById("profile-name")?.value || "",
+    age: document.getElementById("profile-age")?.value || "",
+    gender: document.getElementById("profile-gender")?.value || "",
+    email: email,
+    phone: phoneDigits || phone,
+    address: document.getElementById("profile-address")?.value || "",
+    profileImage: imageData,
+  };
+
+  localStorage.setItem("userData", JSON.stringify(userData));
+
+  // Clear temp image
+  if (window.tempProfileImage) {
+    delete window.tempProfileImage;
+  }
+
+  if (typeof showNotification === "function") {
+    showNotification("Профайл амжилттай хадгалагдлаа!");
+  } else {
+    alert("Профайл амжилттай хадгалагдлаа!");
+  }
 }
 
 // Add user icon click handler
 function setupUserIcon() {
-    const userIcon = document.getElementById("user-icon");
-    if (userIcon) {
-        userIcon.addEventListener("click", () => {
-            checkLoginStatus();
-            if (isLoggedIn) {
-                // If logged in, show profile popup
-                showProfilePopup();
-            } else {
-                showLoginPopup();
-            }
-        });
-    }
+  const userIcon = document.getElementById("user-icon");
+  if (userIcon) {
+    userIcon.addEventListener("click", () => {
+      checkLoginStatus();
+      if (isLoggedIn) {
+        // If logged in, show profile popup
+        showProfilePopup();
+      } else {
+        showLoginPopup();
+      }
+    });
+  }
 }
 
 // Protect cart icon - require login
 function setupCartIcon() {
-    const cartIcon = document.getElementById("cart-icon");
-    if (cartIcon) {
-        cartIcon.addEventListener("click", (e) => {
-            checkLoginStatus();
-            if (!isLoggedIn) {
-                e.preventDefault();
-                e.stopPropagation();
-                showLoginPopup();
-                showNotification("Эхлээд нэвтэрнэ үү!");
-                return false;
-            }
-            // If logged in, allow default cart behavior
-        });
-    }
+  const cartIcon = document.getElementById("cart-icon");
+  if (cartIcon) {
+    cartIcon.addEventListener("click", (e) => {
+      checkLoginStatus();
+      if (!isLoggedIn) {
+        e.preventDefault();
+        e.stopPropagation();
+        showLoginPopup();
+        showNotification("Эхлээд нэвтэрнэ үү!");
+        return false;
+      }
+      // If logged in, allow default cart behavior
+    });
+  }
 }
 
 // Initialize when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        initLoginPopup();
-        setupUserIcon();
-        setupCartIcon();
-        updateLoginUI();
-    });
-} else {
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => {
     initLoginPopup();
     setupUserIcon();
     setupCartIcon();
     updateLoginUI();
+  });
+} else {
+  initLoginPopup();
+  setupUserIcon();
+  setupCartIcon();
+  updateLoginUI();
 }
 
 // Helper function for notifications (if not exists)
-if (typeof showNotification === 'undefined') {
-    function showNotification(message) {
-        alert(message);
-    }
+if (typeof showNotification === "undefined") {
+  function showNotification(message) {
+    alert(message);
+  }
 }
-
-
-
