@@ -4,6 +4,7 @@ let products = {
   accessories: []
 };
 
+let allProducts = []; // For search functionality
 let cart = [];
 let currentFilter = 'all';
 let currentCategory = 'all';
@@ -16,6 +17,14 @@ async function loadProducts() {
       throw new Error('Өгөгдөл ачаалахад алдаа гарлаа');
     }
     products = await response.json();
+    
+    // Combine all products for search
+    allProducts = [
+      ...(products.newProducts || []),
+      ...(products.recommendedProducts || []),
+      ...(products.accessories || [])
+    ];
+    
     displayProducts(products.accessories, 'new-products');
   } catch (error) {
     console.error('Fetch алдаа:', error);
@@ -160,6 +169,191 @@ style.textContent = `
       }
     `;
 document.head.appendChild(style);
+
+// Search dropdown-оор үр дүнг харуулах
+function showSearchDropdown(results) {
+  const dropdown = document.getElementById("search-dropdown");
+  const container = document.getElementById("search-results-container");
+
+  if (!dropdown || !container) return;
+
+  if (results.length === 0) {
+    container.innerHTML =
+      '<div class="search-no-results">Бүтээгдэхүүн олдсонгүй</div>';
+    dropdown.classList.add("show");
+    return;
+  }
+
+  // Хамгийн ихдээ 5 үр дүнг харуулах
+  const displayResults = results.slice(0, 5);
+
+  container.innerHTML = displayResults
+    .map((product) => {
+      return `
+        <div class="search-result-item" data-product-id="${product.id}">
+          <img src="${product.image}" alt="${product.name}" onerror="this.src='IMG/Logo.png';">
+          <div class="search-result-item-info">
+            <div class="search-result-item-name">${product.name}</div>
+            <div class="search-result-item-price">${product.price}</div>
+          </div>
+        </div>
+      `;
+    })
+    .join("");
+
+  // Item дээр дарахад detailed page нээж, хайлтын үр дүнг харуулах
+  container.querySelectorAll(".search-result-item").forEach((item) => {
+    item.addEventListener("click", () => {
+      const productId = parseInt(item.getAttribute("data-product-id"));
+      const searchTerm = document.querySelector(".input").value;
+      hideSearchDropdown();
+      openDetailedPage('all');
+      // Хайлтын үр дүнг харуулах
+      setTimeout(() => {
+        searchProductsInDetailed(searchTerm);
+      }, 100);
+    });
+  });
+
+  dropdown.classList.add("show");
+}
+
+// Search dropdown-г нуух
+function hideSearchDropdown() {
+  const dropdown = document.getElementById("search-dropdown");
+  if (dropdown) {
+    dropdown.classList.remove("show");
+  }
+}
+
+// Хайлтын функц
+function searchProducts(searchTerm) {
+  if (!searchTerm || searchTerm.trim() === "") {
+    hideSearchDropdown();
+    return;
+  }
+
+  const searchLower = searchTerm.toLowerCase().trim();
+  const filteredProducts = allProducts.filter((product) => {
+    const nameMatch = product.name.toLowerCase().includes(searchLower);
+    const categoryMatch = product.category?.toLowerCase().includes(searchLower);
+    return nameMatch || categoryMatch;
+  });
+  
+  // Dropdown-оор үр дүнг харуулах
+  showSearchDropdown(filteredProducts);
+}
+
+// Detailed page дотор хайх функц
+function searchProductsInDetailed(searchTerm) {
+  if (!searchTerm || searchTerm.trim() === "") {
+    // Бүх бүтээгдэхүнийг харуулах
+    displayDetailedProducts(allProducts);
+    return;
+  }
+
+  const searchLower = searchTerm.toLowerCase().trim();
+  const filteredProducts = allProducts.filter((product) => {
+    const nameMatch = product.name.toLowerCase().includes(searchLower);
+    const categoryMatch = product.category?.toLowerCase().includes(searchLower);
+    return nameMatch || categoryMatch;
+  });
+
+  displayDetailedProducts(filteredProducts);
+}
+
+// Debounce функц - хэт олон удаа дуудагдахаас сэргийлэх
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+// DOM ачаалагдсаны дараа search event listener-ууд нэмэх
+function setupSearchListeners() {
+  const searchInput = document.querySelector(".input");
+  const searchIcon = document.querySelector(".icon1");
+  const inputWrapper = document.querySelector(".input-wrapper");
+
+  if (!searchInput || !searchIcon || !inputWrapper) {
+    // DOM бэлэн биш бол дахин оролдох
+    setTimeout(setupSearchListeners, 100);
+    return;
+  }
+
+  // Debounce-тай live search (300ms хүлээгээд хайх)
+  const debouncedSearch = debounce((searchTerm) => {
+    searchProducts(searchTerm);
+  }, 300);
+
+  // Live search - input бичих бүрт автоматаар хайх
+  searchInput.addEventListener("input", (e) => {
+    const searchTerm = e.target.value;
+    debouncedSearch(searchTerm);
+  });
+
+  // Input focus алдахад dropdown нуух
+  searchInput.addEventListener("blur", (e) => {
+    // Click event-ийг боловсруулахаас өмнө dropdown нуухгүй байх
+    setTimeout(() => {
+      const dropdown = document.getElementById("search-dropdown");
+      if (
+        dropdown &&
+        !dropdown.matches(":hover") &&
+        !searchInput.matches(":focus")
+      ) {
+        hideSearchDropdown();
+      }
+    }, 200);
+  });
+
+  // Dropdown дээр hover байхад нуухгүй байх
+  const dropdown = document.getElementById("search-dropdown");
+  if (dropdown) {
+    dropdown.addEventListener("mouseenter", () => {
+      searchInput.focus();
+    });
+  }
+
+  // Хайлтын товч дарахад
+  searchIcon.addEventListener("click", () => {
+    const searchTerm = searchInput.value;
+    if (searchTerm.trim() !== "") {
+      openDetailedPage('all');
+      setTimeout(() => {
+        searchProductsInDetailed(searchTerm);
+      }, 100);
+      hideSearchDropdown();
+    }
+  });
+
+  // Enter товч дарахад хайх
+  inputWrapper.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      const searchTerm = e.target.value || searchInput.value;
+      if (searchTerm.trim() !== "") {
+        openDetailedPage('all');
+        setTimeout(() => {
+          searchProductsInDetailed(searchTerm);
+        }, 100);
+        hideSearchDropdown();
+      }
+    }
+  });
+}
+
+// DOM ачаалагдсаны дараа search listener-уудыг тохируулах
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", setupSearchListeners);
+} else {
+  setupSearchListeners();
+}
 
 // Initialize
 loadProducts();
