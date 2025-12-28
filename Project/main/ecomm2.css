@@ -54,7 +54,7 @@ body {
   gap: 30px;
 }
 
-.text > p,
+.text>p,
 .menu-item {
   position: relative;
   cursor: pointer;
@@ -65,7 +65,7 @@ body {
   color: #000000;
 }
 
-.text > p::after,
+.text>p::after,
 .menu-item::after {
   content: "";
   position: absolute;
@@ -80,13 +80,13 @@ body {
   transition: transform 0.3s ease;
 }
 
-.text > p:hover::after,
+.text>p:hover::after,
 .menu-item:hover::after {
   transform: scaleX(1);
   transform-origin: left;
 }
 
-.text > p:hover,
+.text>p:hover,
 .menu-item:hover {
   color: #1f1d1d;
 }
@@ -286,7 +286,7 @@ body {
   transition: 0.2s linear;
 }
 
-.icon1:focus ~ .input,
+.icon1:focus~.input,
 .input:focus {
   box-shadow: none;
   width: 250px;
@@ -444,6 +444,7 @@ body {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -508,15 +509,9 @@ a {
   margin-bottom: 60px;
 }
 
-.container {
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 0 20px;
-  margin-bottom: 60px;
-}
 
 .section-title {
-  font-size: 32px;
+  font-size: 40px;
   font-weight: 700;
   color: #1d1d1f;
   margin-bottom: 30px;
@@ -662,7 +657,6 @@ a {
   line-height: 1.3;
   min-height: 58px;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;

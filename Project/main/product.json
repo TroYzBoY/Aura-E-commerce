@@ -20,7 +20,25 @@
     },
     {
       "id": 3,
-      "name": "Apple Watch",
+      "name": "Iphone 17 Pro",
+      "price": "₮4,999,000",
+      "image": "./IMG/iphone_17_pro.png",
+      "new": "NEW",
+      "category": "tablet",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 4,
+      "name": "Iphone 17",
+      "price": "₮4,999,000",
+      "image": "./IMG/iphone_17.png",
+      "new": "NEW",
+      "category": "tablet",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 5,
+      "name": "Apple Watch Series 11",
       "price": "₮3,999,000",
       "image": "./IMG/iwatch.png",
       "new": "NEW",
@@ -28,7 +46,7 @@
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
-      "id": 4,
+      "id": 6,
       "name": "AirPods Pro Gen3",
       "price": "₮2,999,000",
       "image": "./IMG/airpod.png",
@@ -37,18 +55,27 @@
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
-      "id": 5,
+      "id": 7,
       "name": "iPad Pro",
       "price": "₮4,999,000",
       "image": "./IMG/ipad.png",
       "new": "NEW",
       "category": "tablet",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 8,
+      "name": "Apple Vision Pro",
+      "price": "₮2,999,000",
+      "image": "./IMG/apple_vision_pro.png",
+      "new": "NEW",
+      "category": "audio",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     }
   ],
   "recommendedProducts": [
     {
-      "id": 6,
+      "id": 9,
       "name": "Macbook Air M3",
       "price": "₮5,999,000",
       "image": "./IMG/mac air m4.png",
@@ -57,7 +84,7 @@
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
-      "id": 7,
+      "id": 10,
       "name": "iPhone 16 Pro Max",
       "price": "₮4,500,000",
       "image": "./IMG/iphone16promax.png",
@@ -66,7 +93,34 @@
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
-      "id": 8,
+      "id": 11,
+      "name": "iPhone 16 Pro",
+      "price": "₮4,500,000",
+      "image": "./IMG/iphone_16_pro.png",
+      "new": "20% OFF",
+      "category": "phone",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 12,
+      "name": "iPhone 16 ",
+      "price": "₮4,500,000",
+      "image": "./IMG/iphone_16.png",
+      "new": "20% OFF",
+      "category": "phone",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 13,
+      "name": "Apple Watch Ultra 2",
+      "price": "₮1,999,000",
+      "image": "./IMG/iwatch_ultra_2.png",
+      "new": "20% OFF",
+      "category": "watch",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 14,
       "name": "Apple Watch SE",
       "price": "₮1,999,000",
       "image": "./IMG/iwatch se.png",
@@ -75,7 +129,7 @@
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
-      "id": 9,
+      "id": 15,
       "name": "AirPods Max",
       "price": "₮3,499,000",
       "image": "./IMG/airpod max.png",
@@ -84,10 +138,37 @@
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
-      "id": 10,
+      "id": 16,
+      "name": "AirPods Pro Gen2",
+      "price": "₮3,499,000",
+      "image": "./IMG/airpod_pro_gen_2.png",
+      "new": "20% OFF",
+      "category": "audio",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 17,
       "name": "iPad Air",
       "price": "₮3,299,000",
       "image": "./IMG/ipad air.png",
+      "new": "20% OFF",
+      "category": "tablet",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 18,
+      "name": "iPad 11",
+      "price": "₮3,299,000",
+      "image": "./IMG/ipad.png",
+      "new": "20% OFF",
+      "category": "tablet",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 19,
+      "name": "iPad Mini",
+      "price": "₮2,999,000",
+      "image": "./IMG/ipad_mini.png",
       "new": "20% OFF",
       "category": "tablet",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
@@ -95,7 +176,7 @@
   ],
   "accessories": [
     {
-      "id": 11,
+      "id": 20,
       "name": "Magic Keyboard",
       "price": "₮599,000",
       "image": "./IMG/magick.png",
@@ -104,7 +185,7 @@
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
-      "id": 12,
+      "id": 21,
       "name": "MagSafe Charger",
       "price": "₮199,000",
       "image": "./IMG/magsafe.png",
@@ -113,7 +194,7 @@
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
-      "id": 13,
+      "id": 22,
       "name": "Apple Pencil Pro",
       "price": "₮699,000",
       "image": "./IMG/apple pencil.png",
@@ -122,7 +203,7 @@
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
-      "id": 14,
+      "id": 23,
       "name": "HomePod Mini",
       "price": "₮499,000",
       "image": "./IMG/homepod.png",
@@ -131,12 +212,30 @@
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
     {
-      "id": 15,
+      "id": 24,
       "name": "AirTag 4 Pack",
       "price": "₮399,000",
       "image": "./IMG/airtag.png",
       "category": "accessory",
       "new": "",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 25,
+      "name": "Magic mouse",
+      "price": "₮399,000",
+      "image": "./IMG/magic_mouse.png",
+      "category": "accessory",
+      "new": "",
+      "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": 26,
+      "name": "Apple Vision Pro",
+      "price": "₮2,999,000",
+      "image": "./IMG/apple_vision_pro.png",
+      "new": "",
+      "category": "audio",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     }
   ]
