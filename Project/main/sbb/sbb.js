@@ -79,9 +79,8 @@ function displayProducts(productsArray, containerId, limit = 5) {
       (product) => `
         <div class="product-card">
           ${product.new ? `<div class="product-new">${product.new}</div>` : ""}
-          <img src="${product.image}" alt="${
-        product.name
-      }" class="product-image">
+          <img src="${product.image}" alt="${product.name
+        }" class="product-image">
           <div class="product-name">${product.name}</div>
           <div class="product-price">${product.price}</div>
         </div>
@@ -143,19 +142,16 @@ function displayDetailedProducts(productsArray) {
   container.innerHTML = productsArray
     .map(
       (product, index) => `
-        <div class="detailed-card" style="animation: fadeInUp 0.6s ease forwards ${
-          index * 0.05
+        <div class="detailed-card" style="animation: fadeInUp 0.6s ease forwards ${index * 0.05
         }s; opacity: 0;">
           ${product.new ? `<div class="product-new">${product.new}</div>` : ""}
-          <img src="${product.image}" alt="${
-        product.name
-      }" class="detailed-card-image">
+          <img src="${product.image}" alt="${product.name
+        }" class="detailed-card-image">
           <div class="detailed-card-info">
             <div class="detailed-card-name">${product.name}</div>
             <div class="detailed-card-price">${product.price}</div>
-            <button class="add-to-cart-btn" onclick="addToCart(${
-              product.id
-            }, '${product.name}', '${product.price}')">
+            <button class="add-to-cart-btn" onclick="addToCart(${product.id
+        }, '${product.name}', '${product.price}')">
               <i class="fa-solid fa-cart-plus"></i> Сагсанд нэмэх
             </button>
           </div>
@@ -276,9 +272,8 @@ function showCartPopup() {
       .map(
         (item) => `
       <div class="cart-item" style="display:flex;align-items:center;gap:15px;padding:15px;background:#f5f5f7;border-radius:12px;margin-bottom:15px;">
-        <img src="${item.image || "./IMG/Logo.png"}" alt="${
-          item.name
-        }" style="width:50px;height:50px;object-fit:cover;border-radius:8px;" />
+        <img src="${item.image || "./IMG/Logo.png"}" alt="${item.name
+          }" style="width:50px;height:50px;object-fit:cover;border-radius:8px;" />
         <div style="flex:1;">
           <div style="font-weight:600;margin-bottom:5px;">${item.name}</div>
           <div style="color:#06c;font-weight:700;">₮${Number(
@@ -286,19 +281,15 @@ function showCartPopup() {
           ).toLocaleString()}</div>
         </div>
         <div style="display:flex;align-items:center;gap:10px;">
-          <button onclick="updateQuantity(${
-            item.id
+          <button onclick="updateQuantity(${item.id
           }, -1)" style="width:30px;height:30px;border:none;background:white;border-radius:50%;cursor:pointer;font-size:18px;font-weight:700;">-</button>
-          <span style="font-weight:600;min-width:20px;text-align:center;">${
-            item.quantity || 1
+          <span style="font-weight:600;min-width:20px;text-align:center;">${item.quantity || 1
           }</span>
-          <button onclick="updateQuantity(${
-            item.id
+          <button onclick="updateQuantity(${item.id
           }, 1)" style="width:30px;height:30px;border:none;background:white;border-radius:50%;cursor:pointer;font-size:18px;font-weight:700;">+</button>
         </div>
-        <button onclick="removeFromCart(${
-          item.id
-        })" style="background:#ff3b30;color:white;border:none;width:30px;height:30px;border-radius:50%;">×</button>
+        <button onclick="removeFromCart(${item.id
+          })" style="background:#ff3b30;color:white;border:none;width:30px;height:30px;border-radius:50%;">×</button>
       </div>
     `
       )
@@ -573,7 +564,7 @@ if (document.readyState === "loading") {
 }
 
 // Initialize
-// Load cart from localStorage and bind cart icon
+// Load cart from localStorage
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", () => {
     const saved = localStorage.getItem("cartItems");

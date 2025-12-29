@@ -550,7 +550,7 @@ a p {
 
 .product-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 15px 40px rgba(255, 0, 0, 0.4);
 }
 
 .product-new {

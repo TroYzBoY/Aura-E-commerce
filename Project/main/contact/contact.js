@@ -1,9 +1,9 @@
-// Contact form: client-side validation + mailto fallback
+// HTML хуудас бүрэн ачаалагдсаны дараа кодыг ажиллуулна
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("contact-form");
   const result = document.getElementById("contact-result");
   const clearBtn = document.getElementById("clear-btn");
-
+// Мессеж харуулах функц
   function showResult(message, isError = false) {
     result.className = "contact-result " + (isError ? "error" : "success");
     result.textContent = message;
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
       result.textContent = "";
     }, 4000);
   }
-
+// Имэйл хаяг шалгах функц
   function validEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }

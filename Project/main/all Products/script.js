@@ -48,7 +48,7 @@ async function loadProducts() {
     }
   }
 }
-
+//Бүтээгдэхүүнүүдийг хуудсан дээр харуулна
 function displayProducts(productsArray, containerId, limit = 5) {
   const container = document.getElementById(containerId);
   if (!container) return;
@@ -86,7 +86,7 @@ function displayProducts(productsArray, containerId, limit = 5) {
     });
   });
 }
-
+// Дэлгэрэнгүй хуудас нээнэ
 function openDetailedPage(category) {
   currentCategory = category;
   const page = document.getElementById("detailed-page");
@@ -101,14 +101,14 @@ function openDetailedPage(category) {
   page.classList.add("active");
   filterProducts("all");
 }
-
+//Дэлгэрэнгүй хуудас хаана
 function closeDetailedPage() {
   const page = document.getElementById("detailed-page");
   if (page) {
     page.classList.remove("active");
   }
 }
-
+//Дэлгэрэнгүй хуудас дээр бүтээгдэхүүн шүүх функц
 function filterProducts(category) {
   currentFilter = category;
 
@@ -129,7 +129,7 @@ function filterProducts(category) {
 
   displayDetailedProducts(filtered);
 }
-
+//Дэлгэрэнгүй хуудас дээр бүтээгдэхүүн харуулах функц
 function displayDetailedProducts(productsArray) {
   const container = document.getElementById("detailed-grid");
   if (!container) return;
@@ -157,7 +157,7 @@ function displayDetailedProducts(productsArray) {
     .join("");
 }
 
-// SIDEBAR FILTER
+// ============= FILTER FUNCTIONS =============
 function applyFilters() {
   const categoryCheckboxes = document.querySelectorAll(".filter-checkbox[data-category]:checked");
   const priceCheckboxes = document.querySelectorAll(".filter-checkbox[data-price]:checked");
@@ -223,14 +223,14 @@ function applyFilters() {
     }
   });
 }
-
+// Тохиргоог цэвэрлэх функц
 function clearFilters() {
   const allCheckboxes = document.querySelectorAll(".filter-checkbox");
   allCheckboxes.forEach((cb) => (cb.checked = false));
   applyFilters();
 }
 
-// ============= CART FUNCTIONS (ecomm2.js дизайнтай) =============
+// ============= CART FUNCTIONS (дизайн) =============
 function addToCart(idOrObj, name, price) {
   let id = idOrObj && typeof idOrObj === "object" ? idOrObj.id : idOrObj;
   let productName = idOrObj && typeof idOrObj === "object" ? idOrObj.name : name;
@@ -259,7 +259,7 @@ function addToCart(idOrObj, name, price) {
   updateCartBadge();
   showNotification(`${productObj.name || productName} сагсанд нэмэгдлээ!`);
 }
-
+// Сагсны тэмдэглэгээг шинэчлэх функц
 function updateCartBadge() {
   const cartIcon = document.getElementById("cart-icon");
   if (!cartIcon) return;
@@ -281,7 +281,7 @@ function updateCartBadge() {
     badge.remove();
   }
 }
-
+// Сагсанд нэмэгдсэн тухай мэдэгдэл харуулах функц
 function showNotification(message) {
   const notification = document.createElement("div");
   notification.style.cssText = `
@@ -305,7 +305,7 @@ function showNotification(message) {
     setTimeout(() => notification.remove(), 300);
   }, 2000);
 }
-
+// Сагсны дэлгэрэнгүй мэдээлэл харуулах функц
 function showCartPopup() {
   const existingPopup = document.querySelector(".cart-popup");
   if (existingPopup) existingPopup.remove();
@@ -515,7 +515,7 @@ function showCartPopup() {
 
   document.body.appendChild(popup);
 }
-
+// Сагсаас бүтээгдэхүүн устгах функц
 function removeFromCart(productId) {
   cart = cart.filter((item) => String(item.id) !== String(productId));
   localStorage.setItem("cartItems", JSON.stringify(cart));
@@ -523,7 +523,7 @@ function removeFromCart(productId) {
   const openPopup = document.querySelector(".cart-popup");
   if (openPopup) showCartPopup();
 }
-
+// Бүтээгдэхүүний тоог шинэчлэх функц
 function updateQuantity(productId, change) {
   const item = cart.find((i) => String(i.id) === String(productId));
   if (!item) return;
@@ -539,7 +539,7 @@ function updateQuantity(productId, change) {
     if (openPopup) showCartPopup();
   }
 }
-
+// Төлбөрийн хуудас руу шилжих функц
 function goToCheckout() {
   if (cart.length === 0) {
     alert("⚠️ Таны сагс хоосон байна!\n\nЭхлээд бүтээгдэхүүн сонгоно уу.");
@@ -553,7 +553,7 @@ function goToCheckout() {
   }, 500);
 }
 
-// SEARCH FUNCTIONS
+// ============= SEARCH =============
 function showSearchDropdown(results) {
   const dropdown = document.getElementById("search-dropdown");
   const container = document.getElementById("search-results-container");
@@ -596,14 +596,14 @@ function showSearchDropdown(results) {
 
   dropdown.classList.add("show");
 }
-
+// Search dropdown хаах функц
 function hideSearchDropdown() {
   const dropdown = document.getElementById("search-dropdown");
   if (dropdown) {
     dropdown.classList.remove("show");
   }
 }
-
+// Бүтээгдэхүүн хайх функц
 function searchProducts(searchTerm) {
   if (!searchTerm || searchTerm.trim() === "") {
     hideSearchDropdown();
@@ -619,7 +619,7 @@ function searchProducts(searchTerm) {
 
   showSearchDropdown(filteredProducts);
 }
-
+// Дэлгэрэнгүй хуудсан дээр бүтээгдэхүүн хайх функц
 function searchProductsInDetailed(searchTerm) {
   if (!searchTerm || searchTerm.trim() === "") {
     displayDetailedProducts(allProducts);
@@ -635,7 +635,7 @@ function searchProductsInDetailed(searchTerm) {
 
   displayDetailedProducts(filteredProducts);
 }
-
+// Функц дуудалтыг хойшлуулна
 function debounce(func, wait) {
   let timeout;
   return function executedFunction(...args) {
@@ -647,7 +647,7 @@ function debounce(func, wait) {
     timeout = setTimeout(later, wait);
   };
 }
-
+// Search оролтын сонсогчид тохируулах функц
 function setupSearchListeners() {
   const searchInput = document.querySelector(".input");
   const searchIcon = document.querySelector(".icon1");
@@ -736,7 +736,7 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// PRODUCT QUICK VIEW
+// Бүтээгдэхүүний дэлгэрэнгүй мэдээлэл харуулах функц
 function showProductPopupById(id) {
   const product = allProducts.find((p) => String(p.id) === String(id));
   if (!product) return;
@@ -850,7 +850,7 @@ function showProductPopupById(id) {
   document.body.appendChild(popup);
 }
 
-// INITIALIZATION
+// DOM ачаалагдсан үед эхлэх
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", () => {
     setupSearchListeners();
