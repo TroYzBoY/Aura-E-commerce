@@ -26,7 +26,7 @@
       "price": "₮4,000,000",
       "image": "./IMG/iphone_17_pro.png",
       "new": "NEW",
-      "category": "tablet",
+      "category": "phone",
       "description": "Өндөр хурдтай, хөнгөн загвартай Pro загварын iPhone.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
@@ -36,7 +36,7 @@
       "price": "₮3,299,000",
       "image": "./IMG/iphone_17.png",
       "new": "NEW",
-      "category": "tablet",
+      "category": "phone",
       "description": "Өдөр тутмын хэрэглээнд тохиромжтой хүчирхэг iPhone.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
     },
@@ -255,7 +255,7 @@
       "name": "Apple Vision Pro",
       "price": "₮12,441,000",
       "image": "./IMG/apple_vision_pro.png",
-      "new": "featured-products",
+      "new": "",
       "category": "audio",
       "description": "Ирээдүйн технологийг мэдрүүлэх VR төхөөрөмж.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"

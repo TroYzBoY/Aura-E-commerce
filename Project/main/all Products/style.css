@@ -460,7 +460,7 @@ a p {
 .clear-filters {
   background: none;
   border: none;
-  color: #06c;
+  color: rgb(255, 0, 0);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -468,7 +468,7 @@ a p {
 }
 
 .clear-filters:hover {
-  color: #667eea;
+  color: #ff3d3d;
 }
 
 .filter-group {

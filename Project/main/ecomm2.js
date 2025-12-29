@@ -1,3 +1,4 @@
+// ecomm2.js
 let allProducts = [];
 const API_Product_URL = "http://localhost:3000";
 
@@ -290,7 +291,7 @@ function updateCartContent() {
             <button onclick="goToCheckout()" style="
               width: 100%;
               padding: 16px;
-              background: linear-gradient(135deg, #000000ff 0% #bebebeff 100%);
+              background: linear-gradient(135deg, #000000ff 0%, #bebebeff 100%);
               color: white;
               border: none;
               border-radius: 12px;
