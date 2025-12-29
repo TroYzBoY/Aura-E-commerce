@@ -594,3 +594,252 @@ if (document.readyState === "loading") {
 }
 
 loadProducts();
+function showCartPopup() {
+  const existingPopup = document.querySelector(".cart-popup");
+  if (existingPopup) existingPopup.remove();
+
+  const totalPrice = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+
+  const popup = document.createElement("div");
+  popup.className = "cart-popup";
+  popup.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s;
+  `;
+
+  let cartHTML = "";
+  if (cart.length === 0) {
+    cartHTML = '<p style="text-align: center; color: #86868b; padding: 40px; font-size: 18px;">Таны сагс хоосон байна</p>';
+  } else {
+    cartHTML = cart
+      .map((item) => `
+        <div class="cart-item" style="
+          display: flex;
+          align-items: center;
+          gap: 15px;
+          padding: 15px;
+          background: #f5f5f7;
+          border-radius: 12px;
+          margin-bottom: 15px;
+          transition: all 0.3s ease;
+        " onmouseover="this.style.background='#e8e8ea'" onmouseout="this.style.background='#f5f5f7'">
+          <img src="${item.image}" alt="${item.name}" 
+               style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" 
+               onerror="this.src='./IMG/Logo.png';" />
+          <div style="flex: 1;">
+            <div style="font-weight: 600; margin-bottom: 5px; font-size: 16px; color: #1d1d1f;">${item.name}</div>
+            <div style="color: #ff3b30; font-weight: 700; font-size: 18px;">₮${item.price.toLocaleString()}</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <button onclick="updateQuantity(${item.id}, -1)" style="
+              width: 32px;
+              height: 32px;
+              border: none;
+              background: white;
+              border-radius: 50%;
+              cursor: pointer;
+              font-size: 18px;
+              font-weight: 700;
+              color: #1d1d1f;
+              box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+              transition: all 0.2s ease;
+            " onmouseover="this.style.transform='scale(1.1)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)'" 
+               onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'">−</button>
+            <span style="font-weight: 600; min-width: 24px; text-align: center; font-size: 16px;">${item.quantity}</span>
+            <button onclick="updateQuantity(${item.id}, 1)" style="
+              width: 32px;
+              height: 32px;
+              border: none;
+              background: white;
+              border-radius: 50%;
+              cursor: pointer;
+              font-size: 18px;
+              font-weight: 700;
+              color: #1d1d1f;
+              box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+              transition: all 0.2s ease;
+            " onmouseover="this.style.transform='scale(1.1)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)'" 
+               onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'">+</button>
+          </div>
+          <button onclick="removeFromCart(${item.id})" style="
+            background: #ff3b30;
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(255,59,48,0.3);
+          " onmouseover="this.style.transform='scale(1.1)'; this.style.boxShadow='0 4px 12px rgba(255,59,48,0.5)'" 
+             onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 8px rgba(255,59,48,0.3)'">×</button>
+        </div>
+      `).join("");
+  }
+
+  popup.innerHTML = `
+    <div style="
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+      animation: slideUp 0.3s;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    ">
+      <button onclick="this.closest('.cart-popup').remove()" style="
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: #f5f5f7;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 20px;
+        color: #1d1d1f;
+        transition: all 0.3s;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      " onmouseover="this.style.background='#e5e5e7'; this.style.transform='rotate(90deg)'" 
+         onmouseout="this.style.background='#f5f5f7'; this.style.transform='rotate(0deg)'">×</button>
+      
+      <h2 style="
+        font-size: 32px;
+        font-weight: 700;
+        color: #1d1d1f;
+        margin-bottom: 30px;
+        padding-right: 40px;
+      ">🛒 Миний сагс</h2>
+      
+      ${cartHTML}
+      
+      ${cart.length > 0 ? `
+        <div style="
+          border-top: 2px solid #e5e5e7;
+          padding-top: 20px;
+          margin-top: 20px;
+        ">
+          <div style="
+            display: flex;
+            justify-content: space-between;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f5f5f7;
+            border-radius: 12px;
+          ">
+            <span style="color: #1d1d1f;">Нийт:</span>
+            <span style="color: #ff3b30;">₮${totalPrice.toLocaleString()}</span>
+          </div>
+          <button onclick="goToCheckout()" style="
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #000000 0%, #4a4a4a 50%, #bebebe 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+          " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(0, 0, 0, 0.4)'" 
+             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0, 0, 0, 0.3)'">
+            💳 Худалдан авах
+          </button>
+        </div>
+      ` : ""}
+    </div>
+    
+    <style>
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes slideUp {
+        from { transform: translateY(50px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+      .cart-popup::-webkit-scrollbar {
+        width: 8px;
+      }
+      .cart-popup::-webkit-scrollbar-track {
+        background: #f5f5f7;
+        border-radius: 10px;
+      }
+      .cart-popup::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #000000 0%, #4a4a4a 100%);
+        border-radius: 10px;
+      }
+      .cart-popup::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(135deg, #1a1a1a 0%, #3a3a3a 100%);
+      }
+    </style>
+  `;
+
+  popup.addEventListener("click", (e) => {
+    if (e.target === popup) {
+      popup.remove();
+    }
+  });
+
+  document.body.appendChild(popup);
+}
+
+// Сагснаас устгах функц
+function removeFromCart(productId) {
+  cart = cart.filter((item) => Number(item.id) !== Number(productId));
+  localStorage.setItem("cartItems", JSON.stringify(cart));
+  updateCartBadge();
+  const openPopup = document.querySelector(".cart-popup");
+  if (openPopup) showCartPopup();
+}
+
+// Тоо ширхэг өөрчлөх функц
+function updateQuantity(productId, change) {
+  const item = cart.find((i) => Number(i.id) === Number(productId));
+  if (!item) return;
+
+  item.quantity = (item.quantity || 1) + change;
+
+  if (item.quantity <= 0) {
+    removeFromCart(productId);
+  } else {
+    localStorage.setItem("cartItems", JSON.stringify(cart));
+    updateCartBadge();
+    const openPopup = document.querySelector(".cart-popup");
+    if (openPopup) showCartPopup();
+  }
+}
+
+// Төлбөр хийх хуудас руу шилжих
+function goToCheckout() {
+  if (cart.length === 0) {
+    alert("⚠️ Таны сагс хоосон байна!\n\nЭхлээд бүтээгдэхүүн сонгоно уу.");
+    return;
+  }
+
+  localStorage.setItem("cartItems", JSON.stringify(cart));
+  showNotification("💳 Төлбөрийн хуудас руу шилжиж байна...");
+  setTimeout(() => {
+    window.location.href = "../tulbur/tulbur.html"; // Төлбөрийн хуудасны зам
+  }, 500);
+}

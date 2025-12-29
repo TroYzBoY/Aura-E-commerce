@@ -33,33 +33,27 @@ async function loadProducts() {
     }
     allProducts = productsArray;
 
-    products.newProducts = productsArray.filter((p) => p.new === "NEW");
-    products.recommendedProducts = productsArray.filter(
-      (p) => p.new === "20% OFF"
-    );
-    products.accessories = productsArray.filter(
-      (p) => p.category === "accessory"
-    );
+    products.newProducts = productsArray.filter(p => p.new === "NEW");
+    products.recommendedProducts = productsArray.filter(p => p.new === "20% OFF");
+    products.accessories = productsArray.filter(p => p.category === "accessory");
 
     displayProducts(allProducts, "new-products", 0);
 
-    console.log("Бүтээгдэхүүн амжилттай ачаалагдлаа:", allProducts.length);
+    console.log('Бүтээгдэхүүн амжилттай ачаалагдлаа:', allProducts.length);
   } catch (error) {
     console.error("Өгөгдөл ачаалахад алдаа гарлаа:", error);
     const container = document.getElementById("new-products");
     if (container) {
-      container.innerHTML =
-        '<div class="loading">Өгөгдөл ачаалахад алдаа гарлаа</div>';
+      container.innerHTML = '<div class="loading">Өгөгдөл ачаалахад алдаа гарлаа</div>';
     }
   }
 }
-//Бүтээгдэхүүнүүдийг хуудсан дээр харуулна
+
 function displayProducts(productsArray, containerId, limit = 5) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
-  const list =
-    limit && limit > 0 ? productsArray.slice(0, limit) : productsArray;
+  const list = limit && limit > 0 ? productsArray.slice(0, limit) : productsArray;
 
   if (list.length === 0) {
     container.innerHTML = '<div class="loading">Бүтээгдэхүүн олдсонгүй</div>';
@@ -68,8 +62,17 @@ function displayProducts(productsArray, containerId, limit = 5) {
 
   container.innerHTML = list
     .map((product) => {
-      const priceNum = parseFloat(product.price.replace(/[₮,]/g, ""));
+      // Price-г тоо болгох (string эсвэл тоо байж болно)
+      const priceNum = typeof product.price === 'string' 
+        ? parseFloat(product.price.replace(/[₮,]/g, "")) 
+        : parseFloat(product.price) || 0;
+      
       const isOnSale = product.new === "20% OFF";
+      
+      // Price-г харуулах format
+      const displayPrice = typeof product.price === 'string' 
+        ? product.price 
+        : `₮${priceNum.toLocaleString()}`;
 
       return `
       <div class="product-card" 
@@ -78,23 +81,21 @@ function displayProducts(productsArray, containerId, limit = 5) {
            data-is-new="${product.new === "NEW" ? "true" : "false"}"
            data-on-sale="${isOnSale ? "true" : "false"}">
         ${product.new ? `<div class="product-new">${product.new}</div>` : ""}
-        <img src="${product.image}" alt="${
-        product.name
-      }" class="product-image" onerror="this.src='./IMG/Logo.png'">
+        <img src="${product.image}" alt="${product.name}" class="product-image" onerror="this.src='./IMG/Logo.png'">
         <div class="product-name">${product.name}</div>
-        <div class="product-price">${product.price}</div>
+        <div class="product-price">${displayPrice}</div>
       </div>
     `;
     })
     .join("");
 
-  container.querySelectorAll(".product-card").forEach((card, index) => {
-    card.addEventListener("click", () => {
+  container.querySelectorAll('.product-card').forEach((card, index) => {
+    card.addEventListener('click', () => {
       showProductPopupById(list[index].id);
     });
   });
 }
-// Дэлгэрэнгүй хуудас нээнэ
+
 function openDetailedPage(category) {
   currentCategory = category;
   const page = document.getElementById("detailed-page");
@@ -109,14 +110,14 @@ function openDetailedPage(category) {
   page.classList.add("active");
   filterProducts("all");
 }
-//Дэлгэрэнгүй хуудас хаана
+
 function closeDetailedPage() {
   const page = document.getElementById("detailed-page");
   if (page) {
     page.classList.remove("active");
   }
 }
-//Дэлгэрэнгүй хуудас дээр бүтээгдэхүүн шүүх функц
+
 function filterProducts(category) {
   currentFilter = category;
 
@@ -125,23 +126,19 @@ function filterProducts(category) {
   });
 
   const buttons = document.querySelectorAll(".filter-btn");
-  buttons.forEach((btn) => {
-    if (
-      btn.textContent.toLowerCase().includes(category) ||
-      (category === "all" && btn.textContent === "Бүгд")
-    ) {
+  buttons.forEach(btn => {
+    if (btn.textContent.toLowerCase().includes(category) || category === 'all' && btn.textContent === 'Бүгд') {
       btn.classList.add("active");
     }
   });
 
-  const filtered =
-    category === "all"
-      ? allProducts
-      : allProducts.filter((p) => p.category === category);
+  const filtered = category === "all"
+    ? allProducts
+    : allProducts.filter((p) => p.category === category);
 
   displayDetailedProducts(filtered);
 }
-//Дэлгэрэнгүй хуудас дээр бүтээгдэхүүн харуулах функц
+
 function displayDetailedProducts(productsArray) {
   const container = document.getElementById("detailed-grid");
   if (!container) return;
@@ -152,54 +149,32 @@ function displayDetailedProducts(productsArray) {
   }
 
   container.innerHTML = productsArray
-    .map(
-      (product, index) => `
-        <div class="detailed-card" onclick="showProductPopupById('${
-          product.id
-        }')" 
-             style="animation: fadeInUp 0.6s ease forwards ${
-               index * 0.05
-             }s; opacity: 0; cursor: pointer;">
+    .map((product, index) => `
+        <div class="detailed-card" onclick="showProductPopupById('${product.id}')" 
+             style="animation: fadeInUp 0.6s ease forwards ${index * 0.05}s; opacity: 0; cursor: pointer;">
           ${product.new ? `<div class="product-new">${product.new}</div>` : ""}
-          <img src="${product.image}" alt="${
-        product.name
-      }" class="detailed-card-image" onerror="this.src='./IMG/Logo.png'">
+          <img src="${product.image}" alt="${product.name}" class="detailed-card-image" onerror="this.src='./IMG/Logo.png'">
           <div class="detailed-card-info">
             <div class="detailed-card-name">${product.name}</div>
             <div class="detailed-card-price">${product.price}</div>
-            <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart('${
-              product.id
-            }', '${product.name}', '${product.price}')">
+            <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart('${product.id}', '${product.name}', '${product.price}')">
               <i class="fa-solid fa-cart-plus"></i> Сагсанд нэмэх
             </button>
           </div>
         </div>
-      `
-    )
+      `)
     .join("");
 }
 
-// ============= FILTER FUNCTIONS =============
+// SIDEBAR FILTER
 function applyFilters() {
-  const categoryCheckboxes = document.querySelectorAll(
-    ".filter-checkbox[data-category]:checked"
-  );
-  const priceCheckboxes = document.querySelectorAll(
-    ".filter-checkbox[data-price]:checked"
-  );
-  const conditionCheckboxes = document.querySelectorAll(
-    ".filter-checkbox[data-condition]:checked"
-  );
+  const categoryCheckboxes = document.querySelectorAll(".filter-checkbox[data-category]:checked");
+  const priceCheckboxes = document.querySelectorAll(".filter-checkbox[data-price]:checked");
+  const conditionCheckboxes = document.querySelectorAll(".filter-checkbox[data-condition]:checked");
 
-  const selectedCategories = Array.from(categoryCheckboxes).map(
-    (cb) => cb.dataset.category
-  );
-  const selectedPrices = Array.from(priceCheckboxes).map(
-    (cb) => cb.dataset.price
-  );
-  const selectedConditions = Array.from(conditionCheckboxes).map(
-    (cb) => cb.dataset.condition
-  );
+  const selectedCategories = Array.from(categoryCheckboxes).map(cb => cb.dataset.category);
+  const selectedPrices = Array.from(priceCheckboxes).map(cb => cb.dataset.price);
+  const selectedConditions = Array.from(conditionCheckboxes).map(cb => cb.dataset.condition);
 
   const productCards = document.querySelectorAll(".product-card");
 
@@ -257,22 +232,20 @@ function applyFilters() {
     }
   });
 }
-// Тохиргоог цэвэрлэх функц
+
 function clearFilters() {
   const allCheckboxes = document.querySelectorAll(".filter-checkbox");
   allCheckboxes.forEach((cb) => (cb.checked = false));
   applyFilters();
 }
 
-// ============= CART FUNCTIONS (дизайн) =============
+// ============= CART FUNCTIONS (ecomm2.js дизайнтай) =============
 function addToCart(idOrObj, name, price) {
   let id = idOrObj && typeof idOrObj === "object" ? idOrObj.id : idOrObj;
-  let productName =
-    idOrObj && typeof idOrObj === "object" ? idOrObj.name : name;
-  let productPrice =
-    idOrObj && typeof idOrObj === "object"
-      ? parseFloat(String(idOrObj.price).replace(/[₮,]/g, "")) || 0
-      : typeof price === "string"
+  let productName = idOrObj && typeof idOrObj === "object" ? idOrObj.name : name;
+  let productPrice = idOrObj && typeof idOrObj === "object"
+    ? parseFloat(String(idOrObj.price).replace(/[₮,]/g, "")) || 0
+    : typeof price === "string"
       ? parseFloat(String(price).replace(/[₮,]/g, "")) || 0
       : Number(price) || 0;
 
@@ -295,7 +268,7 @@ function addToCart(idOrObj, name, price) {
   updateCartBadge();
   showNotification(`${productObj.name || productName} сагсанд нэмэгдлээ!`);
 }
-// Сагсны тэмдэглэгээг шинэчлэх функц
+
 function updateCartBadge() {
   const cartIcon = document.getElementById("cart-icon");
   if (!cartIcon) return;
@@ -304,8 +277,7 @@ function updateCartBadge() {
 
   localStorage.setItem("cartItems", JSON.stringify(cart));
 
-  const totalCount =
-    cart.reduce((s, i) => s + (Number(i.quantity) || 0), 0) || cart.length;
+  const totalCount = cart.reduce((s, i) => s + (Number(i.quantity) || 0), 0) || cart.length;
 
   if (totalCount > 0) {
     if (!badge) {
@@ -318,7 +290,7 @@ function updateCartBadge() {
     badge.remove();
   }
 }
-// Сагсанд нэмэгдсэн тухай мэдэгдэл харуулах функц
+
 function showNotification(message) {
   const notification = document.createElement("div");
   notification.style.cssText = `
@@ -342,7 +314,7 @@ function showNotification(message) {
     setTimeout(() => notification.remove(), 300);
   }, 2000);
 }
-// Сагсны дэлгэрэнгүй мэдээлэл харуулах функц
+
 function showCartPopup() {
   const existingPopup = document.querySelector(".cart-popup");
   if (existingPopup) existingPopup.remove();
@@ -370,12 +342,10 @@ function showCartPopup() {
 
   let cartHTML = "";
   if (cart.length === 0) {
-    cartHTML =
-      '<p style="text-align: center; color: #86868b; padding: 40px; font-size: 18px;">Таны сагс хоосон байна</p>';
+    cartHTML = '<p style="text-align: center; color: #86868b; padding: 40px; font-size: 18px;">Таны сагс хоосон байна</p>';
   } else {
     cartHTML = cart
-      .map(
-        (item) => `
+      .map((item) => `
         <div class="cart-item" style="
           display: flex;
           align-items: center;
@@ -390,9 +360,7 @@ function showCartPopup() {
                style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" 
                onerror="this.src='./IMG/Logo.png';" />
           <div style="flex: 1;">
-            <div style="font-weight: 600; margin-bottom: 5px; font-size: 16px; color: #1d1d1f;">${
-              item.name
-            }</div>
+            <div style="font-weight: 600; margin-bottom: 5px; font-size: 16px; color: #1d1d1f;">${item.name}</div>
             <div style="color: #ff3b30; font-weight: 700; font-size: 18px;">₮${item.price.toLocaleString()}</div>
           </div>
           <div style="display: flex; align-items: center; gap: 10px;">
@@ -410,9 +378,7 @@ function showCartPopup() {
               transition: all 0.2s ease;
             " onmouseover="this.style.transform='scale(1.1)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)'" 
                onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'">−</button>
-            <span style="font-weight: 600; min-width: 24px; text-align: center; font-size: 16px;">${
-              item.quantity
-            }</span>
+            <span style="font-weight: 600; min-width: 24px; text-align: center; font-size: 16px;">${item.quantity}</span>
             <button onclick="updateQuantity('${item.id}', 1)" style="
               width: 32px;
               height: 32px;
@@ -442,9 +408,7 @@ function showCartPopup() {
           " onmouseover="this.style.transform='scale(1.1)'; this.style.boxShadow='0 4px 12px rgba(255,59,48,0.5)'" 
              onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 8px rgba(255,59,48,0.3)'">×</button>
         </div>
-      `
-      )
-      .join("");
+      `).join("");
   }
 
   popup.innerHTML = `
@@ -487,9 +451,7 @@ function showCartPopup() {
       
       ${cartHTML}
       
-      ${
-        cart.length > 0
-          ? `
+      ${cart.length > 0 ? `
         <div style="
           border-top: 2px solid #e5e5e7;
           padding-top: 20px;
@@ -525,9 +487,7 @@ function showCartPopup() {
             💳 Худалдан авах
           </button>
         </div>
-      `
-          : ""
-      }
+      ` : ""}
     </div>
     
     <style>
@@ -564,7 +524,7 @@ function showCartPopup() {
 
   document.body.appendChild(popup);
 }
-// Сагсаас бүтээгдэхүүн устгах функц
+
 function removeFromCart(productId) {
   cart = cart.filter((item) => String(item.id) !== String(productId));
   localStorage.setItem("cartItems", JSON.stringify(cart));
@@ -572,7 +532,7 @@ function removeFromCart(productId) {
   const openPopup = document.querySelector(".cart-popup");
   if (openPopup) showCartPopup();
 }
-// Бүтээгдэхүүний тоог шинэчлэх функц
+
 function updateQuantity(productId, change) {
   const item = cart.find((i) => String(i.id) === String(productId));
   if (!item) return;
@@ -588,7 +548,7 @@ function updateQuantity(productId, change) {
     if (openPopup) showCartPopup();
   }
 }
-// Төлбөрийн хуудас руу шилжих функц
+
 function goToCheckout() {
   if (cart.length === 0) {
     alert("⚠️ Таны сагс хоосон байна!\n\nЭхлээд бүтээгдэхүүн сонгоно уу.");
@@ -602,7 +562,7 @@ function goToCheckout() {
   }, 500);
 }
 
-// ============= SEARCH =============
+// SEARCH FUNCTIONS
 function showSearchDropdown(results) {
   const dropdown = document.getElementById("search-dropdown");
   const container = document.getElementById("search-results-container");
@@ -610,8 +570,7 @@ function showSearchDropdown(results) {
   if (!dropdown || !container) return;
 
   if (results.length === 0) {
-    container.innerHTML =
-      '<div class="search-no-results">Бүтээгдэхүүн олдсонгүй</div>';
+    container.innerHTML = '<div class="search-no-results">Бүтээгдэхүүн олдсонгүй</div>';
     dropdown.classList.add("show");
     return;
   }
@@ -646,14 +605,14 @@ function showSearchDropdown(results) {
 
   dropdown.classList.add("show");
 }
-// Search dropdown хаах функц
+
 function hideSearchDropdown() {
   const dropdown = document.getElementById("search-dropdown");
   if (dropdown) {
     dropdown.classList.remove("show");
   }
 }
-// Бүтээгдэхүүн хайх функц
+
 function searchProducts(searchTerm) {
   if (!searchTerm || searchTerm.trim() === "") {
     hideSearchDropdown();
@@ -669,7 +628,7 @@ function searchProducts(searchTerm) {
 
   showSearchDropdown(filteredProducts);
 }
-// Дэлгэрэнгүй хуудсан дээр бүтээгдэхүүн хайх функц
+
 function searchProductsInDetailed(searchTerm) {
   if (!searchTerm || searchTerm.trim() === "") {
     displayDetailedProducts(allProducts);
@@ -685,7 +644,7 @@ function searchProductsInDetailed(searchTerm) {
 
   displayDetailedProducts(filteredProducts);
 }
-// Функц дуудалтыг хойшлуулна
+
 function debounce(func, wait) {
   let timeout;
   return function executedFunction(...args) {
@@ -697,7 +656,7 @@ function debounce(func, wait) {
     timeout = setTimeout(later, wait);
   };
 }
-// Search оролтын сонсогчид тохируулах функц
+
 function setupSearchListeners() {
   const searchInput = document.querySelector(".input");
   const searchIcon = document.querySelector(".icon1");
@@ -720,11 +679,7 @@ function setupSearchListeners() {
   searchInput.addEventListener("blur", (e) => {
     setTimeout(() => {
       const dropdown = document.getElementById("search-dropdown");
-      if (
-        dropdown &&
-        !dropdown.matches(":hover") &&
-        !searchInput.matches(":focus")
-      ) {
+      if (dropdown && !dropdown.matches(":hover") && !searchInput.matches(":focus")) {
         hideSearchDropdown();
       }
     }, 200);
@@ -790,7 +745,7 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// Бүтээгдэхүүний дэлгэрэнгүй мэдээлэл харуулах функц
+// PRODUCT QUICK VIEW
 function showProductPopupById(id) {
   const product = allProducts.find((p) => String(p.id) === String(id));
   if (!product) return;
@@ -814,7 +769,10 @@ function showProductPopupById(id) {
     animation: fadeIn 0.3s;
   `;
 
-  const priceNum = parseFloat(product.price.replace(/[₮,]/g, ""));
+  // Price-г зөв боловсруулах
+  const priceNum = typeof product.price === 'string' 
+    ? parseFloat(product.price.replace(/[₮,]/g, "")) 
+    : parseFloat(product.price) || 0;
 
   popup.innerHTML = `
     <div style="
@@ -876,9 +834,7 @@ function showProductPopupById(id) {
         margin-bottom: 30px;
       ">${product.description || "Дэлгэрэнгүй мэдээлэл байхгүй"}</p>
       
-      <button onclick="addToCart('${product.id}', '${product.name}', '${
-    product.price
-  }'); this.closest('.product-popup').remove();" style="
+      <button onclick="addToCart('${product.id}', '${product.name}', '${priceNum}'); this.closest('.product-popup').remove();" style="
         width: 100%;
         padding: 18px;
         background: linear-gradient(135deg, #000000 0%, #4a4a4a 50%, #bebebe 100%);
@@ -906,7 +862,7 @@ function showProductPopupById(id) {
   document.body.appendChild(popup);
 }
 
-// DOM ачаалагдсан үед эхлэх
+// INITIALIZATION
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", () => {
     setupSearchListeners();
