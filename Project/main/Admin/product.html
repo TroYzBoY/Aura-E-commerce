@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Products</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="sidebar">
+      <h2>Admin Panel</h2>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="product.html">Products</a>
+    </div>
+
+    <div class="main">
+      <th>
+        <div class="product-header">
+          <span>Product</span>
+          <div class="product-actions">
+            <button class="add-btn" onclick="openModal()">+ Add</button>
+            <button class="remove-btn">Remove</button>
+          </div>
+        </div>
+      </th>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+<!-- Overlay -->
+<div id="overlay" class="overlay" onclick="closeModal()"></div>
+
+<!-- Modal -->
+<div id="addModal" class="modal">
+  <h2>Add Product</h2>
+
+  <input id="name" placeholder="Product name" />
+  <input id="price" type="number" placeholder="Price" />
+  <input id="category" placeholder="Category" />
+  <input id="image" placeholder="Image URL" />
+  <textarea id="desc" placeholder="Description"></textarea>
+
+  <div class="modal-actions">
+    <button onclick="addProduct()">Add</button>
+    <button class="cancel" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+    <script>
+      const products = [];
+      const getproducts = async () => {
+        const response = await fetch("http://localhost:3000/Products");
+        const data = await response.json();
+        data.forEach((item) => {
+          products.push({
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            img: item.image,
+          });
+        });
+        render();
+      };
+
+      const tbody = document.getElementById("tableBody");
+
+      function render() {
+        tbody.innerHTML = "";
+
+        products.forEach((p, i) => {
+          console.log(p);
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+          <td>
+            <div class="product">
+              <img src="${p.img}">
+              <div>
+                <div class="product-name">${p.name}</div>
+              </div>
+            </div>
+          </td>
+
+          <td class="price">${p.price}</td>
+
+
+
+        <td>
+        <span class="edit" onclick="editItem(${p.id})">✏️</span>
+        <span class="remove" onclick="removeItem(${p.id})">⊗</span>
+        </td>
+
+        `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      async function removeItem(id) {
+        console.log("Deleting item with id:", id);
+        try {
+          // 1️⃣ DELETE from backend
+          await fetch(`http://localhost:3000/Products/${id}`, {
+            method: "DELETE",
+          });
+
+          // 2️⃣ UPDATE LOCAL STATE using filter
+          const updatedProducts = products.filter((p) => p.id !== id);
+
+          // 3️⃣ Replace state
+          products.length = 0;
+          products.push(...updatedProducts);
+
+          // 4️⃣ Re-render UI
+          render();
+        } catch (error) {
+          console.error("Delete failed:", error);
+          alert("Failed to delete product");
+        }
+      }
+      function editItem(index) {
+        const p = products[index];
+        p.name = prompt("Product name:", p.name);
+        p.price = prompt("Price:", p.price);
+        render();
+      }
+      getproducts();
+      function openModal() {
+  document.getElementById("overlay").style.display = "block";
+  document.getElementById("addModal").style.display = "block";
+}
+
+function closeModal() {
+  document.getElementById("overlay").style.display = "none";
+  document.getElementById("addModal").style.display = "none";
+}
+
+async function addProduct() {
+  const newProduct = {
+    name: document.getElementById("name").value,
+    price: Number(document.getElementById("price").value),
+    category: document.getElementById("category").value,
+    description: document.getElementById("desc").value,
+    image: document.getElementById("image").value,
+    qty: 1
+  };
+
+  if (!newProduct.name || !newProduct.price) {
+    alert("Name & price required");
+    return;
+  }
+
+  // POST to backend
+  const res = await fetch("http://localhost:3000/Products", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(newProduct)
+  });
+
+  const saved = await res.json();
+
+  // update UI state
+  products.push({ ...saved, qty: 1 });
+  render();
+  closeModal();
+}
+
+    </script>
+  </body>
+</html>
