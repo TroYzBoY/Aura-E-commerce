@@ -47,7 +47,6 @@ body {
   align-items: center;
 }
 
-
 .text {
   display: flex;
   gap: 30px;
@@ -63,9 +62,12 @@ a p {
   color: #000000;
 }
 
-.text>p,
-.menu-item {
+.text > p,
+.menu-item,
+.text > a,
+.menu-link {
   position: relative;
+  display: inline-block;
   cursor: pointer;
   padding: 10px 15px;
   transition: color 0.3s;
@@ -74,8 +76,10 @@ a p {
   color: #000000;
 }
 
-.text>p::after,
-.menu-item::after {
+.text > p::after,
+.menu-item::after,
+.text > a::after,
+.menu-link::after {
   content: "";
   position: absolute;
   left: 0;
@@ -89,14 +93,22 @@ a p {
   transition: transform 0.3s ease;
 }
 
-.text>p:hover::after,
-.menu-item:hover::after {
+.menu-item:has(.menu-link)::after {
+  display: none;
+}
+
+.text > p:hover::after,
+.menu-item:hover::after,
+.text > a:hover::after,
+.menu-link:hover::after {
   transform: scaleX(1);
   transform-origin: left;
 }
 
-.text>p:hover,
-.menu-item:hover {
+.text > p:hover,
+.menu-item:hover,
+.text > a:hover,
+.menu-link:hover {
   color: #1f1d1d;
 }
 
@@ -257,7 +269,7 @@ a p {
   transition: 0.2s linear;
 }
 
-.icon1:focus~.input,
+.icon1:focus ~ .input,
 .input:focus {
   box-shadow: none;
   width: 250px;
@@ -692,10 +704,12 @@ a p {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg,
-      transparent,
-      rgba(102, 126, 234, 0.1),
-      transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(102, 126, 234, 0.1),
+    transparent
+  );
   transition: left 0.6s;
 }
 

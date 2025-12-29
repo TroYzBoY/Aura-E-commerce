@@ -54,8 +54,11 @@ body {
 }
 
 .text > p,
-.menu-item {
+.menu-item,
+.text > a,
+.menu-link {
   position: relative;
+  display: inline-block;
   cursor: pointer;
   padding: 10px 15px;
   transition: color 0.3s;
@@ -65,7 +68,9 @@ body {
 }
 
 .text > p::after,
-.menu-item::after {
+.menu-item::after,
+.text > a::after,
+.menu-link::after {
   content: "";
   position: absolute;
   left: 0;
@@ -79,14 +84,22 @@ body {
   transition: transform 0.3s ease;
 }
 
+.menu-item:has(.menu-link)::after {
+  display: none;
+}
+
 .text > p:hover::after,
-.menu-item:hover::after {
+.menu-item:hover::after,
+.text > a:hover::after,
+.menu-link:hover::after {
   transform: scaleX(1);
   transform-origin: left;
 }
 
 .text > p:hover,
-.menu-item:hover {
+.menu-item:hover,
+.text > a:hover,
+.menu-link:hover {
   color: #1f1d1d;
 }
 

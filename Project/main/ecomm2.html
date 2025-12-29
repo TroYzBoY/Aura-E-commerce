@@ -1,211 +1,264 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0"
+    />
+    <title>Apple Store</title>
+    <link rel="stylesheet" href="ecomm2.css" />
+    <link rel="stylesheet" href="../login-popup.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0" />
-  <title>Apple Store</title>
-  <link rel="stylesheet" href="ecomm2.css" />
-  <link rel="stylesheet" href="../login-popup.css" />
-</head>
-
-<body>
-  <section class="menu">
-    <div class="menus">
-      <div class="logo">
-        <img src="IMG/Logo.png" alt="Logo"
-          onerror="this.style.display='none'; this.parentElement.innerHTML='<h2>LOGO</h2>'" />
-      </div>
-      <div class="text">
-        <p>Нүүр</p>
-        <div class="menu-item">
-          <a href="all Products/index.html" class="menu-link">Бүтээгдэхүүн</a>
-          <div class="dropdown">
-            <div class="dropdown-items-container">
-              <div class="dropdown-item" data-category="phone">iPhone</div>
-              <div class="dropdown-item" data-category="laptop">Macbook</div>
-              <div class="dropdown-item" data-category="tablet">iPad</div>
-              <div class="dropdown-item" data-category="watch">iWatch</div>
-              <div class="dropdown-item" data-category="audio">AirPods</div>
-              <div class="dropdown-item" data-category="accessory">
-                Нэмэлт хэрэгсэл
+  <body>
+    <section class="menu">
+      <div class="menus">
+        <div class="logo">
+          <img
+            src="IMG/Logo.png"
+            alt="Logo"
+            onerror="this.style.display='none'; this.parentElement.innerHTML='<h2>LOGO</h2>'"
+          />
+        </div>
+        <div class="text">
+          <a href="./ecomm2.html" class="menu-link">Нүүр</a>
+          <div class="menu-item">
+            <a href="all Products/index.html" class="menu-link">Бүтээгдэхүүн</a>
+          </div>
+          <p>Үйлчилгээ</p>
+          <div class="menu-item">
+            <a href="./contact/contact.html" class="menu-link">Холбоо барих</a>
+          </div>
+        </div>
+        <div class="Icon">
+          <div class="icon">
+            <div class="input-wrapper">
+              <button class="icon1">
+                <svg
+                  width="25px"
+                  height="25px"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11.5 21C16.7467 21 21 16.7467 21 11.5C21 6.25329 16.7467 2 11.5 2C6.25329 2 2 6.25329 2 11.5C2 16.7467 6.25329 21 11.5 21Z"
+                    stroke="#000000"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                  <path
+                    d="M22 22L20 20"
+                    stroke="#000000"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                </svg>
+              </button>
+              <input
+                type="text"
+                name="text"
+                class="input"
+                placeholder="search.."
+                id="main-search-input"
+              />
+              <div class="search-dropdown" id="search-dropdown">
+                <div
+                  class="search-results-container"
+                  id="search-results-container"
+                >
+                  <!-- Search results will be inserted here -->
+                </div>
               </div>
             </div>
           </div>
+          <i class="fa-solid fa-bag-shopping" id="cart-icon"></i>
+          <i
+            class="fa-solid fa-user"
+            id="user-icon"
+            style="cursor: pointer"
+          ></i>
         </div>
-        <p>Үйлчилгээ</p>
-        <a href="./contact/contact.html">
-          <p>Холбоо барих</p>
-        </a>
       </div>
-      <div class="Icon">
-        <div class="icon">
-          <div class="input-wrapper">
-            <button class="icon1">
-              <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M11.5 21C16.7467 21 21 16.7467 21 11.5C21 6.25329 16.7467 2 11.5 2C6.25329 2 2 6.25329 2 11.5C2 16.7467 6.25329 21 11.5 21Z"
-                  stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                <path d="M22 22L20 20" stroke="#000000" stroke-width="1.5" stroke-linecap="round"
-                  stroke-linejoin="round"></path>
-              </svg>
-            </button>
-            <input type="text" name="text" class="input" placeholder="search.." id="main-search-input" />
-            <div class="search-dropdown" id="search-dropdown">
-              <div class="search-results-container" id="search-results-container">
-                <!-- Search results will be inserted here -->
-              </div>
+    </section>
+
+    <section class="home">
+      <video class="home-video" autoplay muted playsinline loop>
+        <source src="IMG/background intro.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <p>Apple Store Mongolia</p>
+    </section>
+
+    <section class="container">
+      <h2 class="section-title">Шинэ бүтээгдэхүүн</h2>
+      <div class="product-carousel-wrapper">
+        <button
+          class="arrow-btn left"
+          id="new-products-prev"
+          onclick="scrollProducts('NEW', 'prev')"
+        >
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <div class="product-grid" id="NEW">
+          <div class="loading">Ачааллаж байна...</div>
+        </div>
+        <button
+          class="arrow-btn right"
+          id="new-products-next"
+          onclick="scrollProducts('NEW', 'next')"
+        >
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+      <div class="see-more-container">
+        <a href="shine but/shine.html"
+          ><button class="more">
+            <p>Дэлгэрэнгүй үзэх</p>
+          </button></a
+        >
+      </div>
+    </section>
+
+    <section class="container">
+      <h2 class="section-title">Санал болгох бүтээгдэхүүн</h2>
+      <div class="product-carousel-wrapper">
+        <button
+          class="arrow-btn left"
+          id="featured-products-prev"
+          onclick="scrollProducts('featured-products', 'prev')"
+        >
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <div class="product-grid" id="featured-products">
+          <div class="loading">Ачааллаж байна...</div>
+        </div>
+        <button
+          class="arrow-btn right"
+          id="featured-products-next"
+          onclick="scrollProducts('featured-products', 'next')"
+        >
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+      <div class="see-more-container">
+        <a href="sbb/sbb.html"
+          ><button class="more">
+            <p>Дэлгэрэнгүй үзэх</p>
+          </button></a
+        >
+      </div>
+    </section>
+
+    <section class="container">
+      <h2 class="section-title">Нэмэлт хэрэгсэл</h2>
+      <div class="product-carousel-wrapper">
+        <button
+          class="arrow-btn left"
+          id="accessories-prev"
+          onclick="scrollProducts('accessory', 'prev')"
+        >
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <div class="product-grid" id="accessory">
+          <div class="loading">Ачааллаж байна...</div>
+        </div>
+        <button
+          class="arrow-btn right"
+          id="accessories-next"
+          onclick="scrollProducts('accessories', 'next')"
+        >
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+      <div class="see-more-container">
+        <a href="nemelt/nemelt.html"
+          ><button class="more">
+            <p>Дэлгэрэнгүй үзэх</p>
+          </button></a
+        >
+      </div>
+    </section>
+
+    <!-- Login/Register Popup -->
+    <div class="blur-bg-overlay"></div>
+    <div class="form-popup">
+      <span class="close-btn material-symbols-rounded">close</span>
+      <div class="form-box login">
+        <div class="form-details">
+          <h2>Welcome Back</h2>
+          <p>
+            Please log in using your personal information to stay connected with
+            us.
+          </p>
+        </div>
+        <div class="form-content">
+          <h2>LOGIN</h2>
+          <form action="#" id="login-form">
+            <div class="input-field">
+              <input type="text" required />
+              <label>Email</label>
             </div>
+            <div class="input-field">
+              <input type="password" required />
+              <label>Password</label>
+            </div>
+            <a href="#" class="forgot-pass-link">Forgot password?</a>
+            <button type="submit">Log In</button>
+          </form>
+          <div class="bottom-link">
+            Don't have an account?
+            <a href="#" id="signup-link">Signup</a>
           </div>
         </div>
-        <i class="fa-solid fa-bag-shopping" id="cart-icon"></i>
-        <i class="fa-solid fa-user" id="user-icon" style="cursor: pointer"></i>
       </div>
-    </div>
-  </section>
-
-  <section class="home">
-    <video class="home-video" autoplay muted playsinline loop>
-      <source src="IMG/background intro.mp4" type="video/mp4" />
-      Your browser does not support the video tag.
-    </video>
-    <p>Apple Store Mongolia</p>
-  </section>
-
-  <section class="container">
-    <h2 class="section-title">Шинэ бүтээгдэхүүн</h2>
-    <div class="product-carousel-wrapper">
-      <button class="arrow-btn left" id="new-products-prev" onclick="scrollProducts('NEW', 'prev')">
-        <i class="fa-solid fa-chevron-left"></i>
-      </button>
-      <div class="product-grid" id="NEW">
-        <div class="loading">Ачааллаж байна...</div>
-      </div>
-      <button class="arrow-btn right" id="new-products-next" onclick="scrollProducts('NEW', 'next')">
-        <i class="fa-solid fa-chevron-right"></i>
-      </button>
-    </div>
-    <div class="see-more-container">
-      <a href="shine but/shine.html"><button class="more">
-          <p>Дэлгэрэнгүй үзэх</p>
-        </button></a>
-    </div>
-  </section>
-
-  <section class="container">
-    <h2 class="section-title">Санал болгох бүтээгдэхүүн</h2>
-    <div class="product-carousel-wrapper">
-      <button class="arrow-btn left" id="featured-products-prev" onclick="scrollProducts('featured-products', 'prev')">
-        <i class="fa-solid fa-chevron-left"></i>
-      </button>
-      <div class="product-grid" id="featured-products">
-        <div class="loading">Ачааллаж байна...</div>
-      </div>
-      <button class="arrow-btn right" id="featured-products-next" onclick="scrollProducts('featured-products', 'next')">
-        <i class="fa-solid fa-chevron-right"></i>
-      </button>
-    </div>
-    <div class="see-more-container">
-      <a href="sbb/sbb.html"><button class="more">
-          <p>Дэлгэрэнгүй үзэх</p>
-        </button></a>
-    </div>
-  </section>
-
-  <section class="container">
-    <h2 class="section-title">Нэмэлт хэрэгсэл</h2>
-    <div class="product-carousel-wrapper">
-      <button class="arrow-btn left" id="accessories-prev" onclick="scrollProducts('accessory', 'prev')">
-        <i class="fa-solid fa-chevron-left"></i>
-      </button>
-      <div class="product-grid" id="accessory">
-        <div class="loading">Ачааллаж байна...</div>
-      </div>
-      <button class="arrow-btn right" id="accessories-next" onclick="scrollProducts('accessories', 'next')">
-        <i class="fa-solid fa-chevron-right"></i>
-      </button>
-    </div>
-    <div class="see-more-container">
-      <a href="nemelt/nemelt.html"><button class="more">
-          <p>Дэлгэрэнгүй үзэх</p>
-        </button></a>
-    </div>
-  </section>
-
-  <!-- Login/Register Popup -->
-  <div class="blur-bg-overlay"></div>
-  <div class="form-popup">
-    <span class="close-btn material-symbols-rounded">close</span>
-    <div class="form-box login">
-      <div class="form-details">
-        <h2>Welcome Back</h2>
-        <p>
-          Please log in using your personal information to stay connected with
-          us.
-        </p>
-      </div>
-      <div class="form-content">
-        <h2>LOGIN</h2>
-        <form action="#" id="login-form">
-          <div class="input-field">
-            <input type="text" required />
-            <label>Email</label>
+      <div class="form-box signup">
+        <div class="form-details">
+          <h2>Create Account</h2>
+          <p>
+            To become a part of our community, please sign up using your
+            personal information.
+          </p>
+        </div>
+        <div class="form-content">
+          <h2>SIGNUP</h2>
+          <form action="#" id="signup-form">
+            <div class="input-field">
+              <input type="text" required />
+              <label>Enter your email</label>
+            </div>
+            <div class="input-field">
+              <input type="password" required />
+              <label>Create password</label>
+            </div>
+            <div class="policy-text">
+              <input type="checkbox" id="policy" />
+              <label for="policy">
+                I agree the
+                <a href="#" class="option">Terms & Conditions</a>
+              </label>
+            </div>
+            <button type="submit">Sign Up</button>
+          </form>
+          <div class="bottom-link">
+            Already have an account?
+            <a href="#" id="login-link">Login</a>
           </div>
-          <div class="input-field">
-            <input type="password" required />
-            <label>Password</label>
-          </div>
-          <a href="#" class="forgot-pass-link">Forgot password?</a>
-          <button type="submit">Log In</button>
-        </form>
-        <div class="bottom-link">
-          Don't have an account?
-          <a href="#" id="signup-link">Signup</a>
         </div>
       </div>
     </div>
-    <div class="form-box signup">
-      <div class="form-details">
-        <h2>Create Account</h2>
-        <p>
-          To become a part of our community, please sign up using your
-          personal information.
-        </p>
-      </div>
-      <div class="form-content">
-        <h2>SIGNUP</h2>
-        <form action="#" id="signup-form">
-          <div class="input-field">
-            <input type="text" required />
-            <label>Enter your email</label>
-          </div>
-          <div class="input-field">
-            <input type="password" required />
-            <label>Create password</label>
-          </div>
-          <div class="policy-text">
-            <input type="checkbox" id="policy" />
-            <label for="policy">
-              I agree the
-              <a href="#" class="option">Terms & Conditions</a>
-            </label>
-          </div>
-          <button type="submit">Sign Up</button>
-        </form>
-        <div class="bottom-link">
-          Already have an account?
-          <a href="#" id="login-link">Login</a>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <script src="../login-popup.js"></script>
-  <script src="ecomm2.js"></script>
-</body>
-
+    <script src="../login-popup.js"></script>
+    <script src="ecomm2.js"></script>
+  </body>
 </html>

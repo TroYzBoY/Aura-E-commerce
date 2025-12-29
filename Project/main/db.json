@@ -259,6 +259,15 @@
       "category": "audio",
       "description": "Ирээдүйн технологийг мэдрүүлэх VR төхөөрөмж.",
       "icon": "<i class=\"fa-solid fa-arrow-up-right-from-square\"></i>"
+    },
+    {
+      "id": "fc8f",
+      "name": "god",
+      "price": 1231112,
+      "category": "new",
+      "description": "asd21212",
+      "image": "https://cdn.psychologytoday.com/sites/default/files/styles/image-article_inline_full/public/field_blog_entry_teaser_image/2017-09/god.jpg?itok=Fw6YPFjz",
+      "qty": 1
     }
   ],
   "categories": [
